@@ -28,3 +28,7 @@ Also install cargo-vendor & cargo-raze
 	cd cargo
     cargo add <crate>
 	sh ../scripts/init-dependencies.sh
+
+## License
+
+MIT License. See [the LICENSE](./LICENSE) for more. [IARC](https://opensource.google.com/docs/iarc/) permission received.
