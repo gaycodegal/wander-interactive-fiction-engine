@@ -1,8 +1,13 @@
 # Wander Interactive Fiction Engine
 
+Wander is an engine in progress for making text adventures. It supports Context Free Grammars, which are parsed using a modified CYK algorithm.
+
 ## Dependencies
 
-[bazel.build](https://bazel.build)
+- [Rust (1.38)](https://www.rust-lang.org/tools/install)
+- [bazel.build](https://bazel.build)
+
+Also install cargo-vendor & cargo-raze
 
     cargo install cargo-vendor
     cargo install cargo-raze
@@ -20,7 +25,6 @@
 
 ### Add a crate
 
-in //cargo
-
+	cd cargo
     cargo add <crate>
 	sh ../scripts/init-dependencies.sh
