@@ -9,17 +9,6 @@ cc_library(
 )
 
 cc_library(
-    name = "qt_gui",
-    hdrs = glob(["QtGui/**"]),
-    includes = ["."],
-    deps = [":qt_core"],
-    linkopts = [
-        "-lQt5Gui",
-    ],
-    visibility = ["//visibility:public"],
-)
-
-cc_library(
     name = "qt_qml",
     hdrs = glob(["QtQml/**"]),
     includes = ["."],
@@ -31,12 +20,37 @@ cc_library(
 )
 
 cc_library(
-    name = "qt_qml",
-    hdrs = glob(["QtQml/**"]),
+    name = "qt_quick",
+    hdrs = glob(["QtQuick/**"]),
     includes = ["."],
     deps = [":qt_core"],
     linkopts = [
         "-lQt5Quick",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "qt_quick_controls",
+    hdrs = glob(["QtQuickControls2/**"]),
+    includes = ["."],
+    deps = [
+        ":qt_core",
+        ":qt_quick"
+    ],
+    linkopts = [
+        "-lQt5Quick",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "qt_gui",
+    hdrs = glob(["QtGui/**"]),
+    includes = ["."],
+    deps = [":qt_core"],
+    linkopts = [
+        "-lQt5Gui",
     ],
     visibility = ["//visibility:public"],
 )

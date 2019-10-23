@@ -11,5 +11,5 @@ cc_binary(
         "@qt//:qt_gui",
         "@qt//:qt_qml",
         "@qt//:qt_quick"
-    ],
+    ]
 )
