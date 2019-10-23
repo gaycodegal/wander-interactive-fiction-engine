@@ -1,0 +1,42 @@
+cc_library(
+    name = "qt_core",
+    hdrs = glob(["QtCore/**"]),
+    includes = ["."],
+    linkopts = [
+        "-lQt5Core",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "qt_gui",
+    hdrs = glob(["QtGui/**"]),
+    includes = ["."],
+    deps = [":qt_core"],
+    linkopts = [
+        "-lQt5Gui",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "qt_qml",
+    hdrs = glob(["QtQml/**"]),
+    includes = ["."],
+    deps = [":qt_core"],
+    linkopts = [
+        "-lQt5Qml",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "qt_qml",
+    hdrs = glob(["QtQml/**"]),
+    includes = ["."],
+    deps = [":qt_core"],
+    linkopts = [
+        "-lQt5Quick",
+    ],
+    visibility = ["//visibility:public"],
+)
