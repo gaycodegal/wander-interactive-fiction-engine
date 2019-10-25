@@ -7,16 +7,16 @@ def qt_ui_library(name, ui, deps):
     deps: cc_library dependencies for the library.
   """
   native.genrule(
-      name = "%s_uic" % name,
-      srcs = [ui],
-      outs = ["ui_%s.hh" % ui.split('.')[0]],
-      cmd = "uic $(locations %s) -o $@" % ui,
+    name = "%s_uic" % name,
+    srcs = [ui],
+    outs = ["ui_%s.hh" % ui.split('.')[0]],
+    cmd = "uic $(locations %s) -o $@" % ui,
   )
 
   native.cc_library(
-      name = name,
-      hdrs = [":%s_uic" % name],
-      deps = deps,
+    name = name,
+    hdrs = [":%s_uic" % name],
+    deps = deps,
   )
 
 def qt_cc_library(name, src, hdr, normal_hdrs=[], deps=None, ui=None,
@@ -36,11 +36,11 @@ def qt_cc_library(name, src, hdr, normal_hdrs=[], deps=None, ui=None,
     kwargs: Any additional arguments are passed to the cc_library rule.
   """
   native.genrule(
-      name = "%s_moc" % name,
-      srcs = [hdr],
-      outs = ["moc_%s.cc" % name],
-      cmd =  "moc $(location %s) -o $@ -f'%s'" \
-        % (hdr, '%s/%s' % (native.package_name(), hdr)),
+    name = "%s_moc" % name,
+    srcs = [hdr],
+    outs = ["moc_%s.cc" % name],
+    cmd =  "moc $(location %s) -o $@ -f'%s'" \
+    % (hdr, '%s/%s' % (native.package_name(), hdr)),
   )
   srcs = [src, ":%s_moc" % name]
 
@@ -51,9 +51,9 @@ def qt_cc_library(name, src, hdr, normal_hdrs=[], deps=None, ui=None,
   hdrs = [hdr] + normal_hdrs
 
   native.cc_library(
-      name = name,
-      srcs = srcs,
-      hdrs = hdrs,
-      deps = deps,
-      **kwargs
+    name = name,
+    srcs = srcs,
+    hdrs = hdrs,
+    deps = deps,
+    **kwargs
   )

@@ -39,7 +39,7 @@ cc_library(
         ":qt_quick"
     ],
     linkopts = [
-        "-lQt5Quick",
+        "-lQt5QuickControls2",
     ],
     visibility = ["//visibility:public"],
 )

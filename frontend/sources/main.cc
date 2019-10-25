@@ -8,15 +8,9 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
     QQuickStyle::setStyle("Material");
-
+    
     QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("../views/app.qml"));
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-                     &app, [url](QObject *obj, const QUrl &objUrl) {
-        if (!obj && url == objUrl)
-            QCoreApplication::exit(-1);
-    }, Qt::QueuedConnection);
-    engine.load(url);
+    engine.load(QUrl(QStringLiteral("views/wife.qml")));
 
     return app.exec();
 }
