@@ -20,4 +20,5 @@ rust_library(
 rust_test(
     name = "test",
     crate = ":cfg",
+    deps=["//testr"],
 )
