@@ -3,6 +3,9 @@ workspace(name="wander_interactive_fiction_engine")
 ## From rules_rust
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("//bzl:defines.bzl", "env_defined_repo")
+env_defined_repo(name="environment", vars=["QT_HOME"])
+load("@environment//:vars.bzl", "QT_HOME")
 
 http_archive(
     name = "io_bazel_rules_rust",

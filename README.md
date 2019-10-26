@@ -14,6 +14,7 @@ Also install cargo-vendor & cargo-raze
 
 ## Setup
 
+	bazel sync --configure
     cd cargo
 	sh ../scripts/init-dependencies.sh
 	
