@@ -5,7 +5,7 @@ Wander is an engine in progress for making text adventures. It supports Context 
 ## Dependencies
 
 - [Rust (1.38)](https://www.rust-lang.org/tools/install)
-- [Qt (5.13.1)](https://www.qt.io/)
+- [Qt (5.12.5)](https://www.qt.io/)
 - [bazel.build](https://bazel.build)
 
 Also install cargo-vendor & cargo-raze
