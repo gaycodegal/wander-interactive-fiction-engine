@@ -6,7 +6,12 @@ cc_binary(
     copts = [
         '-fpic',
     ],
-    data = glob(["views/**"]),
+    data = glob(
+        [
+            "views/**",
+            "icons/**"
+        ]
+    ),
     deps = [
         "@qt//:qt_core",
         "@qt//:qt_gui",
