@@ -11,9 +11,12 @@ int main(int argc, char *argv[]) {
 
   QGuiApplication app(argc, argv);
   app.setWindowIcon(QIcon("icons/wife.png"));
+  app.setOrganizationName("gluaxspeed & gaycodegal");
+  app.setOrganizationDomain("github.com/gaycodegal/wife");
+  app.setApplicationName("WIFE");
   QQuickStyle::setStyle("Material");
+  
   QQmlApplicationEngine engine;
-
   FileIO fileIO;
   engine.rootContext()->setContextProperty("appDirPath", QGuiApplication::applicationDirPath());
   engine.rootContext()->setContextProperty("fileio", &fileIO);

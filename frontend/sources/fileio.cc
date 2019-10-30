@@ -2,14 +2,6 @@
 
 FileIO::FileIO() {}
 
-bool FileIO::isDir(const QString& source) {
-  if (source.isEmpty()) {
-    return false;
-  }
-    
-  return QDir(source).exists();
-}
-
 bool FileIO::newDir(const QString& source) {
   QDir dir(source);
   if (dir.exists()) {
@@ -30,6 +22,7 @@ bool FileIO::fileExists(const QString& source) {
 }
 
 bool FileIO::newFile(const QString& source, const QString& data) {
+  qDebug() << source;
   if (source.isEmpty()) {
     return false;
   }
@@ -39,12 +32,15 @@ bool FileIO::newFile(const QString& source, const QString& data) {
     return false;
   }
 
-  if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
+  if (!file.open(QIODevice::WriteOnly)) {
+    qDebug() << "can not create file";
+    qDebug() << file.errorString();
     return false;
   }
 
   QTextStream out(&file);
   out << data;
+  file.flush();
   file.close();
 
   return true;
