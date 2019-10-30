@@ -3,33 +3,17 @@
 
 #include <qt/QtCore/QObject>
 #include <qt/QtCore/QDir>
+#include <qt/QtCore/QFile>
+#include <qt/QtCore/QTextStream>
 
 class FileIO : public QObject {
   Q_OBJECT
 
 public slots:
-  bool isDir(const QString& source) {
-    if (source.isEmpty()) {
-      return false;
-    }
-    
-    return QDir(source).exists();
-  }
-
-  bool newDir(const QString& source) {
-    if (source.isEmpty()) {
-      return false;
-    }
-
-    QDir dir(source);
-    if (dir.exists()) {
-      return false;
-    }
-
-    dir.mkdir(source);
-
-    return true;
-  }
+  bool isDir(const QString& source);
+  bool newDir(const QString& source);
+  bool fileExists(const QString& source);
+  bool newFile(const QString& source, const QString& data);
 
 public:
   FileIO();

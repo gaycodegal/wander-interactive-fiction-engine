@@ -11,7 +11,7 @@ ApplicationWindow {
     visible: true
     width: 140
     height: 480
-    title: "WIFE IFT Game Builder"
+    title: "WIFE"
     Material.theme: Material.Dark
 
     Action {

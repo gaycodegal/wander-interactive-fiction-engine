@@ -2,10 +2,18 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
 import QtQuick.Dialogs 1.2
+import Qt.labs.settings 1.0
 
 Menu {
     id: fileMenu
     title: "File"
+    width: 300
+
+    Settings {
+	id: settings
+	property string lastFolderString;
+	property url lastFolderURL;
+    }
     
     MenuItem {
 	action: Action {
@@ -31,7 +39,9 @@ Menu {
 	    icon.color: Material.iconColor
 	    shortcut: "Ctrl+N"
 	    onTriggered: {
-		console.log("New Project.", fileio.isDir("/home/gluax/docs"));
+		console.log("file:///" + appDirPath + "/projects");
+		fileio.newDir("file:///" + appDirPath + "/projects");
+		fileio.newFile("file:///" + appDirPath + "/immutable_game.db", "");
 	    }
 	}
 	text: "Ctrl+N"
@@ -42,8 +52,13 @@ Menu {
     FileDialog {
 	id: openProject
 	title: "Select a project folder."
+	selectFolder: true
+	Component.onCompleted: folder = settings.lastFolderURL;
 	onAccepted: {
-	    console.log("opened folder.");
+	    var validProject = fileio.fileExists(folder + "/immutable_game.db");
+	    console.log("isvalid?", validProject);
+            settings.lastFolderString = folder;
+            settings.lastFolderURL = folder;
 	}
     }
     

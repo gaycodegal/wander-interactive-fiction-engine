@@ -35,7 +35,7 @@ MenuBar {
 
     Menu {
         id: viewMenu
-        title: "view"
+        title: "View"
     }
 
     /*
