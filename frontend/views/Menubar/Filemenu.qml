@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
+import QtQuick.Dialogs 1.2
 
 Menu {
     id: fileMenu
@@ -21,7 +22,43 @@ Menu {
 	contentItem: Menuitem {}
     }
 
+    MenuItem {
+	action: Action {
+	    id: newProjectAction
+	    text: "New Project"
+	    icon.name: "folder-plus-outline"
+	    icon.source: "../../icons/folder-plus-outline.png"
+	    icon.color: Material.iconColor
+	    shortcut: "Ctrl+N"
+	    onTriggered: {
+		console.log("New Project.", fileio.isDir("/home/gluax/docs"));
+	    }
+	}
+	text: "Ctrl+N"
 
-    Action { text: "New Project" }
-    Action { text: "Load Project..." }
+	contentItem: Menuitem {}
+    }
+
+    FileDialog {
+	id: openProject
+	title: "Select a project folder."
+	onAccepted: {
+	    console.log("opened folder.");
+	}
+    }
+    
+    MenuItem {
+	action: Action {
+	    id: loadProjectAction
+	    text: "Load Project..."
+	    icon.name: "folder-open-outline"
+	    icon.source: "../../icons/folder-open-outline.png"
+	    icon.color: Material.iconColor
+	    shortcut: "Ctrl+O"
+	    onTriggered: openProject.open()
+	}
+	text: "Ctrl+N"
+
+	contentItem: Menuitem {}
+    }
 }
