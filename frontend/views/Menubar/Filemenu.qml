@@ -15,6 +15,8 @@ Menu {
 	property url lastFolderURL;
 	property var recentProjectsArray: [];
 	property string recentProjects;
+	property var recentFilesArray: [];
+	property string recentFiles;
     }
 
     FileDialog {
@@ -26,21 +28,24 @@ Menu {
 	selectMultiple: false
 	Component.onCompleted: folder = settings.lastFolderURL;
 	onAccepted: {
-	    var filePath = settings.lastFolderString.split('//')[1];
+	    var filePath = newProject.fileUrl.toString().split('//')[1];
             settings.lastFolderString = folder;
             settings.lastFolderURL = folder;
 	    var success = fileio.newFile(filePath + "/immutable_game.db", "");
-	    console.log('yea>', success);
+	    
+	    console.log('yea>', success, filepath);
 	    if (success) {
-		var projectIndex = settings.recentProjectsArray.indexOf(filePath);
+		var projects = JSON.parse(settings.recentProjects || '[]');
+		var projectIndex = projects.map(function(project) {return project.filePath; }).indexOf(filePath);
 		if (projectIndex >= 0) {
-		    [settings.recentProjectsArray[0], settings.recentProjectsArray[projectIndex]] = [settings.recentProjectsArray[projectIndex], settings.recentProjectsArray[0]]
-		} else {
-		    settings.recentProjectsArray = [filePath].concat(settings.recentProjectsArray);
+		    projects.splice(projectIndex, 1);
+		} 
+		projects = [{ filePath: filePath, project: filePath.split('/').splice(-1)[0] }].concat(projects);
+		if (projects.length > 5) {
+		    projects.pop();
 		}
-		settings.recentProjects = JSON.stringify(settings.recentProjectsArray);
-		console.log(settings.recentProjectsArray, settings.recentProjects);
-		console.log(settings.recentProjectsArray, settings.recentProjects);
+		settings.recentProjects = JSON.stringify(projects);
+		console.log(projects, settings.recentProjects);
 		
 		console.log('load new game assets');
 	    }
@@ -69,23 +74,24 @@ Menu {
 	selectMultiple: false
 	Component.onCompleted: folder = settings.lastFolderURL;
 	onAccepted: {
-	    var filePath = settings.lastFolderString.split('//')[1];
+	    var filePath = openProject.fileUrl.toString().split('//')[1];
+	    console.log('loading', filePath);
 	    var validProject = fileio.fileExists(filePath + "/immutable_game.db");
             settings.lastFolderString = folder;
             settings.lastFolderURL = folder;
-	    console.log('wtf', settings.recentProjects);
-	    settings.recentProjectsArray = JSON.parse(settings.recentProjects || '[]');
+	    var projects = JSON.parse(settings.recentProjects || '[]');
 	    
 	    if (validProject) {
-		var projectIndex = settings.recentProjectsArray.indexOf(filePath);
+		var projectIndex = projects.map(function(project) {return project.filePath; }).indexOf(filePath);
 		if (projectIndex >= 0) {
-		    [settings.recentProjectsArray[0], settings.recentProjectsArray[projectIndex]] = [settings.recentProjectsArray[projectIndex], settings.recentProjectsArray[0]]
-		} else {
-		    settings.recentProjectsArray = [filePath].concat(settings.recentProjectsArray);
-		    settings.recentProjectsArray.push(filePath);
+		    projects.splice(projectIndex, 1);
+		} 
+		projects = [{ filePath: filePath, project: filePath.split('/').splice(-1)[0] }].concat(projects);
+		if (projects.length > 5) {
+		    projects.pop();
 		}
-		settings.recentProjects = JSON.stringify(settings.recentProjectsArray);
-		console.log(settings.recentProjectsArray, settings.recentProjects);
+		settings.recentProjects = JSON.stringify(projects);
+		console.log(projects, settings.recentProjects);
 		
 		console.log('load game assets');
 	    }
@@ -123,14 +129,15 @@ Menu {
 	title: "Recent Projects"
 	
 	onOpenedChanged: {
+	    // settings.recentProjects = '[]';
 	    while (recentProjectsMenu.takeItem(0)) {
 		recentProjectsMenu.removeItem(0);
 	    }
 	    
-	    settings.recentProjectsArray = JSON.parse(settings.recentProjects || '[]');
-	    for (var index in settings.recentProjectsArray) {
-		var item = Qt.createQmlObject('import QtQuick 2.13; import QtQuick.Controls 2.13; MenuItem {}', recentProjectsMenu);
-		item.text = `${~~index+1}: ${settings.recentProjectsArray[index]}`;
+	    var projects = JSON.parse(settings.recentProjects || '[]');
+	    for (var index in projects) {
+		var item = Qt.createQmlObject(`import QtQuick 2.13; import QtQuick.Controls 2.13; MenuItem {id: ${projects[index].project}; action: Action { onTriggered: console.log('loading ${projects[index].filePath} assets') } }`, recentProjectsMenu);
+		item.text = `${~~index+1}: ${projects[index].project}`;
 		recentProjectsMenu.addItem(item);
 	    };
 	}
