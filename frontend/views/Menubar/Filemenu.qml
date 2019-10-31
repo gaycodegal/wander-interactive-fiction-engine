@@ -13,10 +13,25 @@ Menu {
 	id: settings
 	property string lastFolderString;
 	property url lastFolderURL;
-	property var recentProjectsArray: [];
-	property string recentProjects;
-	property var recentFilesArray: [];
 	property string recentFiles;
+	property string recentProjects;
+    }
+
+    function updateRecentFiles() {
+	console.log('updating files');
+    }
+
+    function updateRecentProjects(filePath) {
+	var projects = JSON.parse(settings.recentProjects || '[]');
+	var projectIndex = projects.map(function(project) {return project.filePath; }).indexOf(filePath);
+	if (projectIndex >= 0) {
+	    projects.splice(projectIndex, 1);
+	} 
+	projects = [{ filePath: filePath, project: filePath.split('/').splice(-1)[0] }].concat(projects);
+	if (projects.length > 5) {
+	    projects.pop();
+	}
+	settings.recentProjects = JSON.stringify(projects);
     }
 
     FileDialog {
@@ -33,19 +48,8 @@ Menu {
             settings.lastFolderURL = folder;
 	    var success = fileio.newFile(filePath + "/immutable_game.db", "");
 	    
-	    console.log('yea>', success, filepath);
 	    if (success) {
-		var projects = JSON.parse(settings.recentProjects || '[]');
-		var projectIndex = projects.map(function(project) {return project.filePath; }).indexOf(filePath);
-		if (projectIndex >= 0) {
-		    projects.splice(projectIndex, 1);
-		} 
-		projects = [{ filePath: filePath, project: filePath.split('/').splice(-1)[0] }].concat(projects);
-		if (projects.length > 5) {
-		    projects.pop();
-		}
-		settings.recentProjects = JSON.stringify(projects);
-		console.log(projects, settings.recentProjects);
+		updateRecentProjects(filePath);
 		
 		console.log('load new game assets');
 	    }
@@ -75,23 +79,13 @@ Menu {
 	Component.onCompleted: folder = settings.lastFolderURL;
 	onAccepted: {
 	    var filePath = openProject.fileUrl.toString().split('//')[1];
-	    console.log('loading', filePath);
 	    var validProject = fileio.fileExists(filePath + "/immutable_game.db");
             settings.lastFolderString = folder;
             settings.lastFolderURL = folder;
 	    var projects = JSON.parse(settings.recentProjects || '[]');
 	    
 	    if (validProject) {
-		var projectIndex = projects.map(function(project) {return project.filePath; }).indexOf(filePath);
-		if (projectIndex >= 0) {
-		    projects.splice(projectIndex, 1);
-		} 
-		projects = [{ filePath: filePath, project: filePath.split('/').splice(-1)[0] }].concat(projects);
-		if (projects.length > 5) {
-		    projects.pop();
-		}
-		settings.recentProjects = JSON.stringify(projects);
-		console.log(projects, settings.recentProjects);
+		updateRecentProjects(filePath);
 		
 		console.log('load game assets');
 	    }
@@ -129,14 +123,14 @@ Menu {
 	title: "Recent Projects"
 	
 	onOpenedChanged: {
-	    // settings.recentProjects = '[]';
+	    //settings.recentProjects = '[]';
 	    while (recentProjectsMenu.takeItem(0)) {
 		recentProjectsMenu.removeItem(0);
 	    }
 	    
 	    var projects = JSON.parse(settings.recentProjects || '[]');
 	    for (var index in projects) {
-		var item = Qt.createQmlObject(`import QtQuick 2.13; import QtQuick.Controls 2.13; MenuItem {id: ${projects[index].project}; action: Action { onTriggered: console.log('loading ${projects[index].filePath} assets') } }`, recentProjectsMenu);
+		var item = Qt.createQmlObject(`import QtQuick 2.13; import QtQuick.Controls 2.13; MenuItem {onTriggered: { var fp = '${projects[index].filePath}'; console.log('loading ', fp, ' asssets'); updateRecentProjects(fp); } }`, recentProjectsMenu);
 		item.text = `${~~index+1}: ${projects[index].project}`;
 		recentProjectsMenu.addItem(item);
 	    };
