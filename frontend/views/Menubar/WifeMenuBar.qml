@@ -1,43 +1,17 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
-import QtQuick.Controls.Material 2.12
 
 MenuBar {
     id: menuBar
 
-    Filemenu {}
-
-    Menu {
-        id: newMenu
-        title: "New"
-        Action { text: "Character" }
-        Action { text: "Dialogue" }
-        Action { text: "Event" }
-        Action { text: "Item" }
-        Action { text: "Location" }
-    }
-
-    Menu {
-        id: editMenu
-        title: "Edit"
-        MenuItem { action: undoAction }
-        MenuItem { action: redoAction }
-        MenuSeparator {}
-        MenuItem { action: copyAction }
-        MenuItem { action: cutAction }
-        MenuItem { action: pastAction }
-    }
-
-    Menu {
-        id: buildMenu
-        title: "Build"
-    }
-
-    Menu {
-        id: viewMenu
-        title: "View"
-    }
-
+    FileMenu {}
+    NewMenu {}
+    EditMenu {}
+    BuildMenu {}
+    WindowMenu {}
+    ToolsMenu {}
+    HelpMenu {}
+    
     /*
       delegate: MenuBarItem {
       id: menuBarItem

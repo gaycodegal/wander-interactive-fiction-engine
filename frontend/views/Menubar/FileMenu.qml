@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
 import QtQuick.Dialogs 1.2
+import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 
 Menu {
@@ -58,9 +59,7 @@ Menu {
 
     MenuItem {
 	action: Action {
-	    id: newProjectAction
 	    text: "New Project"
-	    icon.name: "folder-plus-outline"
 	    icon.source: "../../icons/folder-plus-outline.png"
 	    icon.color: Material.iconColor
 	    shortcut: "Ctrl+N"
@@ -94,9 +93,7 @@ Menu {
     
     MenuItem {
 	action: Action {
-	    id: loadProjectAction
 	    text: "Load Project..."
-	    icon.name: "folder-open-outline"
 	    icon.source: "../../icons/folder-open-outline.png"
 	    icon.color: Material.iconColor
 	    shortcut: "Ctrl+O"
@@ -110,13 +107,15 @@ Menu {
     }
 
     Menu {
+	id: recentFilesMenu
 	cascade: true
 	title: "Recent Files"
-	MenuItem { text: "file1" }
-	MenuItem { text: "file2" }
-	MenuItem { text: "file3" }
+	
+	MenuItem { text: "File 1" }
+	MenuItem { text: "File 2" }
+	MenuItem { text: "File 3" }
     }
-
+    
     Menu {
 	id: recentProjectsMenu
 	cascade: true
@@ -133,7 +132,7 @@ Menu {
 		var item = Qt.createQmlObject(`import QtQuick 2.13; import QtQuick.Controls 2.13; MenuItem {onTriggered: { var fp = '${projects[index].filePath}'; console.log('loading ', fp, ' asssets'); updateRecentProjects(fp); } }`, recentProjectsMenu);
 		item.text = `${~~index+1}: ${projects[index].project}`;
 		recentProjectsMenu.addItem(item);
-	    };
+	    }
 	}
     }
     
@@ -141,9 +140,7 @@ Menu {
 
     MenuItem {
 	action: Action {
-	    id: saveFileAction
 	    text: "Save File"
-	    icon.name: "content-save"
 	    icon.source: "../../icons/content-save.png"
 	    icon.color: Material.iconColor
 	    shortcut: "Ctrl+S"
@@ -158,9 +155,7 @@ Menu {
 
     MenuItem {
 	action: Action {
-	    id: saveAllFilesAction
 	    text: "Save All"
-	    icon.name: "content-save-all"
 	    icon.source: "../../icons/content-save-all.png"
 	    icon.color: Material.iconColor
 	    shortcut: "Ctrl+Shift+S"
@@ -177,9 +172,7 @@ Menu {
 
     MenuItem {
 	action: Action {
-	    id: closeFileAction
 	    text: "Close File"
-	    icon.name: "close-box"
 	    icon.source: "../../icons/close-box.png"
 	    icon.color: Material.iconColor
 	    shortcut: "Ctrl+W"
@@ -194,9 +187,7 @@ Menu {
 
     MenuItem {
 	action: Action {
-	    id: closeAllFilesAction
 	    text: "Close All"
-	    icon.name: "close-box-multiple"
 	    icon.source: "../../icons/close-box-multiple.png"
 	    icon.color: Material.iconColor
 	    shortcut: "Ctrl+Shift+W"
@@ -211,9 +202,7 @@ Menu {
 
     MenuItem {
 	action: Action {
-	    id: closeProjectAction
 	    text: "Close Project"
-	    icon.name: "close-outline"
 	    icon.source: "../../icons/close-outline.png"
 	    icon.color: Material.iconColor
 	    onTriggered: {
@@ -229,9 +218,7 @@ Menu {
 
     MenuItem {
 	action: Action {
-	    id: exitAction
 	    text: "Exit"
-	    icon.name: "exit-run"
 	    icon.source: "../../icons/exit-run.png"
 	    icon.color: Material.iconColor
 	    shortcut: "Ctrl+Q"

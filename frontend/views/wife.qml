@@ -8,63 +8,14 @@ import "Menubar"
 
 ApplicationWindow {
     id: window
-    visible: true
+    property bool windowed: true
+    visibility: Window.Windowed
     width: 140
     height: 480
     title: "WIFE"
     Material.theme: Material.Dark
 
-    Action {
-	id: copyAction
-	text: "Copy"
-	shortcut: StandardKey.Copy
-	icon.name: "edit-copy"
-	icon.color: Material.iconColor
-	enabled: (!!activeFocusItem && !!activeFocusItem["copy"])
-	onTriggered: activeFocusItem.copy()
-    }
-
-    Action {
-	id: cutAction
-	text: "Cut"
-	shortcut: StandardKey.Cut
-	icon.name: "edit-cut"
-	icon.color: Material.iconColor
-	enabled: (!!activeFocusItem && !!activeFocusItem["cut"])
-	onTriggered: activeFocusItem.cut()
-    }
-
-    Action {
-	id: pastAction
-	text: "Paste"
-	shortcut: StandardKey.Paste
-	icon.name: "edit-paste"
-	icon.color: Material.iconColor
-	enabled: (!!activeFocusItem && !!activeFocusItem["paste"])
-	onTriggered: activeFocusItem.paste()
-    }
-
-    Action {
-	id: redoAction
-	text: "Redo"
-	shortcut: StandardKey.Redo
-	icon.name: "edit-paste"
-	icon.color: Material.iconColor
-	enabled: (!!activeFocusItem && !!activeFocusItem["paste"])
-	onTriggered: activeFocusItem.paste()
-    }
-
-    Action {
-	id: undoAction
-	text: "Undo"
-	shortcut: StandardKey.Undo
-	icon.name: "edit-paste"
-	enabled: (!!activeFocusItem && !!activeFocusItem["paste"])
-	onTriggered: activeFocusItem.paste()
-    }
-
-
-    menuBar: Menubar {} 
+    menuBar: WifeMenuBar {} 
 
     MouseArea {
         anchors.fill: parent
@@ -74,8 +25,7 @@ ApplicationWindow {
             window.update()
         }
     }
-
-
+    
     Rectangle {
         id: character_editor
         visible: false
