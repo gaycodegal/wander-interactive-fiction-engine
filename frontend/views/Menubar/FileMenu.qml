@@ -1,23 +1,14 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.12
-import QtQuick.Controls.Material 2.12
+import QtQuick 2.9
+import QtQuick.Controls 2.5
+import QtQuick.Controls.Material 2.3
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.3
-import Qt.labs.settings 1.0
 
 Menu {
     id: fileMenu
     title: "File"
     width: 300
-
-    Settings {
-	id: settings
-	property string lastFolderString;
-	property url lastFolderURL;
-	property string recentFiles;
-	property string recentProjects;
-    }
-
+    
     function updateRecentFiles() {
 	console.log('updating files');
     }
@@ -27,8 +18,10 @@ Menu {
 	var projectIndex = projects.map(function(project) {return project.filePath; }).indexOf(filePath);
 	if (projectIndex >= 0) {
 	    projects.splice(projectIndex, 1);
-	} 
-	projects = [{ filePath: filePath, project: filePath.split('/').splice(-1)[0] }].concat(projects);
+	}
+	var project = filePath.split('/').splice(-1)[0];
+	settings.openProject = project;
+	projects = [{ filePath: filePath, project: project }].concat(projects);
 	if (projects.length > 5) {
 	    projects.pop();
 	}
@@ -42,7 +35,7 @@ Menu {
 	title: "Select a project folder."
 	selectFolder: true
 	selectMultiple: false
-	Component.onCompleted: folder = settings.lastFolderURL;
+	// Component.onCompleted: folder = settings.lastFolderURL;
 	onAccepted: {
 	    var filePath = newProject.fileUrl.toString().split('//')[1];
             settings.lastFolderString = folder;
@@ -75,7 +68,7 @@ Menu {
 	title: "Select a project folder."
 	selectFolder: true
 	selectMultiple: false
-	Component.onCompleted: folder = settings.lastFolderURL;
+	// Component.onCompleted: folder = settings.lastFolderURL;
 	onAccepted: {
 	    var filePath = openProject.fileUrl.toString().split('//')[1];
 	    var validProject = fileio.fileExists(filePath + "/immutable_game.db");
@@ -207,6 +200,7 @@ Menu {
 	    icon.color: Material.iconColor
 	    onTriggered: {
 		console.log("closing project");
+		settings.openProject = '';
 	    }
 	}
 	text: ''
