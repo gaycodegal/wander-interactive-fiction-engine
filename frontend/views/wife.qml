@@ -5,6 +5,8 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls.Material 2.3
 import Qt.labs.settings 1.1
 
+import DbManager 1.0
+
 import "Menubar"
 import "Sidebar"
 
@@ -26,7 +28,10 @@ ApplicationWindow {
 	property string openProject;
     }
 
-
+    DbManager {
+	id: game
+    }
+    
     menuBar: WifeMenuBar {}
     SideBar {id: sideBar }
 }

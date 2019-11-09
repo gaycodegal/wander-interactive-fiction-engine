@@ -1,4 +1,4 @@
-#include "../headers/fileio.hh"
+#include "frontend/headers/fileio.hh"
 
 FileIO::FileIO() {}
 
@@ -32,7 +32,7 @@ bool FileIO::newFile(const QString& source, const QString& data) {
     return false;
   }
 
-  if (!file.open(QIODevice::WriteOnly)) {
+  if (!file.open(QIODevice::ReadWrite)) {
     qDebug() << "can not create file";
     qDebug() << file.errorString();
     return false;

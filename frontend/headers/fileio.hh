@@ -1,5 +1,5 @@
-#ifndef FILEIO_HH
-#define FILEIO_HH
+#ifndef FRONTEND_HEADERS_FILEIO_HH_
+#define FRONTEND_HEADERS_FILEIO_HH_
 
 #include <qt/QtCore/QObject>
 #include <qt/QtCore/QDebug>
@@ -10,13 +10,13 @@
 class FileIO : public QObject {
   Q_OBJECT
 
-public slots:
+ public slots:
   bool newDir(const QString& source);
   bool fileExists(const QString& source);
   bool newFile(const QString& source, const QString& data);
 
-public:
+ public:
   FileIO();
 };
 
-#endif //FILEIO_HH
+#endif  // FRONTEND_HEADERS_FILEIO_HH_

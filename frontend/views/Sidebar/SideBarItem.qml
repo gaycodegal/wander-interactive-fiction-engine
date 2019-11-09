@@ -3,6 +3,7 @@ import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
 
 Rectangle {
+    id: sideBarItem
     property string folder_name
     property bool enabled: settings.openProject !== ""
     property bool open: false
@@ -12,6 +13,17 @@ Rectangle {
     property string folder: "../../icons/folder.png"
     property string folder_closed: "../../icons/folder.png"
     property string folder_open: "../../icons/folder-open-outline.png"
+
+    states: State {
+	name: "NO_PROJECT"
+	when: (!enabled)
+	PropertyChanges {
+	    target: sideBarItem
+	    open: false
+	    arrow: arrow_right
+	    folder: folder_closed
+	}
+    }
     
     width: 150
     height: 25
@@ -24,6 +36,9 @@ Rectangle {
 	    open = !open;
 	    arrow = (open ? arrow_down : arrow_right);
 	    folder = (open ? folder_open : folder_closed);
+	    if (open) {
+		console.log(`hmmm what are the ${folder_name}:`, game.queryKeysOfTable("name", folder_name.toLowerCase()));
+	    }
 	}
     }
     

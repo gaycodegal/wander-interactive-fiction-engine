@@ -4,7 +4,8 @@
 #include <qt/QtQml/QQmlContext>
 #include <qt/QtQuickControls2/QQuickStyle>
 
-#include "../headers/fileio.hh"
+#include "frontend/headers/dbmanager.hh"
+#include "frontend/headers/fileio.hh"
 
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -15,12 +16,16 @@ int main(int argc, char *argv[]) {
   app.setOrganizationDomain("github.com/gaycodegal/wife");
   app.setApplicationName("WIFE");
   QQuickStyle::setStyle("Material");
-  
+
   QQmlApplicationEngine engine;
   FileIO fileIO;
-  engine.rootContext()->setContextProperty("appDirPath", QGuiApplication::applicationDirPath());
+  engine.rootContext()
+    ->setContextProperty(
+                         "appDirPath",
+                         QGuiApplication::applicationDirPath());
   engine.rootContext()->setContextProperty("fileio", &fileIO);
-  
+  qmlRegisterType<DbManager>("DbManager", 1, 0, "DbManager");
+
   engine.load(QUrl(QStringLiteral("views/wife.qml")));
 
   return app.exec();

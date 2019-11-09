@@ -3,6 +3,7 @@ import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.3
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.3
+import QtQuick.LocalStorage 2.12
 
 Menu {
     id: fileMenu
@@ -13,19 +14,32 @@ Menu {
 	console.log('updating files');
     }
 
+    function updateLastFolder(folder) {
+	settings.lastFolderString = folder;
+	settings.lastFolderURL = folder;
+	settings.sync();
+    }
+
     function updateRecentProjects(filePath) {
-	var projects = JSON.parse(settings.recentProjects || '[]');
-	var projectIndex = projects.map(function(project) {return project.filePath; }).indexOf(filePath);
+	let projects = JSON.parse(settings.recentProjects || '[]');
+	const projectIndex = projects.map(function(project) {return project.filePath; }).indexOf(filePath);
 	if (projectIndex >= 0) {
 	    projects.splice(projectIndex, 1);
 	}
-	var project = filePath.split('/').splice(-1)[0];
+	const project = filePath.split('/').splice(-1)[0];
 	settings.openProject = project;
 	projects = [{ filePath: filePath, project: project }].concat(projects);
 	if (projects.length > 5) {
 	    projects.pop();
 	}
 	settings.recentProjects = JSON.stringify(projects);
+	settings.sync();
+    }
+
+    function openDB(filePath) {
+	game.close();
+	console.log('Loading project...', filePath, game.open(filePath));
+	//console.log('Inserting test item', game.insertItem('testItem', 'a test item', 'test,debug', '{"hmmm": "yea"}'));
     }
 
     FileDialog {
@@ -35,17 +49,16 @@ Menu {
 	title: "Select a project folder."
 	selectFolder: true
 	selectMultiple: false
-	// Component.onCompleted: folder = settings.lastFolderURL;
+	Component.onCompleted: folder = settings.lastFolderURL || '/';
 	onAccepted: {
-	    var filePath = newProject.fileUrl.toString().split('//')[1];
-            settings.lastFolderString = folder;
-            settings.lastFolderURL = folder;
-	    var success = fileio.newFile(filePath + "/immutable_game.db", "");
+	    const filePath = newProject.fileUrl.toString().split('//')[1];
+            updateLastFolder(folder);
+	    const success = fileio.newFile(filePath + "/immutable_game.db", "");
 	    
 	    if (success) {
 		updateRecentProjects(filePath);
-		
-		console.log('load new game assets');
+		openDB(filePath + "/immutable_game.db");
+		game.createTables();
 	    }
 	}
     }
@@ -68,17 +81,16 @@ Menu {
 	title: "Select a project folder."
 	selectFolder: true
 	selectMultiple: false
-	// Component.onCompleted: folder = settings.lastFolderURL;
+	Component.onCompleted: folder = settings.lastFolderURL || '/';
 	onAccepted: {
-	    var filePath = openProject.fileUrl.toString().split('//')[1];
-	    var validProject = fileio.fileExists(filePath + "/immutable_game.db");
-            settings.lastFolderString = folder;
-            settings.lastFolderURL = folder;
-	    var projects = JSON.parse(settings.recentProjects || '[]');
+	    const filePath = openProject.fileUrl.toString().split('//')[1];
+	    const validProject = fileio.fileExists(filePath + "/immutable_game.db");
+	    updateLastFolder(folder);
+	    const projects = JSON.parse(settings.recentProjects || '[]');
 	    
 	    if (validProject) {
 		updateRecentProjects(filePath);
-		
+		openDB(filePath + "/immutable_game.db");
 		console.log('load game assets');
 	    }
 	}
@@ -120,9 +132,9 @@ Menu {
 		recentProjectsMenu.removeItem(0);
 	    }
 	    
-	    var projects = JSON.parse(settings.recentProjects || '[]');
-	    for (var index in projects) {
-		var item = Qt.createQmlObject(`import QtQuick 2.13; import QtQuick.Controls 2.13; MenuItem {onTriggered: { var fp = '${projects[index].filePath}'; console.log('loading ', fp, ' asssets'); updateRecentProjects(fp); } }`, recentProjectsMenu);
+	    const projects = JSON.parse(settings.recentProjects || '[]');
+	    for (let index in projects) {
+		const item = Qt.createQmlObject(`import QtQuick 2.13; import QtQuick.Controls 2.13; MenuItem {onTriggered: { var fp = '${projects[index].filePath}'; console.log('loading ', fp, ' asssets'); updateRecentProjects(fp); openDB(fp + "/immutable_game.db"); } }`, recentProjectsMenu);
 		item.text = `${~~index+1}: ${projects[index].project}`;
 		recentProjectsMenu.addItem(item);
 	    }
@@ -201,6 +213,7 @@ Menu {
 	    onTriggered: {
 		console.log("closing project");
 		settings.openProject = '';
+		game.close();
 	    }
 	}
 	text: ''

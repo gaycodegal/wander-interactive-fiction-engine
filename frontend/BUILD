@@ -16,6 +16,7 @@ cc_binary(
         ]
     ),
     deps = [
+        ":dbmanager",
         ":fileio",
         "@qt//:qt_core",
         "@qt//:qt_gui",
@@ -24,6 +25,20 @@ cc_binary(
 	"@qt//:qt_quick_controls"
     ]
 )
+
+qt_cc_library(
+    name = "dbmanager",
+    src = "sources/dbmanager.cc",
+    hdr = "headers/dbmanager.hh",
+    copts = [
+        '-fpic',
+    ],
+    deps = [
+        "@qt//:qt_core",
+        "@qt//:qt_sql",
+    ],
+)
+
 
 qt_cc_library(
     name = "fileio",

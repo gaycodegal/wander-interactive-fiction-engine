@@ -54,3 +54,14 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
 )
+
+cc_library(
+    name = "qt_sql",
+    hdrs = glob(["QtSql/**"]),
+    includes = ["."],
+    deps = [":qt_core"],
+    linkopts = [
+        "-lQt5Sql",
+    ],
+    visibility = ["//visibility:public"],
+)
