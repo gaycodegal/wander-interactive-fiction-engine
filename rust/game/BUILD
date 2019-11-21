@@ -10,5 +10,9 @@ rust_binary(
         "//rust/cfg",
         "//rust/ift",
         "//cargo:serde_json",
+        "//cargo:rusqlite",
+    ],
+    rustc_flags = [
+        "-lsqlite3",
     ],
 )
