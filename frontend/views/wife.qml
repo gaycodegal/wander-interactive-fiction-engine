@@ -13,7 +13,7 @@ import "Sidebar"
 ApplicationWindow {
     id: window
     property bool windowed: true
-    visibility: Window.Windowed
+    visible: true
     width: 140
     height: 480
     title: "WIFE"
@@ -26,6 +26,7 @@ ApplicationWindow {
 	property string recentFiles;
 	property string recentProjects;
 	property string openProject;
+	property string openProjectPath;
     }
 
     DbManager {

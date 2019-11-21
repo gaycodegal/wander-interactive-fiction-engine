@@ -21,12 +21,15 @@ Menu {
     }
 
     function updateRecentProjects(filePath) {
+	console.log('fp:', filePath);
 	let projects = JSON.parse(settings.recentProjects || '[]');
 	const projectIndex = projects.map(function(project) {return project.filePath; }).indexOf(filePath);
 	if (projectIndex >= 0) {
 	    projects.splice(projectIndex, 1);
 	}
 	const project = filePath.split('/').splice(-1)[0];
+	console.log('called');
+	settings.openProjectPath = filePath;
 	settings.openProject = project;
 	projects = [{ filePath: filePath, project: project }].concat(projects);
 	if (projects.length > 5) {
@@ -225,11 +228,16 @@ Menu {
 
     MenuItem {
 	action: Action {
+	    id: quitAction
 	    text: "Exit"
 	    icon.source: "../../icons/exit-run.png"
 	    icon.color: Material.iconColor
 	    shortcut: "Ctrl+Q"
-	    onTriggered: Qt.quit()
+	    onTriggered:  {
+		settings.openProject = '';
+		settings.openProjectPath = '';
+		Qt.quit();
+	    }
 	}
 	text: "Ctrl+Q"
 

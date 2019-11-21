@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
 
   QGuiApplication app(argc, argv);
   app.setWindowIcon(QIcon("icons/wife.png"));
-  app.setOrganizationName("gluaxspeed & gaycodegal");
+  app.setOrganizationName("non-existent");
   app.setOrganizationDomain("github.com/gaycodegal/wife");
   app.setApplicationName("WIFE");
   QQuickStyle::setStyle("Material");

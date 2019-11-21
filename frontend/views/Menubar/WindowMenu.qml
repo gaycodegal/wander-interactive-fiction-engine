@@ -15,7 +15,11 @@ Menu {
 	    icon.color: Material.iconColor
 	    shortcut: "F11"
 	    onTriggered: {
-		window.visibility =(window.windowed ? Window.FullScreen : Window.Windowed);
+		if (window.windowed) {
+		    window.showFullScreen();
+		} else {
+		    window.showNormal();
+		}
 		window.windowed = !window.windowed;
 	    }
 	}

@@ -25,7 +25,7 @@ Q_INVOKABLE bool DbManager::open(const QString& path) {
   }
 
   if (!this->m_db.open()) {
-    qDebug() << "failing open";
+    qDebug() << "failing open: " << path << this->m_db.lastError();;
     return false;
   }
 
