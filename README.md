@@ -8,6 +8,10 @@ Wander is an engine in progress for making text adventures. It supports Context 
 - [Qt (5.12.5)](https://www.qt.io/)
 - [bazel.build](https://bazel.build)
 
+On Linux
+
+	sudo apt install libsqlite3-dev
+
 Also install cargo-vendor & cargo-raze
 
     cargo install cargo-vendor
