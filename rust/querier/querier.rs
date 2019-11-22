@@ -71,6 +71,21 @@ impl<'a> Querier<'a> {
             == insert_items.len()
     }
 
+    pub fn update_item(self, item_name: String, updated_item: Item) -> bool {
+        use crate::schema::items::dsl::*;
+
+        diesel::update(items.filter(name.eq(item_name)))
+            .set((
+                name.eq(updated_item.name),
+                description.eq(updated_item.description),
+                attributes.eq(updated_item.attributes),
+                components.eq(updated_item.components),
+            ))
+            .execute(&self.connection)
+            .expect("Error updating item.")
+            == 1
+    }
+
     pub fn query_locations(
         self,
         name: String,
@@ -127,6 +142,26 @@ impl<'a> Querier<'a> {
             == insert_locations.len()
     }
 
+    pub fn update_location(
+        self,
+        location_name: String,
+        updated_location: Location,
+    ) -> bool {
+        use crate::schema::locations::dsl::*;
+
+        diesel::update(locations.filter(name.eq(location_name)))
+            .set((
+                name.eq(updated_location.name),
+                description.eq(updated_location.description),
+                items.eq(updated_location.items),
+                neighbors.eq(updated_location.neighbors),
+                characters.eq(updated_location.characters),
+            ))
+            .execute(&self.connection)
+            .expect("Error updating location.")
+            == 1
+    }
+
     pub fn query_characters(
         self,
         name: String,
@@ -173,6 +208,23 @@ impl<'a> Querier<'a> {
             .execute(&self.connection)
             .expect("Error inserting characters.")
             == insert_characters.len()
+    }
+
+    pub fn update_character(
+        self,
+        character_name: String,
+        updated_character: Character,
+    ) -> bool {
+        use crate::schema::characters::dsl::*;
+
+        diesel::update(characters.filter(name.eq(character_name)))
+            .set((
+                name.eq(updated_character.name),
+                components.eq(updated_character.components),
+            ))
+            .execute(&self.connection)
+            .expect("Error updating character.")
+            == 1
     }
 
     pub fn query_dialogues(
@@ -248,4 +300,18 @@ impl<'a> Querier<'a> {
             .expect("Error inserting dialogues.")
             == insert_dialogues.len()
     }
+
+    // pub fn update_dialogue(self, id_num: i32, updated_dialogue: Dialogue) -> bool {
+    //     use crate::schema::dialogues::dsl::*;
+
+    //     diesel::update(dialogues.filter(id.eq(id)))
+    //         .set((
+    //             characters.eq(updated_dialogue.characters),
+    //             flags.eq(updated_dialogue.flags),
+    //             location.eq(updated_dialogue.location),
+    //             dialogue.eq(updated_dialogue.dialogue),
+    //         ))
+    //         .execute(&self.connection)
+    //         .expect("Error updating dialogue.") == 1
+    // }
 }
