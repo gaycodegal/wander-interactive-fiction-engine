@@ -51,11 +51,24 @@ impl<'a> Querier<'a> {
             .expect("Error loading items.")
     }
 
-    pub fn new_item(self, item: Item) -> Item {
+    pub fn insert_item(self, item: Item) -> bool {
         use crate::schema::items::dsl::*;
 
-        diesel::insert_into(items).values(&item);
-        item
+        diesel::insert_into(items)
+            .values(&item)
+            .execute(&self.connection)
+            .expect("Error inserting item.")
+            == 1
+    }
+
+    pub fn insert_items(self, insert_items: Vec<Item>) -> bool {
+        use crate::schema::items::dsl::*;
+
+        diesel::insert_into(items)
+            .values(&insert_items)
+            .execute(&self.connection)
+            .expect("Error inserting items.")
+            == insert_items.len()
     }
 
     pub fn query_locations(
@@ -94,6 +107,26 @@ impl<'a> Querier<'a> {
             .expect("Error loading items.")
     }
 
+    pub fn insert_location(self, location: Location) -> bool {
+        use crate::schema::locations::dsl::*;
+
+        diesel::insert_into(locations)
+            .values(&location)
+            .execute(&self.connection)
+            .expect("Error inserting location.")
+            == 1
+    }
+
+    pub fn insert_locations(self, insert_locations: Vec<Location>) -> bool {
+        use crate::schema::locations::dsl::*;
+
+        diesel::insert_into(locations)
+            .values(&insert_locations)
+            .execute(&self.connection)
+            .expect("Error inserting locations.")
+            == insert_locations.len()
+    }
+
     pub fn query_characters(
         self,
         name: String,
@@ -122,6 +155,26 @@ impl<'a> Querier<'a> {
             .expect("Error loading items.")
     }
 
+    pub fn insert_character(self, character: Character) -> bool {
+        use crate::schema::characters::dsl::*;
+
+        diesel::insert_into(characters)
+            .values(&character)
+            .execute(&self.connection)
+            .expect("Error inserting character.")
+            == 1
+    }
+
+    pub fn insert_characters(self, insert_characters: Vec<Character>) -> bool {
+        use crate::schema::characters::dsl::*;
+
+        diesel::insert_into(characters)
+            .values(&insert_characters)
+            .execute(&self.connection)
+            .expect("Error inserting characters.")
+            == insert_characters.len()
+    }
+
     pub fn query_dialogues(
         self,
         characters: Vec<String>,
@@ -136,7 +189,7 @@ impl<'a> Querier<'a> {
         if !characters.is_empty() {
             for character in characters {
                 query = query.filter(
-                    dialogues::character_name.like(format!("%{}%", character)),
+                    dialogues::characters.like(format!("%{}%", character)),
                 );
             }
         }
@@ -174,5 +227,25 @@ impl<'a> Querier<'a> {
         query
             .load::<Dialogue>(&self.connection)
             .expect("Error loading items.")
+    }
+
+    pub fn insert_dialogue(self, dialogue_text: Dialogue) -> bool {
+        use crate::schema::dialogues::dsl::*;
+
+        diesel::insert_into(dialogues)
+            .values(&dialogue_text)
+            .execute(&self.connection)
+            .expect("Error inserting dialogue.")
+            == 1
+    }
+
+    pub fn insert_dialogues(self, insert_dialogues: Vec<Dialogue>) -> bool {
+        use crate::schema::dialogues::dsl::*;
+
+        diesel::insert_into(dialogues)
+            .values(&insert_dialogues)
+            .execute(&self.connection)
+            .expect("Error inserting dialogues.")
+            == insert_dialogues.len()
     }
 }

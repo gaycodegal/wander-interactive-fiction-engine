@@ -23,10 +23,10 @@ impl Item {
         components: String,
     ) -> Item {
         Item {
-            name: name,
-            description: description,
-            attributes: attributes,
-            components: components,
+            name,
+            description,
+            attributes,
+            components,
         }
     }
 }
@@ -42,7 +42,23 @@ pub struct Location {
 }
 
 impl Location {
-    fn items(self, querier: Querier) -> Vec<Item> {
+    pub fn new(
+        name: String,
+        description: String,
+        items: String,
+        neighbors: String,
+        characters: String,
+    ) -> Location {
+        Location {
+            name,
+            description,
+            items,
+            neighbors,
+            characters,
+        }
+    }
+
+    pub fn items(self, querier: Querier) -> Vec<Item> {
         use crate::schema::items::dsl::*;
         let connection = querier.connection;
         let mut items_in_room: Vec<Item> = Vec::new();
@@ -61,7 +77,7 @@ impl Location {
         items_in_room
     }
 
-    fn dialogues(self, querier: Querier) -> Vec<Dialogue> {
+    pub fn dialogues(self, querier: Querier) -> Vec<Dialogue> {
         use crate::schema::dialogues::dsl::*;
         let connection = querier.connection;
 
@@ -80,12 +96,15 @@ pub struct Character {
 }
 
 impl Character {
-    fn dialogues(self, querier: Querier) -> Vec<Dialogue> {
+    pub fn new(name: String, components: String) -> Character {
+        Character { name, components }
+    }
+    pub fn dialogues(self, querier: Querier) -> Vec<Dialogue> {
         use crate::schema::dialogues::dsl::*;
         let connection = querier.connection;
 
         dialogues
-            .filter(character_name.like(format!("%{}%", self.name)))
+            .filter(characters.like(format!("%{}%", self.name)))
             .load::<Dialogue>(&connection)
             .expect("Could not look up dialogues.")
     }
@@ -94,8 +113,24 @@ impl Character {
 #[derive(Insertable, Queryable, Debug)]
 #[table_name = "dialogues"]
 pub struct Dialogue {
-    pub character: String,
+    pub characters: String,
     pub flags: String,
     pub location: String,
     pub dialogue: String,
+}
+
+impl Dialogue {
+    pub fn new(
+        characters: String,
+        flags: String,
+        location: String,
+        dialogue: String,
+    ) -> Dialogue {
+        Dialogue {
+            characters,
+            flags,
+            location,
+            dialogue,
+        }
+    }
 }

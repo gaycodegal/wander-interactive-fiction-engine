@@ -33,15 +33,15 @@ table! {
 }
 
 table! {
-    dialogues (character_name, flags, location) {
-    character_name -> Text,
+    dialogues (characters, flags, location) {
+    characters -> Text,
     flags -> Text,
     location -> Text,
     dialogue -> Text,
     }
 }
 
-joinable!(dialogues -> characters (character_name));
+joinable!(dialogues -> characters (characters));
 joinable!(dialogues -> locations (location));
 
 allow_tables_to_appear_in_same_query!(characters, locations, dialogues);
