@@ -1,11 +1,13 @@
+use crate::schema::*;
+use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
-
 pub struct Querier<'a> {
     pub connection: SqliteConnection,
     pub database_url: &'a str,
 }
 
-#[derive(Queryable)]
+#[derive(Insertable, Queryable, Debug)]
+#[table_name = "items"]
 pub struct Item {
     pub name: String,
     pub description: String,
@@ -13,7 +15,24 @@ pub struct Item {
     pub components: String,
 }
 
-#[derive(Queryable)]
+impl Item {
+    pub fn new(
+        name: String,
+        description: String,
+        attributes: String,
+        components: String,
+    ) -> Item {
+        Item {
+            name: name,
+            description: description,
+            attributes: attributes,
+            components: components,
+        }
+    }
+}
+
+#[derive(Insertable, Queryable, Debug)]
+#[table_name = "locations"]
 pub struct Location {
     pub name: String,
     pub description: String,
@@ -53,7 +72,8 @@ impl Location {
     }
 }
 
-#[derive(Queryable)]
+#[derive(Insertable, Queryable, Debug)]
+#[table_name = "characters"]
 pub struct Character {
     pub name: String,
     pub components: String,
@@ -71,7 +91,8 @@ impl Character {
     }
 }
 
-#[derive(Queryable)]
+#[derive(Insertable, Queryable, Debug)]
+#[table_name = "dialogues"]
 pub struct Dialogue {
     pub character: String,
     pub flags: String,

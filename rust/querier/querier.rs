@@ -1,3 +1,4 @@
+use diesel;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 
@@ -48,6 +49,13 @@ impl<'a> Querier<'a> {
         query
             .load::<Item>(&self.connection)
             .expect("Error loading items.")
+    }
+
+    pub fn new_item(self, item: Item) -> Item {
+        use crate::schema::items::dsl::*;
+
+        diesel::insert_into(items).values(&item);
+        item
     }
 
     pub fn query_locations(
