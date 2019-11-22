@@ -5,14 +5,20 @@ use diesel::sqlite::SqliteConnection;
 use crate::models::{Character, Dialogue, Item, Location, Querier};
 
 impl<'a> Querier<'a> {
-    pub fn new(database_url: &str) -> Querier {
-        Querier {
-            connection: SqliteConnection::establish(&database_url)
-                .unwrap_or_else(|_| {
-                    panic!("Error connecting to {}", database_url)
-                }),
-            database_url: database_url,
+    pub fn new(database_url: &str) -> Option<Querier> {
+        let conn = SqliteConnection::establish(&database_url)
+            .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
+
+        let res = conn.execute("PRAGMA foreign_keys = ON");
+
+        if res.is_ok() {
+            return Some(Querier {
+                connection: conn,
+                database_url: database_url,
+            });
         }
+
+        None
     }
 
     pub fn query_items(
