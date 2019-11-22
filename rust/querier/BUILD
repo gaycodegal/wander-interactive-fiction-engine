@@ -10,6 +10,7 @@ rust_library(
     name = "querier",
     srcs = [
         "lib.rs",
+        "models.rs",
         "querier.rs",
         "schema.rs"
     ],
