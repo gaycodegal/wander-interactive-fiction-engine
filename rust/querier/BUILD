@@ -12,12 +12,20 @@ rust_library(
         "lib.rs",
         "models.rs",
         "querier.rs",
-        "schema.rs"
+        "schema.rs",
     ],
     deps = [
         "//cargo:diesel",
     ],
     crate_root = "lib.rs",
+    rustc_flags = [
+        "-lsqlite3",
+    ],
+)
+
+rust_test(
+    name = "test",
+    crate = ":querier",
     rustc_flags = [
         "-lsqlite3",
     ],

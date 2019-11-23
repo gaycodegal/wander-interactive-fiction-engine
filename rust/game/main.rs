@@ -1,16 +1,32 @@
 extern crate cfg;
 extern crate ift;
+extern crate querier;
 #[macro_use]
 extern crate serde_json;
 
 use cfg::lang::Lang;
 use ift::scene::Scene;
 use ift::sentence::Sentence;
+use querier::models::Querier;
 use std::io;
 use std::io::Write;
 
 fn main() {
-    lang_test();
+    query_test();
+    //lang_test();
+}
+
+fn query_test() {
+    use std::env::current_exe;
+    let mut path_buffer = current_exe().expect("path not working");
+    path_buffer.push("dne.db");
+    let path = path_buffer
+        .into_os_string()
+        .into_string()
+        .expect("String conversion of path failed.");
+    println!("{}", &path);
+    let q = Querier::new(&path);
+    println!("{}", q.is_some());
 }
 
 fn lang_test() -> Option<()> {
@@ -67,14 +83,14 @@ dirty adjective
         let reader = io::stdin();
         let mut sentence = String::new();
 
-	print!("> ");
-	io::stdout().flush().ok()?;
+        print!("> ");
+        io::stdout().flush().ok()?;
         reader.read_line(&mut sentence).ok()?;
-	if sentence.len() == 0 {
-	    println!("");
-	    return Some(());
-	}
-	
+        if sentence.len() == 0 {
+            println!("");
+            return Some(());
+        }
+
         let sentence = match lang.parse_sentence(&sentence) {
             Err(error) => {
                 println!("Error:\n{}", error);
@@ -94,6 +110,6 @@ dirty adjective
             }
             None => println!("Not a sentence"),
         }
-	println!();
+        println!();
     }
 }
