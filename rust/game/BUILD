@@ -9,6 +9,7 @@ rust_binary(
     deps = [
         "//rust/cfg",
         "//rust/ift",
+	"//rust/querier",
         "//cargo:serde_json",
     ],
 )

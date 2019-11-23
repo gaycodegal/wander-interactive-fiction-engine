@@ -1,21 +1,49 @@
 use diesel;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
+use std::path::PathBuf;
 
 use crate::models::{Character, Dialogue, Item, Location, Querier};
 
-impl<'a> Querier<'a> {
+impl Querier {
     pub fn new(database_url: &str) -> Option<Querier> {
-        let conn = SqliteConnection::establish(&database_url)
+        let path_buffer = PathBuf::from(database_url);
+
+        if !path_buffer.exists() {
+            return None;
+        }
+
+        let path = path_buffer
+            .into_os_string()
+            .into_string()
+            .expect("String conversion of db path failed.");
+
+        let conn = SqliteConnection::establish(&path)
             .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
 
         let res = conn.execute("PRAGMA foreign_keys = ON");
 
         if res.is_ok() {
-            return Some(Querier {
-                connection: conn,
-                database_url: database_url,
-            });
+            return Some(Querier { connection: conn });
+        }
+
+        None
+    }
+
+    pub fn new_file(database_url: &str) -> Option<Querier> {
+        let path_buffer = PathBuf::from(database_url);
+        let path = path_buffer
+            .into_os_string()
+            .into_string()
+            .expect("String conversion of db path failed.");
+
+        let conn = SqliteConnection::establish(&path)
+            .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
+
+        let res = conn.execute("PRAGMA foreign_keys = ON");
+
+        if res.is_ok() {
+            return Some(Querier { connection: conn });
         }
 
         None
@@ -23,9 +51,9 @@ impl<'a> Querier<'a> {
 
     pub fn query_items(
         self,
-        name: String,
-        attributes: Vec<String>,
-        components: Vec<String>,
+        name: &str,
+        attributes: Option<Vec<&str>>,
+        components: Option<Vec<&str>>,
     ) -> Vec<Item> {
         use crate::schema::items;
 
@@ -38,15 +66,15 @@ impl<'a> Querier<'a> {
                 .expect("Error loading items.");
         }
 
-        if !attributes.is_empty() {
-            for attr in attributes {
+        if let Some(attrs) = attributes {
+            for attr in attrs {
                 query =
                     query.filter(items::attributes.like(format!("%{}%", attr)));
             }
         }
 
-        if !components.is_empty() {
-            for comp in components {
+        if let Some(comps) = components {
+            for comp in comps {
                 query =
                     query.filter(items::components.like(format!("%{}%", comp)));
             }

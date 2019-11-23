@@ -1,12 +1,11 @@
 use crate::schema::*;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
-pub struct Querier<'a> {
+pub struct Querier {
     pub connection: SqliteConnection,
-    pub database_url: &'a str,
 }
 
-#[derive(Insertable, Queryable, Debug)]
+#[derive(Insertable, Queryable, Debug, PartialEq)]
 #[table_name = "items"]
 pub struct Item {
     pub name: String,
