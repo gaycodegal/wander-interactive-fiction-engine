@@ -12,22 +12,20 @@ mod schema;
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs::remove_file;
     use std::path::PathBuf;
 
-    fn valid_db(db_name: &str) -> models::Querier {
-        let mut path = PathBuf::from("/tmp");
-        path.push(db_name);
+    fn get_file_path(file_name: &str) -> String {
+        let mut path =  PathBuf::from("test.runfiles/wander_interactive_fiction_engine/rust/querier/testdata");
+        path.push(file_name);
 
-        remove_file(&path);
+        path.into_os_string()
+            .into_string()
+            .expect("String conversion of path failed.")
+    }
 
-        let querier = models::Querier::new_file(
-            &path
-                .into_os_string()
-                .into_string()
-                .expect("created path succesfully"),
-        )
-        .expect("Failed to create valid db.");
+    fn new_valid_db(db_name: &str) -> models::Querier {
+        let querier = models::Querier::new_file(&get_file_path(db_name))
+            .expect("Failed to create valid db.");
 
         querier.setup_db();
 
@@ -45,29 +43,21 @@ mod tests {
 
     #[test]
     fn db_create_new_db() {
-        let mut path = PathBuf::from("/tmp");
-        path.push("new_db.db");
-
-        let querier = models::Querier::new_file(
-            &path
-                .into_os_string()
-                .into_string()
-                .expect("created path succesfully"),
-        );
+        let querier = models::Querier::new_file("new_db.db");
 
         assert!(!querier.is_none());
     }
 
     #[test]
     fn test_query_items() {
-        let querier = valid_db("query_items.db");
+        let querier = new_valid_db("query_items.db");
         let items = querier.query_items("apple", None, None);
         assert_eq!(2, items.len());
     }
 
     #[test]
     fn test_insert_item() {
-        let querier = valid_db("insert_item.db");
+        let querier = new_valid_db("insert_item.db");
 
         let inserted = querier.insert_item(common_item());
         assert!(inserted);
@@ -78,7 +68,7 @@ mod tests {
         expected = "Error inserting item.: DatabaseError(UniqueViolation, \"UNIQUE constraint failed: items.name\")"
     )]
     fn test_insert_existing_item() {
-        let querier = valid_db("insert_existing_item.db");
+        let querier = new_valid_db("insert_existing_item.db");
 
         querier.insert_item(common_item());
         let inserted = querier.insert_item(common_item());

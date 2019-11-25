@@ -1,5 +1,5 @@
 PRAGMA foreign_keys = ON;
-
+AUTOINCREMENT
 create table items(
 name text primary key,
 description text,
