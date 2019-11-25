@@ -1,11 +1,19 @@
 use crate::schema::*;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
+
+use serde::Deserialize;
+
+pub enum FileType {
+    JSON,
+    TOML,
+}
+
 pub struct Querier {
     pub connection: SqliteConnection,
 }
 
-#[derive(Insertable, Queryable, Debug, PartialEq)]
+#[derive(Insertable, Queryable, Debug, Deserialize, PartialEq)]
 #[table_name = "items"]
 pub struct Item {
     pub name: String,
@@ -30,7 +38,7 @@ impl Item {
     }
 }
 
-#[derive(Insertable, Queryable, Debug)]
+#[derive(Insertable, Queryable, Debug, Deserialize, PartialEq)]
 #[table_name = "locations"]
 pub struct Location {
     pub name: String,
@@ -87,7 +95,7 @@ impl Location {
     }
 }
 
-#[derive(Insertable, Queryable, Debug)]
+#[derive(Insertable, Queryable, Debug, Deserialize, PartialEq)]
 #[table_name = "characters"]
 pub struct Character {
     pub name: String,
@@ -109,7 +117,7 @@ impl Character {
     }
 }
 
-#[derive(Insertable, Queryable, Debug)]
+#[derive(Insertable, Queryable, Debug, Deserialize, PartialEq)]
 #[table_name = "dialogues"]
 pub struct Dialogue {
     pub characters: String,

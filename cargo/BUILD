@@ -13,6 +13,14 @@ alias(
     actual = "//cargo/vendor/diesel-1.4.3:diesel",
 )
 alias(
+    name = "serde",
+    actual = "//cargo/vendor/serde-1.0.103:serde",
+)
+alias(
     name = "serde_json",
-    actual = "//cargo/vendor/serde_json-1.0.41:serde_json",
+    actual = "//cargo/vendor/serde_json-1.0.42:serde_json",
+)
+alias(
+    name = "toml",
+    actual = "//cargo/vendor/toml-0.5.5:toml",
 )

@@ -16,6 +16,9 @@ rust_library(
     ],
     deps = [
         "//cargo:diesel",
+        "//cargo:serde",
+        "//cargo:serde_json",
+        "//cargo:toml",
     ],
     crate_root = "lib.rs",
     rustc_flags = [
