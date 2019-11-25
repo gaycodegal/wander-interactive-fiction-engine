@@ -1,6 +1,6 @@
-use diesel;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
+use diesel::*;
 use std::path::PathBuf;
 
 use crate::models::{Character, Dialogue, Item, Location, Querier};
@@ -49,8 +49,29 @@ impl Querier {
         None
     }
 
+    pub fn setup_db(&self) {
+        sql_query("CREATE TABLE items (name TEXT PRIMARY KEY, description TEXT, attributes TEXT, components TEXT)").execute(&self.connection).expect("Failed to create items table.");
+        sql_query("CREATE UNIQUE INDEX item_names ON items (name)")
+            .execute(&self.connection)
+            .expect("Failed to create items index.");
+
+        sql_query("CREATE TABLE locations (name TEXT PRIMARY KEY, description TEXT, items TEXT, neighbors TEXT, characters TEXT)").execute(&self.connection).expect("Failed to create items table.");
+        sql_query("CREATE UNIQUE INDEX location_names ON locations (name)")
+            .execute(&self.connection)
+            .expect("Failed to create items index.");
+
+        sql_query(
+            "CREATE TABLE characters (name TEXT PRIMARY KEY, components TEXT)",
+        )
+        .execute(&self.connection)
+        .expect("Failed to create items table.");
+        sql_query("CREATE UNIQUE INDEX character_names ON characters (name)")
+            .execute(&self.connection)
+            .expect("Failed to create items index.");
+    }
+
     pub fn query_items(
-        self,
+        &self,
         name: &str,
         attributes: Option<Vec<&str>>,
         components: Option<Vec<&str>>,
@@ -85,7 +106,7 @@ impl Querier {
             .expect("Error loading items.")
     }
 
-    pub fn insert_item(self, item: Item) -> bool {
+    pub fn insert_item(&self, item: Item) -> bool {
         use crate::schema::items::dsl::*;
 
         diesel::insert_into(items)
@@ -95,7 +116,7 @@ impl Querier {
             == 1
     }
 
-    pub fn insert_items(self, insert_items: Vec<Item>) -> bool {
+    pub fn insert_items(&self, insert_items: Vec<Item>) -> bool {
         use crate::schema::items::dsl::*;
 
         diesel::insert_into(items)
@@ -105,7 +126,11 @@ impl Querier {
             == insert_items.len()
     }
 
-    pub fn update_item(self, item_name: String, updated_item: Item) -> bool {
+    pub fn remove_item(&self, _item_name: &str) -> bool {
+        true
+    }
+
+    pub fn update_item(&self, item_name: &str, updated_item: Item) -> bool {
         use crate::schema::items::dsl::*;
 
         diesel::update(items.filter(name.eq(item_name)))
@@ -121,7 +146,7 @@ impl Querier {
     }
 
     pub fn query_locations(
-        self,
+        &self,
         name: String,
         items: Vec<String>,
         characters: Vec<String>,
@@ -156,7 +181,7 @@ impl Querier {
             .expect("Error loading items.")
     }
 
-    pub fn insert_location(self, location: Location) -> bool {
+    pub fn insert_location(&self, location: Location) -> bool {
         use crate::schema::locations::dsl::*;
 
         diesel::insert_into(locations)
@@ -166,7 +191,7 @@ impl Querier {
             == 1
     }
 
-    pub fn insert_locations(self, insert_locations: Vec<Location>) -> bool {
+    pub fn insert_locations(&self, insert_locations: Vec<Location>) -> bool {
         use crate::schema::locations::dsl::*;
 
         diesel::insert_into(locations)
@@ -177,7 +202,7 @@ impl Querier {
     }
 
     pub fn update_location(
-        self,
+        &self,
         location_name: String,
         updated_location: Location,
     ) -> bool {
@@ -197,7 +222,7 @@ impl Querier {
     }
 
     pub fn query_characters(
-        self,
+        &self,
         name: String,
         components: Vec<String>,
     ) -> Vec<Character> {
@@ -224,7 +249,7 @@ impl Querier {
             .expect("Error loading items.")
     }
 
-    pub fn insert_character(self, character: Character) -> bool {
+    pub fn insert_character(&self, character: Character) -> bool {
         use crate::schema::characters::dsl::*;
 
         diesel::insert_into(characters)
@@ -234,7 +259,7 @@ impl Querier {
             == 1
     }
 
-    pub fn insert_characters(self, insert_characters: Vec<Character>) -> bool {
+    pub fn insert_characters(&self, insert_characters: Vec<Character>) -> bool {
         use crate::schema::characters::dsl::*;
 
         diesel::insert_into(characters)
@@ -245,7 +270,7 @@ impl Querier {
     }
 
     pub fn update_character(
-        self,
+        &self,
         character_name: String,
         updated_character: Character,
     ) -> bool {
@@ -262,7 +287,7 @@ impl Querier {
     }
 
     pub fn query_dialogues(
-        self,
+        &self,
         characters: Vec<String>,
         flags: Vec<String>,
         locations: Vec<String>,
@@ -315,7 +340,7 @@ impl Querier {
             .expect("Error loading items.")
     }
 
-    pub fn insert_dialogue(self, dialogue_text: Dialogue) -> bool {
+    pub fn insert_dialogue(&self, dialogue_text: Dialogue) -> bool {
         use crate::schema::dialogues::dsl::*;
 
         diesel::insert_into(dialogues)
@@ -325,7 +350,7 @@ impl Querier {
             == 1
     }
 
-    pub fn insert_dialogues(self, insert_dialogues: Vec<Dialogue>) -> bool {
+    pub fn insert_dialogues(&self, insert_dialogues: Vec<Dialogue>) -> bool {
         use crate::schema::dialogues::dsl::*;
 
         diesel::insert_into(dialogues)

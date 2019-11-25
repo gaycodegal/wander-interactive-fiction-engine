@@ -8,11 +8,26 @@ mod schema;
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::env::current_exe;
+    use std::fs::remove_file;
+    use std::path::PathBuf;
 
-    fn valid_db() -> models::Querier {
-        return models::Querier::new("/home/gluax/docs/projects/wander-interactive-fiction-engine/test.db")
-            .expect("Should always be a valid db.");
+    fn valid_db(db_name: &str) -> models::Querier {
+        let mut path = PathBuf::from("/tmp");
+        path.push(db_name);
+
+        remove_file(&path);
+
+        let querier = models::Querier::new_file(
+            &path
+                .into_os_string()
+                .into_string()
+                .expect("created path succesfully"),
+        )
+        .expect("Failed to create valid db.");
+
+        querier.setup_db();
+
+        querier
     }
 
     fn common_item() -> models::Item {
@@ -25,36 +40,32 @@ mod tests {
     }
 
     #[test]
-    fn db_connection_failure() {
-        let querier = models::Querier::new("/home/gluax/docs/projects/wander-interactive-fiction-engine/dne.db");
-        assert!(querier.is_none());
-    }
-
-    #[test]
     fn db_create_new_db() {
-        let querier = models::Querier::new_file("/home/gluax/docs/projects/wander-interactive-fiction-engine/now_exists.db");
+        let mut path = PathBuf::from("/tmp");
+        path.push("new_db.db");
+
+        let querier = models::Querier::new_file(
+            &path
+                .into_os_string()
+                .into_string()
+                .expect("created path succesfully"),
+        );
+
         assert!(!querier.is_none());
     }
 
     #[test]
-    fn db_connection_success() {
-        let querier = models::Querier::new("/home/gluax/docs/projects/wander-interactive-fiction-engine/test.db");
-        assert!(querier.is_some());
-    }
-
-    #[test]
     fn test_query_items() {
-        let querier = valid_db();
+        let querier = valid_db("query_items.db");
         let items = querier.query_items("apple", None, None);
         assert_eq!(2, items.len());
     }
 
     #[test]
     fn test_insert_item() {
-        let querier = valid_db();
-        let item = common_item();
+        let querier = valid_db("insert_item.db");
 
-        let inserted = querier.insert_item(item);
+        let inserted = querier.insert_item(common_item());
         assert!(inserted);
     }
 
@@ -63,10 +74,10 @@ mod tests {
         expected = "Error inserting item.: DatabaseError(UniqueViolation, \"UNIQUE constraint failed: items.name\")"
     )]
     fn test_insert_existing_item() {
-        let querier = valid_db();
-        let item = common_item();
+        let querier = valid_db("insert_existing_item.db");
 
-        let inserted = querier.insert_item(item);
+        querier.insert_item(common_item());
+        let inserted = querier.insert_item(common_item());
         assert!(inserted);
     }
 }
