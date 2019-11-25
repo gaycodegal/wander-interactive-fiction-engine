@@ -26,9 +26,20 @@ rust_library(
     ],
 )
 
+filegroup(
+    name = "db_test_data",
+    srcs = glob([
+        "testdata/*.toml",
+        "testdata/*.json",
+    ])
+)
+
 rust_test(
     name = "test",
     crate = ":querier",
+    data = [
+        "//rust/querier:db_test_data"
+    ],
     rustc_flags = [
         "-lsqlite3",
     ],

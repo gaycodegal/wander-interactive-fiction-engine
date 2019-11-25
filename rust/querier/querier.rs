@@ -2,9 +2,9 @@ use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use diesel::*;
 use serde::Deserialize;
-use std::fs::File;
+use std::env::current_exe;
+use std::fs::{remove_file, File};
 use std::io::{Error, Read};
-use std::path::PathBuf;
 
 use crate::models::*;
 
@@ -16,8 +16,10 @@ struct DataFile {
 }
 
 impl Querier {
-    pub fn new(database_url: &str) -> Option<Querier> {
-        let path_buffer = PathBuf::from(database_url);
+    pub fn new(file_name: &str) -> Option<Querier> {
+        let mut path_buffer = current_exe().expect("Failed to get exec path.");
+        path_buffer.pop();
+        path_buffer.push(file_name);
 
         if !path_buffer.exists() {
             return None;
@@ -29,7 +31,7 @@ impl Querier {
             .expect("String conversion of db path failed.");
 
         let conn = SqliteConnection::establish(&path)
-            .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
+            .unwrap_or_else(|_| panic!("Error connecting to {}", path));
 
         let res = conn.execute("PRAGMA foreign_keys = ON");
 
@@ -40,15 +42,22 @@ impl Querier {
         None
     }
 
-    pub fn new_file(database_url: &str) -> Option<Querier> {
-        let path_buffer = PathBuf::from(database_url);
+    pub fn new_file(file_name: &str) -> Option<Querier> {
+        let mut path_buffer = current_exe().expect("Failed to get exec path.");
+        path_buffer.pop();
+        path_buffer.push(file_name);
+
+        if path_buffer.exists() {
+            remove_file(&path_buffer).expect("Failed to remove old file.");
+        }
+
         let path = path_buffer
             .into_os_string()
             .into_string()
             .expect("String conversion of db path failed.");
 
         let conn = SqliteConnection::establish(&path)
-            .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
+            .unwrap_or_else(|_| panic!("Error connecting to {}", path));
 
         let res = conn.execute("PRAGMA foreign_keys = ON");
 
