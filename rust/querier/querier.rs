@@ -1,9 +1,19 @@
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use diesel::*;
+use serde::Deserialize;
+use std::fs::File;
+use std::io::{Error, Read};
 use std::path::PathBuf;
 
-use crate::models::{Character, Dialogue, Item, Location, Querier};
+use crate::models::*;
+
+#[derive(Deserialize, Debug)]
+struct DataFile {
+    items: Vec<Item>,
+    locations: Vec<Location>,
+    characters: Vec<Character>,
+}
 
 impl Querier {
     pub fn new(database_url: &str) -> Option<Querier> {
@@ -68,6 +78,38 @@ impl Querier {
         sql_query("CREATE UNIQUE INDEX character_names ON characters (name)")
             .execute(&self.connection)
             .expect("Failed to create items index.");
+    }
+
+    fn dump_data(&self, data: DataFile) {
+        self.insert_items(data.items);
+        self.insert_locations(data.locations);
+        self.insert_characters(data.characters);
+    }
+
+    pub fn dump_from_file(
+        &self,
+        path: &str,
+        file_type: FileType,
+    ) -> Result<(), Error> {
+        let mut file = File::open(path)?;
+        let mut file_content = String::new();
+        file.read_to_string(&mut file_content)
+            .expect("Failed to read file into string");
+
+        match file_type {
+            FileType::TOML => {
+                let data_file: DataFile = toml::from_str(&file_content)?;
+
+                self.dump_data(data_file);
+            }
+            FileType::JSON => {
+                let data_file: DataFile = serde_json::from_str(&file_content)?;
+
+                self.dump_data(data_file);
+            }
+        }
+
+        Ok(())
     }
 
     pub fn query_items(

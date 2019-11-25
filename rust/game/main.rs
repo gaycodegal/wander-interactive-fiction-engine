@@ -7,9 +7,10 @@ extern crate serde_json;
 use cfg::lang::Lang;
 use ift::scene::Scene;
 use ift::sentence::Sentence;
-use querier::models::Querier;
+use querier::models::*;
 use std::io;
 use std::io::Write;
+use std::path::PathBuf;
 
 fn main() {
     query_test();
@@ -17,16 +18,38 @@ fn main() {
 }
 
 fn query_test() {
-    use std::env::current_exe;
-    let mut path_buffer = current_exe().expect("path not working");
-    path_buffer.push("dne.db");
-    let path = path_buffer
+    let mut db_path_buffer = PathBuf::from("/tmp");
+    db_path_buffer.push("test_file_reads.db");
+
+    let db_path = db_path_buffer
         .into_os_string()
         .into_string()
         .expect("String conversion of path failed.");
-    println!("{}", &path);
-    let q = Querier::new(&path);
-    println!("{}", q.is_some());
+
+    let q = Querier::new_file(&db_path).expect("valid db connection");
+    q.setup_db();
+
+    let mut json_path_buffer = PathBuf::from("/tmp");
+    json_path_buffer.push("test_dump_json.json");
+
+    let json_path = json_path_buffer
+        .into_os_string()
+        .into_string()
+        .expect("String conversion of path failed.");
+
+    q.dump_from_file(&json_path, FileType::JSON)
+        .expect("unsuccesful json dump to db");
+
+    let mut toml_path_buffer = PathBuf::from("/tmp");
+    toml_path_buffer.push("test_dump_toml.toml");
+
+    let toml_path = toml_path_buffer
+        .into_os_string()
+        .into_string()
+        .expect("String conversion of path failed.");
+
+    q.dump_from_file(&toml_path, FileType::TOML)
+        .expect("unsuccesful toml dump to db");
 }
 
 fn lang_test() -> Option<()> {

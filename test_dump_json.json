@@ -1,0 +1,25 @@
+{
+    "items": [
+	{
+	    "name": "apple_json",
+	    "description": "a shiny red apple that looks oh so appealing",
+	    "attributes": "red,shiny,poisoned",
+	    "components": "{ \"picked_up\": false }"
+	}
+    ],
+    "characters": [
+	{
+	    "name": "dad_json",
+	    "components": "{ \"interactable\": true }"
+	}
+    ],
+    "locations": [
+	{
+	    "name": "kitchen_json",
+	    "description": "A modern kitchen with all the appliaces and a grand wooden table. On top of the table there is a fruit bowl with a appealing red apple.",
+	    "items": "apple_json",
+	    "neighbors": "{ \"south\": \"hallway\", \"north\": \"backyard\" }",
+	    "characters": "dad"
+	}
+    ]
+}

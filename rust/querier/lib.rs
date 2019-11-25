@@ -1,5 +1,9 @@
+extern crate serde;
+extern crate serde_json;
+
 #[macro_use]
 extern crate diesel;
+extern crate toml;
 
 pub mod models;
 pub mod querier;
