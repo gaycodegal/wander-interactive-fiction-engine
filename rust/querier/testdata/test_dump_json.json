@@ -5,11 +5,21 @@
 	    "description": "a shiny red apple that looks oh so appealing",
 	    "attributes": "red,shiny,poisoned",
 	    "components": "{ \"picked_up\": false }"
+	},
+	{
+	    "name": "Test_Item",
+            "description": "Test item for testing.",
+            "attributes": "test,debug,?",
+            "components": "{'test': 'test'}"
 	}
     ],
     "characters": [
 	{
 	    "name": "dad_json",
+	    "components": "{ \"interactable\": true }"
+	},
+	{
+	    "name": "Test_Character",
 	    "components": "{ \"interactable\": true }"
 	}
     ],
@@ -20,6 +30,13 @@
 	    "items": "apple_json",
 	    "neighbors": "{ \"south\": \"hallway\", \"north\": \"backyard\" }",
 	    "characters": "dad"
+	},
+	{
+	    "name": "Test_Location",
+	    "description": "Test location for testing.",
+	    "items": "Test_Item",
+	    "neighbors": "{ \"south\": \"Test_South\", \"north\": \"Test_North\" }",
+	    "characters": "Test_Character"
 	}
     ]
 }
