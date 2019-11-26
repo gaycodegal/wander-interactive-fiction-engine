@@ -100,7 +100,16 @@ impl Querier {
         path: &str,
         file_type: FileType,
     ) -> Result<(), std::io::Error> {
-        let mut file = File::open(path)?;
+        let mut path_buffer = current_exe().expect("Failed to get exec path.");
+        path_buffer.pop();
+        path_buffer.push(path);
+
+        let full_path = path_buffer
+            .into_os_string()
+            .into_string()
+            .expect("String conversion of db path failed.");
+
+        let mut file = File::open(full_path)?;
         let mut file_content = String::new();
         file.read_to_string(&mut file_content)
             .expect("Failed to read file into string");
@@ -189,7 +198,7 @@ impl Querier {
 
         diesel::delete(items.find(item_name))
             .execute(&self.connection)
-            .expect("Failed to delete item")
+            .expect("Failed to delete item.")
     }
 
     pub fn update_item(&self, item_name: &str, updated_item: Item) -> usize {
@@ -208,9 +217,9 @@ impl Querier {
 
     pub fn query_locations(
         &self,
-        name: String,
-        items: Vec<String>,
-        characters: Vec<String>,
+        name: &str,
+        items: Option<Vec<String>>,
+        characters: Option<Vec<String>>,
     ) -> Vec<Location> {
         use crate::schema::locations;
 
@@ -223,15 +232,15 @@ impl Querier {
                 .expect("Error loading items.");
         }
 
-        if !items.is_empty() {
+        if let Some(items) = items {
             for item in items {
                 query =
                     query.filter(locations::items.like(format!("%{}%", item)));
             }
         }
 
-        if !characters.is_empty() {
-            for chara in characters {
+        if let Some(charas) = characters {
+            for chara in charas {
                 query = query
                     .filter(locations::characters.like(format!("%{}%", chara)));
             }
@@ -298,8 +307,8 @@ impl Querier {
 
     pub fn query_characters(
         &self,
-        name: String,
-        components: Vec<String>,
+        name: &str,
+        components: Option<Vec<String>>,
     ) -> Vec<Character> {
         use crate::schema::characters;
 
@@ -312,8 +321,8 @@ impl Querier {
                 .expect("Error loading items.");
         }
 
-        if !components.is_empty() {
-            for comp in components {
+        if let Some(comps) = components {
+            for comp in comps {
                 query = query
                     .filter(characters::components.like(format!("%{}%", comp)));
             }
