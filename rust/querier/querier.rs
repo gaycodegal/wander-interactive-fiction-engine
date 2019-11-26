@@ -4,7 +4,7 @@ use diesel::*;
 use serde::Deserialize;
 use std::env::current_exe;
 use std::fs::{remove_file, File};
-use std::io::{Error, Read};
+use std::io::Read;
 
 use crate::models::*;
 
@@ -74,19 +74,19 @@ impl Querier {
             .execute(&self.connection)
             .expect("Failed to create items index.");
 
-        sql_query("CREATE TABLE locations (name TEXT PRIMARY KEY, description TEXT, items TEXT, neighbors TEXT, characters TEXT)").execute(&self.connection).expect("Failed to create items table.");
+        sql_query("CREATE TABLE locations (name TEXT PRIMARY KEY, description TEXT, items TEXT, neighbors TEXT, characters TEXT)").execute(&self.connection).expect("Failed to create locations table.");
         sql_query("CREATE UNIQUE INDEX location_names ON locations (name)")
             .execute(&self.connection)
-            .expect("Failed to create items index.");
+            .expect("Failed to create locations index.");
 
         sql_query(
             "CREATE TABLE characters (name TEXT PRIMARY KEY, components TEXT)",
         )
         .execute(&self.connection)
-        .expect("Failed to create items table.");
+        .expect("Failed to create characters table.");
         sql_query("CREATE UNIQUE INDEX character_names ON characters (name)")
             .execute(&self.connection)
-            .expect("Failed to create items index.");
+            .expect("Failed to create characters index.");
     }
 
     fn dump_data(&self, data: DataFile) {
@@ -99,7 +99,7 @@ impl Querier {
         &self,
         path: &str,
         file_type: FileType,
-    ) -> Result<(), Error> {
+    ) -> Result<(), std::io::Error> {
         let mut file = File::open(path)?;
         let mut file_content = String::new();
         file.read_to_string(&mut file_content)
@@ -157,31 +157,42 @@ impl Querier {
             .expect("Error loading items.")
     }
 
-    pub fn insert_item(&self, item: Item) -> bool {
+    pub fn get_item(&self, item_name: &str) -> Item {
+        use crate::schema::items::dsl::*;
+
+        items
+            .find(item_name)
+            .get_result::<Item>(&self.connection)
+            .expect("Failed to get item.")
+    }
+
+    pub fn insert_item(&self, item: Item) -> usize {
         use crate::schema::items::dsl::*;
 
         diesel::insert_into(items)
             .values(&item)
             .execute(&self.connection)
             .expect("Error inserting item.")
-            == 1
     }
 
-    pub fn insert_items(&self, insert_items: Vec<Item>) -> bool {
+    pub fn insert_items(&self, insert_items: Vec<Item>) -> usize {
         use crate::schema::items::dsl::*;
 
         diesel::insert_into(items)
             .values(&insert_items)
             .execute(&self.connection)
             .expect("Error inserting items.")
-            == insert_items.len()
     }
 
-    pub fn remove_item(&self, _item_name: &str) -> bool {
-        true
+    pub fn remove_item(&self, item_name: &str) -> usize {
+        use crate::schema::items::dsl::*;
+
+        diesel::delete(items.find(item_name))
+            .execute(&self.connection)
+            .expect("Failed to delete item")
     }
 
-    pub fn update_item(&self, item_name: &str, updated_item: Item) -> bool {
+    pub fn update_item(&self, item_name: &str, updated_item: Item) -> usize {
         use crate::schema::items::dsl::*;
 
         diesel::update(items.filter(name.eq(item_name)))
@@ -193,7 +204,6 @@ impl Querier {
             ))
             .execute(&self.connection)
             .expect("Error updating item.")
-            == 1
     }
 
     pub fn query_locations(
@@ -232,31 +242,46 @@ impl Querier {
             .expect("Error loading items.")
     }
 
-    pub fn insert_location(&self, location: Location) -> bool {
+    pub fn get_location(&self, location_name: &str) -> Location {
+        use crate::schema::locations::dsl::*;
+
+        locations
+            .find(location_name)
+            .get_result::<Location>(&self.connection)
+            .expect("Failed to get location.")
+    }
+
+    pub fn insert_location(&self, location: Location) -> usize {
         use crate::schema::locations::dsl::*;
 
         diesel::insert_into(locations)
             .values(&location)
             .execute(&self.connection)
             .expect("Error inserting location.")
-            == 1
     }
 
-    pub fn insert_locations(&self, insert_locations: Vec<Location>) -> bool {
+    pub fn insert_locations(&self, insert_locations: Vec<Location>) -> usize {
         use crate::schema::locations::dsl::*;
 
         diesel::insert_into(locations)
             .values(&insert_locations)
             .execute(&self.connection)
             .expect("Error inserting locations.")
-            == insert_locations.len()
+    }
+
+    pub fn remove_location(&self, location_name: &str) -> usize {
+        use crate::schema::locations::dsl::*;
+
+        diesel::delete(locations.find(location_name))
+            .execute(&self.connection)
+            .expect("Failed to delete location")
     }
 
     pub fn update_location(
         &self,
         location_name: String,
         updated_location: Location,
-    ) -> bool {
+    ) -> usize {
         use crate::schema::locations::dsl::*;
 
         diesel::update(locations.filter(name.eq(location_name)))
@@ -269,7 +294,6 @@ impl Querier {
             ))
             .execute(&self.connection)
             .expect("Error updating location.")
-            == 1
     }
 
     pub fn query_characters(
@@ -300,31 +324,49 @@ impl Querier {
             .expect("Error loading items.")
     }
 
-    pub fn insert_character(&self, character: Character) -> bool {
+    pub fn get_character(&self, character_name: &str) -> Character {
+        use crate::schema::characters::dsl::*;
+
+        characters
+            .find(character_name)
+            .get_result::<Character>(&self.connection)
+            .expect("Failed to get character.")
+    }
+
+    pub fn insert_character(&self, character: Character) -> usize {
         use crate::schema::characters::dsl::*;
 
         diesel::insert_into(characters)
             .values(&character)
             .execute(&self.connection)
             .expect("Error inserting character.")
-            == 1
     }
 
-    pub fn insert_characters(&self, insert_characters: Vec<Character>) -> bool {
+    pub fn insert_characters(
+        &self,
+        insert_characters: Vec<Character>,
+    ) -> usize {
         use crate::schema::characters::dsl::*;
 
         diesel::insert_into(characters)
             .values(&insert_characters)
             .execute(&self.connection)
             .expect("Error inserting characters.")
-            == insert_characters.len()
+    }
+
+    pub fn remove_character(&self, character_name: &str) -> usize {
+        use crate::schema::characters::dsl::*;
+
+        diesel::delete(characters.find(character_name))
+            .execute(&self.connection)
+            .expect("Failed to delete character")
     }
 
     pub fn update_character(
         &self,
         character_name: String,
         updated_character: Character,
-    ) -> bool {
+    ) -> usize {
         use crate::schema::characters::dsl::*;
 
         diesel::update(characters.filter(name.eq(character_name)))
@@ -334,7 +376,6 @@ impl Querier {
             ))
             .execute(&self.connection)
             .expect("Error updating character.")
-            == 1
     }
 
     pub fn query_dialogues(
@@ -391,25 +432,40 @@ impl Querier {
             .expect("Error loading items.")
     }
 
-    pub fn insert_dialogue(&self, dialogue_text: Dialogue) -> bool {
+    // pub fn get_dialogue(&self, dialogue_name: &str) -> Dialogue {
+    //     use crate::schema::dialogues::dsl::*;
+
+    //     dialogues
+    //         .find(dialogue_name)
+    //         .get_result::<Dialogue>(&self.connection)
+    //         .expect("Failed to get dialogue.")
+    // }
+
+    pub fn insert_dialogue(&self, dialogue_text: Dialogue) -> usize {
         use crate::schema::dialogues::dsl::*;
 
         diesel::insert_into(dialogues)
             .values(&dialogue_text)
             .execute(&self.connection)
             .expect("Error inserting dialogue.")
-            == 1
     }
 
-    pub fn insert_dialogues(&self, insert_dialogues: Vec<Dialogue>) -> bool {
+    pub fn insert_dialogues(&self, insert_dialogues: Vec<Dialogue>) -> usize {
         use crate::schema::dialogues::dsl::*;
 
         diesel::insert_into(dialogues)
             .values(&insert_dialogues)
             .execute(&self.connection)
             .expect("Error inserting dialogues.")
-            == insert_dialogues.len()
     }
+
+    // pub fn remove_dialogue(&self, dialogue_name: &str) -> usize {
+    //     use crate::schema::dialogues::dsl::*;
+
+    //     diesel::delete(dialogues.find(dialogue_name))
+    //         .execute(&self.connection)
+    //         .expect("Failed to delete dialogue")
+    // }
 
     // pub fn update_dialogue(self, id_num: i32, updated_dialogue: Dialogue) -> bool {
     //     use crate::schema::dialogues::dsl::*;
