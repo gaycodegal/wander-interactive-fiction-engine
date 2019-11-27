@@ -39,6 +39,14 @@
 	{
 	    "name": "Test_Character",
 	    "components": "{ \"interactable\": true }"
+	},
+	{
+	    "name": "Mystery Ghost",
+	    "components": "{ \"interactable\": true, \"killable\": true }"
+	},
+	{
+	    "name": "Grandpa",
+	    "components": "{ \"interactable\": true, \"dies\": true }"
 	}
     ],
     "locations": [
@@ -55,6 +63,27 @@
 	    "items": "Test_Item",
 	    "neighbors": "{ \"south\": \"Test_South\", \"north\": \"Test_North\" }",
 	    "characters": "Test_Character"
+	},
+	{
+	    "name": "living room",
+	    "description": "A room with a couch and a tv",
+	    "items": "fairy,Blob",
+	    "neighbors": "{ \"east\": \"hallway\" }",
+	    "characters": "mother,sister"
+	},
+	{
+	    "name": "hallway",
+	    "description": "A long corridor of many rooms.",
+	    "items": "fairy",
+	    "neighbors": "{ \"west\": \"living room\", \"north\": \"kitchen\", \"south\": \"entry hall\" }",
+	    "characters": ""
+	},
+	{
+	    "name": "your bedroom",
+	    "description": "A cozy room that hides many secrets.",
+	    "items": "Blob",
+	    "neighbors": "{ \"north\": \"upstairs hallway\" }",
+	    "characters": "Bird"
 	}
     ]
 }

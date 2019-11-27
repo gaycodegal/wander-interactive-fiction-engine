@@ -235,11 +235,37 @@ mod tests {
     }
 
     #[test]
+    fn test_item_query_locations() {
+        let querier = new_valid_db("item_query_locations.db");
+
+        let items = vec!["apple_json"];
+        let locations = querier.query_locations(None, Some(items), None);
+        assert_eq!(1, locations.len());
+
+        let items = vec!["fairy", "Blob"];
+        let locations = querier.query_locations(None, Some(items), None);
+        assert_eq!(1, locations.len());
+    }
+
+    #[test]
+    fn test_chara_query_locations() {
+        let querier = new_valid_db("chara_query_locations.db");
+
+        let charas = vec!["Bird"];
+        let locations = querier.query_locations(None, None, Some(charas));
+        assert_eq!(1, locations.len());
+
+        let charas = vec!["mother", "sister"];
+        let locations = querier.query_locations(None, None, Some(charas));
+        assert_eq!(1, locations.len());
+    }
+
+    #[test]
     fn test_query_all_locations() {
         let querier = new_valid_db("query_all_locations.db");
 
         let locations = querier.query_locations(None, None, None);
-        assert_eq!(3, locations.len());
+        assert_eq!(6, locations.len());
     }
 
     #[test]
@@ -362,11 +388,24 @@ mod tests {
     }
 
     #[test]
+    fn test_comp_query_characters() {
+        let querier = new_valid_db("comp_query_characters.db");
+
+        let comps = vec!["interactable"];
+        let locations = querier.query_characters(None, Some(comps));
+        assert_eq!(5, locations.len());
+
+        let comps = vec!["interactable", "killable"];
+        let locations = querier.query_characters(None, Some(comps));
+        assert_eq!(1, locations.len());
+    }
+
+    #[test]
     fn test_query_all_characters() {
         let querier = new_valid_db("query_characters.db");
 
         let characters = querier.query_characters(None, None);
-        assert_eq!(3, characters.len());
+        assert_eq!(5, characters.len());
     }
 
     #[test]
