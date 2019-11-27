@@ -132,7 +132,7 @@ impl Querier {
 
     pub fn query_items(
         &self,
-        name: &str,
+        name: Option<&str>,
         attributes: Option<Vec<&str>>,
         components: Option<Vec<&str>>,
     ) -> Vec<Item> {
@@ -140,7 +140,7 @@ impl Querier {
 
         let mut query = items::table.into_boxed();
 
-        if !name.is_empty() {
+        if let Some(name) = name {
             return query
                 .filter(items::name.like(format!("%{}%", name)))
                 .load::<Item>(&self.connection)
@@ -217,15 +217,15 @@ impl Querier {
 
     pub fn query_locations(
         &self,
-        name: &str,
-        items: Option<Vec<String>>,
-        characters: Option<Vec<String>>,
+        name: Option<&str>,
+        items: Option<Vec<&str>>,
+        characters: Option<Vec<&str>>,
     ) -> Vec<Location> {
         use crate::schema::locations;
 
         let mut query = locations::table.into_boxed();
 
-        if !name.is_empty() {
+        if let Some(name) = name {
             return query
                 .filter(locations::name.like(format!("%{}%", name)))
                 .load::<Location>(&self.connection)
@@ -307,14 +307,14 @@ impl Querier {
 
     pub fn query_characters(
         &self,
-        name: &str,
-        components: Option<Vec<String>>,
+        name: Option<&str>,
+        components: Option<Vec<&str>>,
     ) -> Vec<Character> {
         use crate::schema::characters;
 
         let mut query = characters::table.into_boxed();
 
-        if !name.is_empty() {
+        if let Some(name) = name {
             return query
                 .filter(characters::name.like(format!("%{}%", name)))
                 .load::<Character>(&self.connection)
