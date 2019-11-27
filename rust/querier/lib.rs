@@ -83,9 +83,24 @@ mod tests {
     #[test]
     fn test_basic_query_items() {
         let querier = new_valid_db("query_items.db");
-
-        let items = querier.query_items("apple", None, None);
+        let items = querier.query_items(Some("apple"), None, None);
         assert_eq!(2, items.len());
+    }
+
+    #[test]
+    fn test_attr_query_items() {
+        let querier = new_valid_db("attr_query_items.db");
+
+        let items = querier.query_items(None, None, None);
+        assert_eq!(2, items.len());
+    }
+
+    #[test]
+    fn test_query_all_items() {
+        let querier = new_valid_db("query_all_items.db");
+
+        let items = querier.query_items(None, None, None);
+        assert_eq!(3, items.len());
     }
 
     #[test]
@@ -127,7 +142,7 @@ mod tests {
         let inserted = querier.insert_items(items.clone());
         assert_eq!(2, inserted);
 
-        let q_items = querier.query_items("Test_Item_Insert", None, None);
+        let q_items = querier.query_items(Some("Test_Item_Insert"), None, None);
         assert_eq!(items[0], q_items[0]);
         assert_eq!(items[1], q_items[1]);
     }
@@ -196,7 +211,7 @@ mod tests {
     fn test_basic_query_locations() {
         let querier = new_valid_db("query_locations.db");
 
-        let locations = querier.query_locations("kitchen", None, None);
+        let locations = querier.query_locations(Some("kitchen"), None, None);
         assert_eq!(2, locations.len());
     }
 
@@ -239,7 +254,7 @@ mod tests {
         assert_eq!(2, inserted);
 
         let q_locations =
-            querier.query_locations("Test_Location_Insert", None, None);
+            querier.query_locations(Some("Test_Location_Insert"), None, None);
         assert_eq!(locations[0], q_locations[0]);
         assert_eq!(locations[1], q_locations[1]);
     }
@@ -315,7 +330,7 @@ mod tests {
     fn test_basic_query_characters() {
         let querier = new_valid_db("query_characters.db");
 
-        let characters = querier.query_characters("dad", None);
+        let characters = querier.query_characters(Some("dad"), None);
         assert_eq!(2, characters.len());
     }
 
@@ -349,7 +364,7 @@ mod tests {
         assert_eq!(2, inserted);
 
         let q_characters =
-            querier.query_characters("Test_Character_Insert", None);
+            querier.query_characters(Some("Test_Character_Insert"), None);
         assert_eq!(characters[0], q_characters[0]);
         assert_eq!(characters[1], q_characters[1]);
     }
