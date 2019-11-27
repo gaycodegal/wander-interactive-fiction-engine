@@ -91,14 +91,45 @@ mod tests {
     #[test]
     fn test_insert_item() {
         let querier = new_valid_db("insert_item.db");
-
-        let inserted = querier.insert_item(models::Item {
+        let item = models::Item {
             name: String::from("Test_Item_Insert"),
             description: String::from("Test item for insert testing."),
             attributes: String::from("test,debug,insert"),
             components: String::from("{'test': 'test'}"),
-        });
+        };
+
+        let inserted = querier.insert_item(item.clone());
         assert_eq!(1, inserted);
+
+        let got_item = querier.get_item("Test_Item_Insert");
+        assert_eq!(item, got_item);
+    }
+
+    #[test]
+    fn test_insert_items() {
+        let querier = new_valid_db("insert_items.db");
+        let mut items = Vec::new();
+
+        items.push(models::Item {
+            name: String::from("Test_Item_Insert_1"),
+            description: String::from("Test item for insert testing."),
+            attributes: String::from("test,debug,insert"),
+            components: String::from("{'test': 'test'}"),
+        });
+
+        items.push(models::Item {
+            name: String::from("Test_Item_Insert_2"),
+            description: String::from("Test item for insert testing."),
+            attributes: String::from("test,debug,insert"),
+            components: String::from("{'test': 'test'}"),
+        });
+
+        let inserted = querier.insert_items(items.clone());
+        assert_eq!(2, inserted);
+
+        let q_items = querier.query_items("Test_Item_Insert", None, None);
+        assert_eq!(items[0], q_items[0]);
+        assert_eq!(items[1], q_items[1]);
     }
 
     #[test]
@@ -116,7 +147,7 @@ mod tests {
         let querier = new_valid_db("get_item.db");
 
         let got_item = querier.get_item("Test_Item");
-        assert_eq!(got_item, common_item());
+        assert_eq!(common_item(), got_item);
     }
 
     #[test]
@@ -132,6 +163,33 @@ mod tests {
         let querier = new_valid_db("remove_item.db");
 
         assert_eq!(1, querier.remove_item("Test_Item"));
+    }
+
+    #[test]
+    fn test_simple_update_item() {
+        let querier = new_valid_db("simple_update_item.db");
+        let mut item = common_item();
+        item.description = String::from("updated description.");
+
+        assert_eq!(1, querier.update_item("Test_Item", item.clone()));
+
+        let got_item = querier.get_item("Test_Item");
+        assert_eq!(item.clone(), got_item);
+    }
+
+    #[test]
+    fn test_complex_update_item() {
+        let querier = new_valid_db("complex_update_item.db");
+        let mut item = common_item();
+        item.name = String::from("Updated_Item_Name");
+        item.description = String::from("updated description.");
+        item.attributes = String::from("updates,test");
+        item.components = String::from("{\"updated\": true}");
+
+        assert_eq!(1, querier.update_item("Test_Item", item.clone()));
+
+        let got_item = querier.get_item("Updated_Item_Name");
+        assert_eq!(item.clone(), got_item);
     }
 
     #[test]
@@ -154,6 +212,36 @@ mod tests {
             characters: String::from("umbra"),
         });
         assert_eq!(1, inserted);
+    }
+
+    #[test]
+    fn test_insert_locations() {
+        let querier = new_valid_db("insert_locations.db");
+        let mut locations = Vec::new();
+
+        locations.push(models::Location {
+            name: String::from("Test_Location_Insert_1"),
+            description: String::from("Test location for insert testing."),
+            items: String::from("random string"),
+            neighbors: String::from("vitae"),
+            characters: String::from("umbra"),
+        });
+
+        locations.push(models::Location {
+            name: String::from("Test_Location_Insert_2"),
+            description: String::from("Test location for insert testing."),
+            items: String::from("random string"),
+            neighbors: String::from("vitae"),
+            characters: String::from("umbra"),
+        });
+
+        let inserted = querier.insert_locations(locations.clone());
+        assert_eq!(2, inserted);
+
+        let q_locations =
+            querier.query_locations("Test_Location_Insert", None, None);
+        assert_eq!(locations[0], q_locations[0]);
+        assert_eq!(locations[1], q_locations[1]);
     }
 
     #[test]
@@ -190,6 +278,40 @@ mod tests {
     }
 
     #[test]
+    fn test_simple_update_location() {
+        let querier = new_valid_db("simple_update_location.db");
+        let mut location = common_location();
+        location.description = String::from("updated description.");
+
+        assert_eq!(
+            1,
+            querier.update_location("Test_Location", location.clone())
+        );
+
+        let got_location = querier.get_location("Test_Location");
+        assert_eq!(location.clone(), got_location);
+    }
+
+    #[test]
+    fn test_complex_update_location() {
+        let querier = new_valid_db("complex_update_location.db");
+        let mut location = common_location();
+        location.name = String::from("Updated_Location_Name");
+        location.description = String::from("updated description.");
+        location.items = String::from("apple_toml");
+        location.neighbors = String::from("{\"updated\": true}");
+        location.characters = String::from("dad");
+
+        assert_eq!(
+            1,
+            querier.update_location("Test_Location", location.clone())
+        );
+
+        let got_location = querier.get_location("Updated_Location_Name");
+        assert_eq!(location.clone(), got_location);
+    }
+
+    #[test]
     fn test_basic_query_characters() {
         let querier = new_valid_db("query_characters.db");
 
@@ -206,6 +328,30 @@ mod tests {
             components: String::from("{ \"interactable\": true }"),
         });
         assert_eq!(1, inserted);
+    }
+
+    #[test]
+    fn test_insert_characters() {
+        let querier = new_valid_db("insert_characters.db");
+        let mut characters = Vec::new();
+
+        characters.push(models::Character {
+            name: String::from("Test_Character_Insert_1"),
+            components: String::from("{ \"interactable\": true }"),
+        });
+
+        characters.push(models::Character {
+            name: String::from("Test_Character_Insert_2"),
+            components: String::from("{ \"interactable\": true }"),
+        });
+
+        let inserted = querier.insert_characters(characters.clone());
+        assert_eq!(2, inserted);
+
+        let q_characters =
+            querier.query_characters("Test_Character_Insert", None);
+        assert_eq!(characters[0], q_characters[0]);
+        assert_eq!(characters[1], q_characters[1]);
     }
 
     #[test]
@@ -239,5 +385,36 @@ mod tests {
         let querier = new_valid_db("remove_character.db");
 
         assert_eq!(1, querier.remove_character("Test_Character"));
+    }
+
+    #[test]
+    fn test_simple_update_character() {
+        let querier = new_valid_db("simple_update_character.db");
+        let mut character = common_character();
+        character.components = String::from("{\"updated\": true}");
+
+        assert_eq!(
+            1,
+            querier.update_character("Test_Character", character.clone())
+        );
+
+        let got_character = querier.get_character("Test_Character");
+        assert_eq!(character.clone(), got_character);
+    }
+
+    #[test]
+    fn test_complex_update_character() {
+        let querier = new_valid_db("complex_update_character.db");
+        let mut character = common_character();
+        character.name = String::from("Updated_Character_Name");
+        character.components = String::from("{\"updated\": true}");
+
+        assert_eq!(
+            1,
+            querier.update_character("Test_Character", character.clone())
+        );
+
+        let got_character = querier.get_character("Updated_Character_Name");
+        assert_eq!(character.clone(), got_character);
     }
 }

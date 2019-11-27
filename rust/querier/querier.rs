@@ -288,7 +288,7 @@ impl Querier {
 
     pub fn update_location(
         &self,
-        location_name: String,
+        location_name: &str,
         updated_location: Location,
     ) -> usize {
         use crate::schema::locations::dsl::*;
@@ -373,7 +373,7 @@ impl Querier {
 
     pub fn update_character(
         &self,
-        character_name: String,
+        character_name: &str,
         updated_character: Character,
     ) -> usize {
         use crate::schema::characters::dsl::*;
