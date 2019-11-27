@@ -83,15 +83,34 @@ mod tests {
     #[test]
     fn test_basic_query_items() {
         let querier = new_valid_db("query_items.db");
+
         let items = querier.query_items(Some("apple"), None, None);
-        assert_eq!(2, items.len());
+        assert_eq!(3, items.len());
     }
 
     #[test]
     fn test_attr_query_items() {
         let querier = new_valid_db("attr_query_items.db");
 
-        let items = querier.query_items(None, None, None);
+        let attrs = vec!["red"];
+        let items = querier.query_items(None, Some(attrs), None);
+        assert_eq!(2, items.len());
+
+        let attrs = vec!["fairy", "poisoned"];
+        let items = querier.query_items(None, Some(attrs), None);
+        assert_eq!(1, items.len());
+    }
+
+    #[test]
+    fn test_comp_query_items() {
+        let querier = new_valid_db("comp_query_items.db");
+
+        let comps = vec!["damages"];
+        let items = querier.query_items(None, None, Some(comps));
+        assert_eq!(3, items.len());
+
+        let comps = vec!["heals", "interactable"];
+        let items = querier.query_items(None, None, Some(comps));
         assert_eq!(2, items.len());
     }
 
@@ -100,7 +119,7 @@ mod tests {
         let querier = new_valid_db("query_all_items.db");
 
         let items = querier.query_items(None, None, None);
-        assert_eq!(3, items.len());
+        assert_eq!(6, items.len());
     }
 
     #[test]
@@ -213,6 +232,14 @@ mod tests {
 
         let locations = querier.query_locations(Some("kitchen"), None, None);
         assert_eq!(2, locations.len());
+    }
+
+    #[test]
+    fn test_query_all_locations() {
+        let querier = new_valid_db("query_all_locations.db");
+
+        let locations = querier.query_locations(None, None, None);
+        assert_eq!(3, locations.len());
     }
 
     #[test]
@@ -332,6 +359,14 @@ mod tests {
 
         let characters = querier.query_characters(Some("dad"), None);
         assert_eq!(2, characters.len());
+    }
+
+    #[test]
+    fn test_query_all_characters() {
+        let querier = new_valid_db("query_characters.db");
+
+        let characters = querier.query_characters(None, None);
+        assert_eq!(3, characters.len());
     }
 
     #[test]
