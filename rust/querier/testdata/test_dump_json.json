@@ -4,13 +4,31 @@
 	    "name": "apple_json",
 	    "description": "a shiny red apple that looks oh so appealing",
 	    "attributes": "red,shiny,poisoned",
-	    "components": "{ \"picked_up\": false }"
+	    "components": "{ \"damages\": true }"
 	},
 	{
 	    "name": "Test_Item",
             "description": "Test item for testing.",
             "attributes": "test,debug,?",
             "components": "{'test': 'test'}"
+	},
+	{
+	    "name": "fairy",
+	    "description": "A sparkling fairy",
+	    "attributes": "blue,shiny,sentient",
+	    "components": "{ \"heals\": true, \"interactable\": true }"
+	},
+	{
+	    "name": "Blob",
+            "description": "A gelatinous green blob, it looks happy.",
+            "attributes": "green,gelatinous,poisoned,fairy,sentient",
+            "components": "{ \"damages\": true, \"interactable\": true }"
+	},
+	{
+	    "name": "green_apple",
+            "description": "A disgusting looking green apple.",
+            "attributes": "green",
+            "components": "{ \"heals\": true, \"interactable\": true }"
 	}
     ],
     "characters": [
