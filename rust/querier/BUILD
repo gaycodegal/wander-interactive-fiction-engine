@@ -1,4 +1,4 @@
-load("@io_bazel_rules_rust//rust:rust.bzl", "rust_binary", "rust_library", "rust_test")
+load("@io_bazel_rules_rust//rust:rust.bzl", "rust_doc", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -24,6 +24,11 @@ rust_library(
     rustc_flags = [
         "-lsqlite3",
     ],
+)
+
+rust_doc(
+    name = "querier_doc",
+    dep = ":querier",
 )
 
 filegroup(
