@@ -33,7 +33,8 @@ table! {
 }
 
 table! {
-    dialogues (characters, flags, location) {
+    dialogues (id) {
+    id -> Integer,
     characters -> Text,
     flags -> Text,
     location -> Text,
@@ -41,7 +42,7 @@ table! {
     }
 }
 
-joinable!(dialogues -> characters (characters));
-joinable!(dialogues -> locations (location));
+// joinable!(dialogues -> characters (characters));
+// joinable!(dialogues -> locations (location));
 
-allow_tables_to_appear_in_same_query!(characters, locations, dialogues);
+// allow_tables_to_appear_in_same_query!(characters, locations, dialogues);
