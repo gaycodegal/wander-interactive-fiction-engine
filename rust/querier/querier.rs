@@ -716,106 +716,121 @@ impl Querier {
             .expect("Error updating character.")
     }
 
-    // pub fn query_dialogues(
-    //     &self,
-    //     characters: Vec<String>,
-    //     flags: Vec<String>,
-    //     locations: Vec<String>,
-    //     dialogue_snippets: Vec<String>,
-    // ) -> Vec<Dialogue> {
-    //     use crate::schema::dialogues;
+    /// Given a querier instance query dialogues from the database instance. If all arguments are None it queries all dialogies.
+    ///
+    /// # Arguements
+    ///
+    /// * `name` - Optional the text contained in the location names. Will query all similar locations to name given.
+    /// * `items` - Optional a comma serpated string of items in a location you can query by. Location must contain all items specified.
+    /// * `characters` - Optional a comma serpated string of characters in a location you can query by. Location must contain all characters specified.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use querier::models::{FileType, Querier};
+    /// let querier = Querier::new_file("file_name.db");
+    /// querier.setup_db();
+    /// querier.dump_from_file("/path/to/data.json", FileType::JSON).expect("Unsuccesful dump to database");
+    /// let locations = querier.query_locations(Some("kitchen"), None, None);
+    /// ```
+    pub fn query_dialogues(
+        &self,
+        characters: Option<Vec<&str>>,
+        flags: Option<Vec<&str>>,
+        locations: Option<Vec<&str>>,
+        dialogue_snippets: Option<Vec<&str>>,
+    ) -> Vec<Dialogue> {
+        use crate::schema::dialogues;
 
-    //     let mut query = dialogues::table.into_boxed();
+        let mut query = dialogues::table.into_boxed();
 
-    //     if !characters.is_empty() {
-    //         for character in characters {
-    //             query = query.filter(
-    //                 dialogues::characters.like(format!("%{}%", character)),
-    //             );
-    //         }
-    //     }
+        if let Some(characters) = characters {
+            for character in characters {
+                query = query.filter(
+                    dialogues::characters.like(format!("%{}%", character)),
+                );
+            }
+        }
 
-    //     if !flags.is_empty() {
-    //         for flag in &flags {
-    //             query =
-    //                 query.filter(dialogues::flags.like(format!("%{}%", flag)));
-    //         }
-    //     }
+        if let Some(flags) = flags {
+            for flag in flags {
+                query =
+                    query.filter(dialogues::flags.like(format!("%{}%", flag)));
+            }
+        }
 
-    //     if !locations.is_empty() {
-    //         for location in locations {
-    //             query = query.filter(
-    //                 dialogues::location.like(format!("%{}%", location)),
-    //             );
-    //         }
-    //     }
+        if let Some(locations) = locations {
+            for location in locations {
+                query = query.filter(
+                    dialogues::location.like(format!("%{}%", location)),
+                );
+            }
+        }
 
-    //     if !dialogue_snippets.is_empty() {
-    //         for dialogue_snippet in dialogue_snippets {
-    //             query = query.filter(
-    //                 dialogues::dialogue.like(format!("%{}%", dialogue_snippet)),
-    //             );
-    //         }
-    //     }
+        if let Some(dialogue_snippets) = dialogue_snippets {
+            for dialogue_snippet in dialogue_snippets {
+                query = query.filter(
+                    dialogues::dialogue.like(format!("%{}%", dialogue_snippet)),
+                );
+            }
+        }
 
-    //     if !flags.is_empty() {
-    //         for flag in flags {
-    //             query =
-    //                 query.filter(dialogues::flags.like(format!("%{}%", flag)));
-    //         }
-    //     }
+        query
+            .load::<Dialogue>(&self.connection)
+            .expect("Error loading items.")
+    }
 
-    //     query
-    //         .load::<Dialogue>(&self.connection)
-    //         .expect("Error loading items.")
-    // }
+    pub fn get_dialogue(&self, dialogue_id: i32) -> Dialogue {
+        use crate::schema::dialogues::dsl::*;
 
-    // pub fn get_dialogue(&self, dialogue_name: &str) -> Dialogue {
-    //     use crate::schema::dialogues::dsl::*;
+        dialogues
+            .find(dialogue_id)
+            .get_result::<Dialogue>(&self.connection)
+            .expect("Failed to get dialogue.")
+    }
 
-    //     dialogues
-    //         .find(dialogue_name)
-    //         .get_result::<Dialogue>(&self.connection)
-    //         .expect("Failed to get dialogue.")
-    // }
+    pub fn insert_dialogue(&self, dialogue_struct: Dialogue) -> usize {
+        use crate::schema::dialogues::dsl::*;
 
-    // pub fn insert_dialogue(&self, dialogue_text: Dialogue) -> usize {
-    //     use crate::schema::dialogues::dsl::*;
+        diesel::insert_into(dialogues)
+            .values(&dialogue_struct)
+            .execute(&self.connection)
+            .expect("Error inserting dialogue.")
+    }
 
-    //     diesel::insert_into(dialogues)
-    //         .values(&dialogue_text)
-    //         .execute(&self.connection)
-    //         .expect("Error inserting dialogue.")
-    // }
+    pub fn insert_dialogues(&self, insert_dialogues: Vec<Dialogue>) -> usize {
+        use crate::schema::dialogues::dsl::*;
 
-    // pub fn insert_dialogues(&self, insert_dialogues: Vec<Dialogue>) -> usize {
-    //     use crate::schema::dialogues::dsl::*;
+        diesel::insert_into(dialogues)
+            .values(&insert_dialogues)
+            .execute(&self.connection)
+            .expect("Error inserting dialogues.")
+    }
 
-    //     diesel::insert_into(dialogues)
-    //         .values(&insert_dialogues)
-    //         .execute(&self.connection)
-    //         .expect("Error inserting dialogues.")
-    // }
+    pub fn remove_dialogue(&self, dialogue_id: i32) -> usize {
+        use crate::schema::dialogues::dsl::*;
 
-    // pub fn remove_dialogue(&self, dialogue_name: &str) -> usize {
-    //     use crate::schema::dialogues::dsl::*;
+        diesel::delete(dialogues.find(dialogue_id))
+            .execute(&self.connection)
+            .expect("Failed to delete dialogue")
+    }
 
-    //     diesel::delete(dialogues.find(dialogue_name))
-    //         .execute(&self.connection)
-    //         .expect("Failed to delete dialogue")
-    // }
+    pub fn update_dialogue(
+        self,
+        id_num: i32,
+        updated_dialogue: Dialogue,
+    ) -> bool {
+        use crate::schema::dialogues::dsl::*;
 
-    // pub fn update_dialogue(self, id_num: i32, updated_dialogue: Dialogue) -> bool {
-    //     use crate::schema::dialogues::dsl::*;
-
-    //     diesel::update(dialogues.filter(id.eq(id)))
-    //         .set((
-    //             characters.eq(updated_dialogue.characters),
-    //             flags.eq(updated_dialogue.flags),
-    //             location.eq(updated_dialogue.location),
-    //             dialogue.eq(updated_dialogue.dialogue),
-    //         ))
-    //         .execute(&self.connection)
-    //         .expect("Error updating dialogue.") == 1
-    // }
+        diesel::update(dialogues.filter(id.eq(id_num)))
+            .set((
+                characters.eq(updated_dialogue.characters),
+                flags.eq(updated_dialogue.flags),
+                location.eq(updated_dialogue.location),
+                dialogue.eq(updated_dialogue.dialogue),
+            ))
+            .execute(&self.connection)
+            .expect("Error updating dialogue.")
+            == 1
+    }
 }
