@@ -69,20 +69,20 @@ impl Location {
         items_in_room
     }
 
-    // Returns a Vector of dialogues from the database based off the location name field.
-    //
-    // # Arguements
-    //
-    // * `querier` - A querier object to query the items table.
-    // pub fn dialogues(self, querier: Querier) -> Vec<Dialogue> {
-    //     use crate::schema::dialogues::dsl::*;
-    //     let connection = querier.connection;
+    /// Returns a Vector of dialogues from the database based off the location name field.
+    ///
+    /// # Arguements
+    ///
+    /// * `querier` - A querier object to query the items table.
+    pub fn dialogues(self, querier: Querier) -> Vec<Dialogue> {
+        use crate::schema::dialogues::dsl::*;
+        let connection = querier.connection;
 
-    //     dialogues
-    //         .filter(location.like(format!("%{}%", self.name)))
-    //         .load::<Dialogue>(&connection)
-    //         .expect("Could not look up dialogues.")
-    // }
+        dialogues
+            .filter(location.like(format!("%{}%", self.name)))
+            .load::<Dialogue>(&connection)
+            .expect("Could not look up dialogues.")
+    }
 }
 
 #[derive(Insertable, Queryable, Clone, Debug, Deserialize, PartialEq)]
@@ -95,23 +95,22 @@ pub struct Character {
     pub components: String,
 }
 
-// impl Character {
-// Returns a Vector of dialogues from the database based off the character name field.
-//
-// # Arguements
-//
-// * `querier` - A querier object to query the items table.
-// pub fn dialogues(self, querier: Querier) -> Vec<Dialogue> {
-//     use crate::schema::dialogues::dsl::*;
-//     let connection = querier.connection;
+impl Character {
+    /// Returns a Vector of dialogues from the database based off the character name field.
+    ///
+    /// # Arguements
+    ///
+    /// * `querier` - A querier object to query the items table.
+    pub fn dialogues(self, querier: Querier) -> Vec<Dialogue> {
+        use crate::schema::dialogues::dsl::*;
+        let connection = querier.connection;
 
-//     dialogues
-//         .filter(characters.like(format!("%{}%", self.name)))
-//         .load::<Dialogue>(&connection)
-//         .expect("Could not look up dialogues.")
-// }
-// }
-
+        dialogues
+            .filter(characters.like(format!("%{}%", self.name)))
+            .load::<Dialogue>(&connection)
+            .expect("Could not look up dialogues.")
+    }
+}
 #[derive(Insertable, Queryable, Clone, Debug, Deserialize, PartialEq)]
 #[table_name = "dialogues"]
 /// Dualogue is struct to contain all information about a dialogue.

@@ -41,8 +41,3 @@ table! {
     dialogue -> Text,
     }
 }
-
-// joinable!(dialogues -> characters (characters));
-// joinable!(dialogues -> locations (location));
-
-// allow_tables_to_appear_in_same_query!(characters, locations, dialogues);
