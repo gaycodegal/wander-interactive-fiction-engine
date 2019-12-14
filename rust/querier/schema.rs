@@ -1,34 +1,26 @@
 table! {
-    todos (id) {
-    id -> Integer,
-    title -> Text,
-    completed -> Bool,
-    }
-}
-
-table! {
     items (name) {
     name -> Text,
-    description -> Text,
-    attributes -> Text,
-    components -> Text,
+    description -> Nullable<Text>,
+    attributes -> Nullable<Text>,
+    components -> Nullable<Text>,
     }
 }
 
 table! {
     locations (name) {
     name -> Text,
-    description -> Text,
-    items -> Text,
-    neighbors -> Text,
-    characters -> Text,
+    description -> Nullable<Text>,
+    items -> Nullable<Text>,
+    neighbors -> Nullable<Text>,
+    characters -> Nullable<Text>,
     }
 }
 
 table! {
     characters (name) {
     name -> Text,
-    components -> Text,
+    components -> Nullable<Text>,
     }
 }
 
@@ -36,7 +28,7 @@ table! {
     dialogues (id) {
     id -> Integer,
     characters -> Text,
-    flags -> Text,
+    flags -> Nullable<Text>,
     location -> Text,
     dialogue -> Text,
     }

@@ -48,28 +48,38 @@ mod tests {
     fn common_item() -> models::Item {
         models::Item {
             name: String::from("Test_Item"),
-            description: String::from("Test item for testing."),
-            attributes: String::from("test,debug,?"),
-            components: String::from("{'test': 'test'}"),
+            description: Some(String::from("Test item for testing.")),
+            attributes: Some(String::from("test,debug,?")),
+            components: Some(String::from("{'test': 'test'}")),
         }
     }
 
     fn common_location() -> models::Location {
         models::Location {
             name: String::from("Test_Location"),
-            description: String::from("Test location for testing."),
-            items: String::from("Test_Item"),
-            neighbors: String::from(
+            description: Some(String::from("Test location for testing.")),
+            items: Some(String::from("Test_Item")),
+            neighbors: Some(String::from(
                 "{ \"south\": \"Test_South\", \"north\": \"Test_North\" }",
-            ),
-            characters: String::from("Test_Character"),
+            )),
+            characters: Some(String::from("Test_Character")),
         }
     }
 
     fn common_character() -> models::Character {
         models::Character {
             name: String::from("Test_Character"),
-            components: String::from("{ \"interactable\": true }"),
+            components: Some(String::from("{ \"interactable\": true }")),
+        }
+    }
+
+    fn common_dialogue() -> models::Dialogue {
+        models::Dialogue {
+            id: 0,
+            characters: String::from("dad,mom,sister"),
+            flags: Some(String::from("apple_acquired,brother_dead")),
+            location: String::from("kitchen"),
+            dialogue: String::from("hello i am dialgoue."),
         }
     }
 
@@ -127,9 +137,9 @@ mod tests {
         let querier = new_valid_db("insert_item.db");
         let item = models::Item {
             name: String::from("Test_Item_Insert"),
-            description: String::from("Test item for insert testing."),
-            attributes: String::from("test,debug,insert"),
-            components: String::from("{'test': 'test'}"),
+            description: Some(String::from("Test item for insert testing.")),
+            attributes: Some(String::from("test,debug,insert")),
+            components: Some(String::from("{'test': 'test'}")),
         };
 
         let inserted = querier.insert_item(item.clone());
@@ -146,16 +156,16 @@ mod tests {
 
         items.push(models::Item {
             name: String::from("Test_Item_Insert_1"),
-            description: String::from("Test item for insert testing."),
-            attributes: String::from("test,debug,insert"),
-            components: String::from("{'test': 'test'}"),
+            description: Some(String::from("Test item for insert testing.")),
+            attributes: Some(String::from("test,debug,insert")),
+            components: Some(String::from("{'test': 'test'}")),
         });
 
         items.push(models::Item {
             name: String::from("Test_Item_Insert_2"),
-            description: String::from("Test item for insert testing."),
-            attributes: String::from("test,debug,insert"),
-            components: String::from("{'test': 'test'}"),
+            description: Some(String::from("Test item for insert testing.")),
+            attributes: Some(String::from("test,debug,insert")),
+            components: Some(String::from("{'test': 'test'}")),
         });
 
         let inserted = querier.insert_items(items.clone());
@@ -203,7 +213,7 @@ mod tests {
     fn test_simple_update_item() {
         let querier = new_valid_db("simple_update_item.db");
         let mut item = common_item();
-        item.description = String::from("updated description.");
+        item.description = Some(String::from("updated description."));
 
         assert_eq!(1, querier.update_item("Test_Item", item.clone()));
 
@@ -216,9 +226,9 @@ mod tests {
         let querier = new_valid_db("complex_update_item.db");
         let mut item = common_item();
         item.name = String::from("Updated_Item_Name");
-        item.description = String::from("updated description.");
-        item.attributes = String::from("updates,test");
-        item.components = String::from("{\"updated\": true}");
+        item.description = Some(String::from("updated description."));
+        item.attributes = Some(String::from("updates,test"));
+        item.components = Some(String::from("{\"updated\": true}"));
 
         assert_eq!(1, querier.update_item("Test_Item", item.clone()));
 
@@ -274,10 +284,12 @@ mod tests {
 
         let inserted = querier.insert_location(models::Location {
             name: String::from("Test_Location_Insert"),
-            description: String::from("Test location for insert testing."),
-            items: String::from("random string"),
-            neighbors: String::from("vitae"),
-            characters: String::from("umbra"),
+            description: Some(String::from(
+                "Test location for insert testing.",
+            )),
+            items: Some(String::from("random string")),
+            neighbors: Some(String::from("vitae")),
+            characters: Some(String::from("umbra")),
         });
         assert_eq!(1, inserted);
     }
@@ -289,18 +301,22 @@ mod tests {
 
         locations.push(models::Location {
             name: String::from("Test_Location_Insert_1"),
-            description: String::from("Test location for insert testing."),
-            items: String::from("random string"),
-            neighbors: String::from("vitae"),
-            characters: String::from("umbra"),
+            description: Some(String::from(
+                "Test location for insert testing.",
+            )),
+            items: Some(String::from("random string")),
+            neighbors: Some(String::from("vitae")),
+            characters: Some(String::from("umbra")),
         });
 
         locations.push(models::Location {
             name: String::from("Test_Location_Insert_2"),
-            description: String::from("Test location for insert testing."),
-            items: String::from("random string"),
-            neighbors: String::from("vitae"),
-            characters: String::from("umbra"),
+            description: Some(String::from(
+                "Test location for insert testing.",
+            )),
+            items: Some(String::from("random string")),
+            neighbors: Some(String::from("vitae")),
+            characters: Some(String::from("umbra")),
         });
 
         let inserted = querier.insert_locations(locations.clone());
@@ -349,7 +365,7 @@ mod tests {
     fn test_simple_update_location() {
         let querier = new_valid_db("simple_update_location.db");
         let mut location = common_location();
-        location.description = String::from("updated description.");
+        location.description = Some(String::from("updated description."));
 
         assert_eq!(
             1,
@@ -365,10 +381,10 @@ mod tests {
         let querier = new_valid_db("complex_update_location.db");
         let mut location = common_location();
         location.name = String::from("Updated_Location_Name");
-        location.description = String::from("updated description.");
-        location.items = String::from("apple_toml");
-        location.neighbors = String::from("{\"updated\": true}");
-        location.characters = String::from("dad");
+        location.description = Some(String::from("updated description."));
+        location.items = Some(String::from("apple_toml"));
+        location.neighbors = Some(String::from("{\"updated\": true}"));
+        location.characters = Some(String::from("dad"));
 
         assert_eq!(
             1,
@@ -414,7 +430,7 @@ mod tests {
 
         let inserted = querier.insert_character(models::Character {
             name: String::from("Test_Character_Insert"),
-            components: String::from("{ \"interactable\": true }"),
+            components: Some(String::from("{ \"interactable\": true }")),
         });
         assert_eq!(1, inserted);
     }
@@ -426,12 +442,12 @@ mod tests {
 
         characters.push(models::Character {
             name: String::from("Test_Character_Insert_1"),
-            components: String::from("{ \"interactable\": true }"),
+            components: Some(String::from("{ \"interactable\": true }")),
         });
 
         characters.push(models::Character {
             name: String::from("Test_Character_Insert_2"),
-            components: String::from("{ \"interactable\": true }"),
+            components: Some(String::from("{ \"interactable\": true }")),
         });
 
         let inserted = querier.insert_characters(characters.clone());
@@ -480,7 +496,7 @@ mod tests {
     fn test_simple_update_character() {
         let querier = new_valid_db("simple_update_character.db");
         let mut character = common_character();
-        character.components = String::from("{\"updated\": true}");
+        character.components = Some(String::from("{\"updated\": true}"));
 
         assert_eq!(
             1,
@@ -496,7 +512,7 @@ mod tests {
         let querier = new_valid_db("complex_update_character.db");
         let mut character = common_character();
         character.name = String::from("Updated_Character_Name");
-        character.components = String::from("{\"updated\": true}");
+        character.components = Some(String::from("{\"updated\": true}"));
 
         assert_eq!(
             1,
@@ -506,4 +522,174 @@ mod tests {
         let got_character = querier.get_character("Updated_Character_Name");
         assert_eq!(character.clone(), got_character);
     }
+
+    // #[test]
+    // fn test_basic_query_dialogues() {
+    //     let querier = new_valid_db("query_dialogues.db");
+
+    //     let dialogues = querier.query_dialogues(Some("dad"), None, None, None);
+    //     assert_eq!(3, dialogues.len());
+    // }
+
+    // #[test]
+    // fn test_flags_query_dialogues() {
+    //     let querier = new_valid_db("flag_query_dialogues.db");
+
+    //     let flags = vec!["red"];
+    //     let dialogues = querier.query_dialogues(None, Some(flags), None, None);
+    //     assert_eq!(2, dialogues.len());
+
+    //     let flags = vec!["fairy", "poisoned"];
+    //     let dialogues = querier.query_dialogues(None, Some(flags), None, None);
+    //     assert_eq!(1, dialogues.len());
+    // }
+
+    // #[test]
+    // fn test_loc_query_dialogues() {
+    //     let querier = new_valid_db("comp_query_dialogues.db");
+
+    //     let comps = vec!["damages"];
+    //     let dialogues = querier.query_dialogues(
+    //         None,
+    //         None,
+    //         Some(String::from("kitchen")),
+    //         None,
+    //     );
+    //     assert_eq!(3, dialogues.len());
+    // }
+
+    // #[test]
+    // fn test_snip_query_dialogues() {
+    //     let querier = new_valid_db("snip_query_dialogues.db");
+
+    //     let snips = vec!["I wanna die"];
+    //     let dialogues = querier.query_dialogues(None, None, None, Some(snips));
+    //     assert_eq!(3, dialogues.len());
+
+    //     let snips = vec!["I wanna die", "Me too thanks"];
+    //     let dialogues = querier.query_dialogues(None, None, None, Some(snips));
+    //     assert_eq!(2, dialogues.len());
+    // }
+
+    // #[test]
+    // fn test_query_all_dialogues() {
+    //     let querier = new_valid_db("query_all_dialogues.db");
+
+    //     let dialogues = querier.query_dialogues(None, None, None, None);
+    //     assert_eq!(6, dialogues.len());
+    // }
+
+    // #[test]
+    // fn test_insert_dialogue() {
+    //     let querier = new_valid_db("insert_dialogue.db");
+    //     let dialogue = models::Dialogue {
+    //         id: 0,
+    //         characters: String::from("dad,fairy,blob"),
+    //         flags: None,
+    //         location: String::from("backyard"),
+    //         dialogue: String::from("Hello! I am Blob."),
+    //     };
+
+    //     let inserted = querier.insert_dialogue(dialogue.clone());
+    //     assert_eq!(1, inserted);
+
+    //     let got_dialogue = querier.get_dialogue(0);
+    //     assert_eq!(dialogue, got_dialogue);
+    // }
+
+    // #[test]
+    // fn test_insert_dialogues() {
+    //     let querier = new_valid_db("insert_dialogues.db");
+    //     let mut dialogues = Vec::new();
+
+    //     dialogues.push(models::Dialogue {
+    //         id: 0,
+    //         characters: String::from("dad,fairy,blob"),
+    //         flags: None,
+    //         location: String::from("backyard"),
+    //         dialogue: String::from("Hello! I am Blob."),
+    //     });
+
+    //     dialogues.push(models::Dialogue {
+    //         id: 1,
+    //         characters: String::from("sister,mom"),
+    //         flags: None,
+    //         location: String::from("living_room"),
+    //         dialogue: String::from("Pew pew pew."),
+    //     });
+
+    //     let inserted = querier.insert_dialogues(dialogues.clone());
+    //     assert_eq!(2, inserted);
+
+    //     let q_dialogues =
+    //         querier.query_dialogues(Some("Test_Dialogue_Insert"), None, None);
+    //     assert_eq!(dialogues[0], q_dialogues[0]);
+    //     assert_eq!(dialogues[1], q_dialogues[1]);
+    // }
+
+    // #[test]
+    // #[should_panic(
+    //     expected = "Error inserting dialogue.: DatabaseError(UniqueViolation, \"UNIQUE constraint failed: dialogues.name\")"
+    // )]
+    // fn test_insert_existing_dialogue() {
+    //     let querier = new_valid_db("insert_existing_dialogue.db");
+
+    //     querier.insert_dialogue(common_dialogue());
+    // }
+
+    // #[test]
+    // fn test_get_dialogue() {
+    //     let querier = new_valid_db("get_dialogue.db");
+
+    //     let got_dialogue = querier.get_dialogue("Test_Dialogue");
+    //     assert_eq!(common_dialogue(), got_dialogue);
+    // }
+
+    // #[test]
+    // #[should_panic(expected = "Failed to get dialogue.: NotFound")]
+    // fn test_get_nonexistant_dialogue() {
+    //     let querier = new_valid_db("get_nonexistant_dialogue.db");
+
+    //     querier.get_dialogue("Fake_Dialogue");
+    // }
+
+    // #[test]
+    // fn test_remove_dialogue() {
+    //     let querier = new_valid_db("remove_dialogue.db");
+
+    //     assert_eq!(1, querier.remove_dialogue("Test_Dialogue"));
+    // }
+
+    // #[test]
+    // fn test_simple_update_dialogue() {
+    //     let querier = new_valid_db("simple_update_dialogue.db");
+    //     let mut dialogue = common_dialogue();
+    //     dialogue.description = String::from("updated description.");
+
+    //     assert_eq!(
+    //         1,
+    //         querier.update_dialogue("Test_Dialogue", dialogue.clone())
+    //     );
+
+    //     let got_dialogue = querier.get_dialogue("Test_Dialogue");
+    //     assert_eq!(dialogue.clone(), got_dialogue);
+    // }
+
+    // #[test]
+    // fn test_complex_update_dialogue() {
+    //     let querier = new_valid_db("complex_update_dialogue.db");
+    //     let mut dialogue = common_dialogue();
+    //     dialogue.name = String::from("Updated_Dialogue_Name");
+    //     dialogue.description = String::from("updated description.");
+    //     dialogue.attributes = String::from("updates,test");
+    //     dialogue.components = String::from("{\"updated\": true}");
+
+    //     assert_eq!(
+    //         1,
+    //         querier.update_dialogue("Test_Dialogue", dialogue.clone())
+    //     );
+
+    //     let got_dialogue = querier.get_dialogue("Updated_Dialogue_Name");
+    //     assert_eq!(dialogue.clone(), got_dialogue);
+    // }
 }

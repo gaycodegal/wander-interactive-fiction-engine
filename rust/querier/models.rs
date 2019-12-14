@@ -21,11 +21,11 @@ pub struct Item {
     /// The unique name of the item.
     pub name: String,
     /// The description of the item.
-    pub description: String,
+    pub description: Option<String>,
     /// The attributes of the item, represented as comma seperated string.
-    pub attributes: String,
+    pub attributes: Option<String>,
     /// The components attached to an item, represented as a JSON formatted string.
-    pub components: String,
+    pub components: Option<String>,
 }
 
 #[derive(Insertable, Queryable, Clone, Debug, Deserialize, PartialEq)]
@@ -35,13 +35,13 @@ pub struct Location {
     /// The unique name of the location.
     pub name: String,
     /// The description of the location.
-    pub description: String,
+    pub description: Option<String>,
     /// The items in the location, represented as comma seperated string.
-    pub items: String,
+    pub items: Option<String>,
     /// The names of the neighboring locations, represented as a JSON formatted string.
-    pub neighbors: String,
+    pub neighbors: Option<String>,
     /// The characters in the location, represented as comma seperated string.
-    pub characters: String,
+    pub characters: Option<String>,
 }
 
 impl Location {
@@ -55,14 +55,16 @@ impl Location {
         let connection = querier.connection;
         let mut items_in_room: Vec<Item> = Vec::new();
 
-        for item in self.items.split(",") {
-            if !item.is_empty() {
-                items_in_room.push(
-                    items
-                        .find(item)
-                        .first(&connection)
-                        .expect("Could not look up item."),
-                );
+        if let Some(items_string) = self.items {
+            for item in items_string.split(",") {
+                if !item.is_empty() {
+                    items_in_room.push(
+                        items
+                            .find(item)
+                            .first(&connection)
+                            .expect("Could not look up item."),
+                    );
+                }
             }
         }
 
@@ -92,7 +94,7 @@ pub struct Character {
     /// The unique name of the character.
     pub name: String,
     /// The components attached to an character, represented as a JSON formatted string.
-    pub components: String,
+    pub components: Option<String>,
 }
 
 impl Character {
@@ -120,7 +122,7 @@ pub struct Dialogue {
     /// The characters in the dialogue, represented as a comma seperated string.
     pub characters: String,
     /// The flags needed to start a dialogue, represented as a comma seperated string.
-    pub flags: String,
+    pub flags: Option<String>,
     /// The location the dialogue takes place.
     pub location: String,
     /// The dialogue tree structure, represented as a JSON formatted string.

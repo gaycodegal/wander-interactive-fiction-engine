@@ -188,8 +188,8 @@ impl Querier {
     /// # Arguements
     ///
     /// * `name` - Optional the text contained in the item names. Will query all similar items to name given.
-    /// * `attributes` - Optional a comma serpated string of attributes on items you can query by. Item must contain all attributes specified.
-    /// * `components` - Optional a comma serpated string of components on items you can query by. Item must contain all components specified.
+    /// * `attributes` - Optional a vector of strings that represent an attribute on items you can query by. Item must contain all attributes specified.
+    /// * `components` - Optional a vector of strings that represent an component on items you can query by. Item must contain all components specified.
     ///
     /// # Example
     ///
@@ -366,8 +366,8 @@ impl Querier {
     /// # Arguements
     ///
     /// * `name` - Optional the text contained in the location names. Will query all similar locations to name given.
-    /// * `items` - Optional a comma serpated string of items in a location you can query by. Location must contain all items specified.
-    /// * `characters` - Optional a comma serpated string of characters in a location you can query by. Location must contain all characters specified.
+    /// * `items` - Optional a vector of strings that represent an item in a location you can query by. Location must contain all items specified.
+    /// * `characters` - Optional vector of strings that represent an character in a location you can query by. Location must contain all characters specified.
     ///
     /// # Example
     ///
@@ -551,7 +551,7 @@ impl Querier {
     /// # Arguements
     ///
     /// * `name` - Optional the text contained in the character names. Will query all similar characters to name given.
-    /// * `components` - Optional a comma serpated string of components on a character you can query by. Character must contain all componenets specified.
+    /// * `components` - Optional a vector of strings that represent an component on a character you can query by. Character must contain all componenets specified.
     ///
     /// # Example
     ///
@@ -720,9 +720,10 @@ impl Querier {
     ///
     /// # Arguements
     ///
-    /// * `name` - Optional the text contained in the location names. Will query all similar locations to name given.
-    /// * `items` - Optional a comma serpated string of items in a location you can query by. Location must contain all items specified.
-    /// * `characters` - Optional a comma serpated string of characters in a location you can query by. Location must contain all characters specified.
+    /// * `characters` - Optional a vector of strings that represent an character on a dialogue you can query by. Will query all similar locations to name given.
+    /// * `flags` - Optional a vector of strings that represent an flag on a dialogue you can query by. Dialogue must contain all items specified.
+    /// * `location` - Optional a vector of strings that represent an location on a dialogue you can query by. Dialogue must contain all characters specified.
+    /// * `dialogue_snippets` - Optional a vector of strings that represent an dialogue snippet on a dialogue. Dialogue must contain all characters specified.
     ///
     /// # Example
     ///
@@ -731,13 +732,13 @@ impl Querier {
     /// let querier = Querier::new_file("file_name.db");
     /// querier.setup_db();
     /// querier.dump_from_file("/path/to/data.json", FileType::JSON).expect("Unsuccesful dump to database");
-    /// let locations = querier.query_locations(Some("kitchen"), None, None);
+    /// let dialogues = querier.query_dialogies(Some("dad"), None, None);
     /// ```
     pub fn query_dialogues(
         &self,
         characters: Option<Vec<&str>>,
         flags: Option<Vec<&str>>,
-        locations: Option<Vec<&str>>,
+        location: Option<&str>,
         dialogue_snippets: Option<Vec<&str>>,
     ) -> Vec<Dialogue> {
         use crate::schema::dialogues;
@@ -759,12 +760,9 @@ impl Querier {
             }
         }
 
-        if let Some(locations) = locations {
-            for location in locations {
-                query = query.filter(
-                    dialogues::location.like(format!("%{}%", location)),
-                );
-            }
+        if let Some(location) = location {
+            query = query
+                .filter(dialogues::location.like(format!("%{}%", location)));
         }
 
         if let Some(dialogue_snippets) = dialogue_snippets {
@@ -780,6 +778,21 @@ impl Querier {
             .expect("Error loading items.")
     }
 
+    /// Given a querier instance and dialogue name fetch it if it exists.
+    ///
+    /// # Arguements
+    ///
+    /// * `dialogue_name` - The name of the dialogue you wish to fetch. Must be the exact name.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use querier::models::{FileType, Querier};
+    /// let querier = Querier::new_file("file_name.db");
+    /// querier.setup_db();
+    /// querier.dump_from_file("/path/to/data.json", FileType::JSON).expect("Unsuccesful dump to database");
+    /// let dialogue = querier.get_dialogue("Test_Dialogue");
+    /// ```
     pub fn get_dialogue(&self, dialogue_id: i32) -> Dialogue {
         use crate::schema::dialogues::dsl::*;
 
@@ -789,6 +802,24 @@ impl Querier {
             .expect("Failed to get dialogue.")
     }
 
+    /// Given a querier instance and dialogue struct to insert into the database instance.
+    ///
+    /// # Arguements
+    ///
+    /// * `dialogue` - The dialogue struct to be inserted.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use querier::models::{Dialogue, FileType, Querier};
+    /// let querier = Querier::new_file("file_name.db");
+    /// querier.setup_db();
+    /// querier.dump_from_file("/path/to/data.json", FileType::JSON).expect("Unsuccesful dump to database");
+    /// querier.insert_dialogue(Dialogue {
+    /// name: String::from("Test_Characte"),
+    /// components: String::from("{ \"interactable\": true }"),
+    /// });
+    /// ```
     pub fn insert_dialogue(&self, dialogue_struct: Dialogue) -> usize {
         use crate::schema::dialogues::dsl::*;
 
@@ -798,6 +829,11 @@ impl Querier {
             .expect("Error inserting dialogue.")
     }
 
+    /// Given a querier instance and vector of dialogue structs to be inserted into the database instance.
+    ///
+    /// # Arguements
+    ///
+    /// * `dialogues` - The vector of dialogue structs to be inserted.
     pub fn insert_dialogues(&self, insert_dialogues: Vec<Dialogue>) -> usize {
         use crate::schema::dialogues::dsl::*;
 
@@ -807,6 +843,21 @@ impl Querier {
             .expect("Error inserting dialogues.")
     }
 
+    /// Given a querier instance and dialogue name remove it if it exists.
+    ///
+    /// # Arguements
+    ///
+    /// * `dialogue_id` - The id of the dialogue you wish to remove. Must be the exact name.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use querier::models::{FileType, Querier};
+    /// let querier = Querier::new_file("file_name.db");
+    /// querier.setup_db();
+    /// querier.dump_from_file("/path/to/data.json", FileType::JSON).expect("Unsuccesful dump to database");
+    /// querier.remove_dialogue("Test_Dialogue");
+    /// ```
     pub fn remove_dialogue(&self, dialogue_id: i32) -> usize {
         use crate::schema::dialogues::dsl::*;
 
@@ -815,6 +866,25 @@ impl Querier {
             .expect("Failed to delete dialogue")
     }
 
+    /// Given a querier instance, dialogue name, and an Dialogue struct to update the dialogue with.
+    ///
+    /// # Arguements
+    ///
+    /// * `dialogue_id` - The id of the dialogue you wish to update. Must be the exact name.
+    /// * `updated_dialogue` - The updated Dialogue struct to replace the old one.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use querier::models::{Dialogue, FileType, Querier};
+    /// let querier = Querier::new_file("file_name.db");
+    /// querier.setup_db();
+    /// querier.dump_from_file("/path/to/data.json", FileType::JSON).expect("Unsuccesful dump to database");
+    /// querier.update_dialogue("Test_Dialogue", Dialogue {
+    /// name: String::from("Test_Dialogue_Changed_name"),
+    /// components: String::from("{'test': 'test'}"),
+    /// });
+    /// ```
     pub fn update_dialogue(
         self,
         id_num: i32,
