@@ -6,6 +6,7 @@ Wander is an engine in progress for making text adventures. It supports Context 
 
 - [Rust (1.38)](https://www.rust-lang.org/tools/install)
 - [bazel.build](https://bazel.build)
+- [sqlite3 (3.30.1)](https://www.sqlite.org/index.html)
 
 Also install cargo-vendor & cargo-raze
 
