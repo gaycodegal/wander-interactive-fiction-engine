@@ -49,6 +49,48 @@
 	    "components": "{ \"interactable\": true, \"dies\": true }"
 	}
     ],
+    "dialogues": [
+	{
+	    "id": 0,
+	    "characters": "dad",
+	    "location": "kitchen_json",
+	    "dialogue": "for now this is good enough"
+	},
+	{
+	    "id": 1,
+	    "characters": "mom,sister",
+	    "location": "living room",
+	    "flags": "grounded",
+	    "dialogue": "no tv for you"
+	},
+	{
+	    "id": 2,
+	    "characters": "fairy",
+	    "location": "bedroom",
+	    "flags": "gay,grounded",
+	    "dialogue": "I kissed a boy and I liked it"
+	},
+	{
+	    "id": 3,
+	    "characters": "fairy",
+	    "flags": "fairy,poisoned",
+	    "location": "bedroom",
+	    "dialogue": "I wanna die. Me too thanks."
+	},
+	{
+	    "id": 4,
+	    "characters": "cat",
+	    "location": "bedroom",
+	    "dialogue": "bla bla bla I wanna die bla bla bla."
+	},
+	{
+	    "id": 100,
+	    "characters": "dad,mom,sister",
+	    "location": "kitchen",
+	    "flags": "apple_acquired,brother_dead",
+	    "dialogue": "hello i am dialogue."
+	}
+    ],
     "locations": [
 	{
 	    "name": "kitchen_json",
@@ -75,8 +117,7 @@
 	    "name": "hallway",
 	    "description": "A long corridor of many rooms.",
 	    "items": "fairy",
-	    "neighbors": "{ \"west\": \"living room\", \"north\": \"kitchen\", \"south\": \"entry hall\" }",
-	    "characters": ""
+	    "neighbors": "{ \"west\": \"living room\", \"north\": \"kitchen\", \"south\": \"entry hall\" }"
 	},
 	{
 	    "name": "your bedroom",
