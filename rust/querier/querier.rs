@@ -12,11 +12,13 @@ use crate::models::*;
 /// Datafile Struct is a struct so we can bind all the information in a dump file.
 struct DataFile {
     /// The vector of items in the file.
-    items: Vec<Item>,
+    items: Option<Vec<Item>>,
     /// The vector of locations in the file.
-    locations: Vec<Location>,
+    locations: Option<Vec<Location>>,
     /// The vector of characters in the file.
-    characters: Vec<Character>,
+    characters: Option<Vec<Character>>,
+    /// The vector of dialogues in the file.
+    dialogues: Option<Vec<Dialogue>>,
 }
 
 impl Querier {
@@ -124,13 +126,30 @@ impl Querier {
         sql_query("CREATE UNIQUE INDEX character_names ON characters (name)")
             .execute(&self.connection)
             .expect("Failed to create characters index.");
+
+        sql_query("CREATE TABLE dialogues (id INTEGER PRIMARY KEY, characters TEXT NOT NULL, flags TEXT, location TEXT, dialogue TEXT NOT NULL)").execute(&self.connection).expect("Failed to create items table.");
+        sql_query("CREATE UNIQUE INDEX dialogues_id ON dialogues (id)")
+            .execute(&self.connection)
+            .expect("Failed to create items index.");
     }
 
     /// Given a querier instance setup dup data from the DataFile struct into the db tables.
     fn dump_data(&self, data: DataFile) {
-        self.insert_items(data.items);
-        self.insert_locations(data.locations);
-        self.insert_characters(data.characters);
+        if let Some(items) = data.items {
+            self.insert_items(items);
+        }
+
+        if let Some(locations) = data.locations {
+            self.insert_locations(locations);
+        }
+
+        if let Some(characters) = data.characters {
+            self.insert_characters(characters);
+        }
+
+        if let Some(dialogues) = data.dialogues {
+            self.insert_dialogues(dialogues);
+        }
     }
 
     /// Given a querier instance and a json/toml file, dump the file data to the tables in database.
@@ -886,10 +905,10 @@ impl Querier {
     /// });
     /// ```
     pub fn update_dialogue(
-        self,
+        &self,
         id_num: i32,
         updated_dialogue: Dialogue,
-    ) -> bool {
+    ) -> usize {
         use crate::schema::dialogues::dsl::*;
 
         diesel::update(dialogues.filter(id.eq(id_num)))
@@ -901,6 +920,5 @@ impl Querier {
             ))
             .execute(&self.connection)
             .expect("Error updating dialogue.")
-            == 1
     }
 }

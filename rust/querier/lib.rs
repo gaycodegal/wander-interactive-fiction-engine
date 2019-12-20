@@ -75,11 +75,11 @@ mod tests {
 
     fn common_dialogue() -> models::Dialogue {
         models::Dialogue {
-            id: 0,
+            id: 100,
             characters: String::from("dad,mom,sister"),
             flags: Some(String::from("apple_acquired,brother_dead")),
             location: String::from("kitchen"),
-            dialogue: String::from("hello i am dialgoue."),
+            dialogue: String::from("hello i am dialogue."),
         }
     }
 
@@ -523,173 +523,165 @@ mod tests {
         assert_eq!(character.clone(), got_character);
     }
 
-    // #[test]
-    // fn test_basic_query_dialogues() {
-    //     let querier = new_valid_db("query_dialogues.db");
+    #[test]
+    fn test_basic_query_dialogues() {
+        let querier = new_valid_db("query_dialogues.db");
 
-    //     let dialogues = querier.query_dialogues(Some("dad"), None, None, None);
-    //     assert_eq!(3, dialogues.len());
-    // }
+        let characters = vec!["dad"];
+        let dialogues =
+            querier.query_dialogues(Some(characters), None, None, None);
+        assert_eq!(2, dialogues.len());
+    }
 
-    // #[test]
-    // fn test_flags_query_dialogues() {
-    //     let querier = new_valid_db("flag_query_dialogues.db");
+    #[test]
+    fn test_flags_query_dialogues() {
+        let querier = new_valid_db("flag_query_dialogues.db");
 
-    //     let flags = vec!["red"];
-    //     let dialogues = querier.query_dialogues(None, Some(flags), None, None);
-    //     assert_eq!(2, dialogues.len());
+        let flags = vec!["grounded"];
+        let dialogues = querier.query_dialogues(None, Some(flags), None, None);
+        assert_eq!(2, dialogues.len());
 
-    //     let flags = vec!["fairy", "poisoned"];
-    //     let dialogues = querier.query_dialogues(None, Some(flags), None, None);
-    //     assert_eq!(1, dialogues.len());
-    // }
+        let flags = vec!["fairy", "poisoned"];
+        let dialogues = querier.query_dialogues(None, Some(flags), None, None);
+        assert_eq!(1, dialogues.len());
+    }
 
-    // #[test]
-    // fn test_loc_query_dialogues() {
-    //     let querier = new_valid_db("comp_query_dialogues.db");
+    #[test]
+    fn test_loc_query_dialogues() {
+        let querier = new_valid_db("comp_query_dialogues.db");
 
-    //     let comps = vec!["damages"];
-    //     let dialogues = querier.query_dialogues(
-    //         None,
-    //         None,
-    //         Some(String::from("kitchen")),
-    //         None,
-    //     );
-    //     assert_eq!(3, dialogues.len());
-    // }
+        let dialogues =
+            querier.query_dialogues(None, None, Some("kitchen"), None);
+        assert_eq!(2, dialogues.len());
+    }
 
-    // #[test]
-    // fn test_snip_query_dialogues() {
-    //     let querier = new_valid_db("snip_query_dialogues.db");
+    #[test]
+    fn test_snip_query_dialogues() {
+        let querier = new_valid_db("snip_query_dialogues.db");
 
-    //     let snips = vec!["I wanna die"];
-    //     let dialogues = querier.query_dialogues(None, None, None, Some(snips));
-    //     assert_eq!(3, dialogues.len());
+        let snips = vec!["I wanna die"];
+        let dialogues = querier.query_dialogues(None, None, None, Some(snips));
+        assert_eq!(2, dialogues.len());
 
-    //     let snips = vec!["I wanna die", "Me too thanks"];
-    //     let dialogues = querier.query_dialogues(None, None, None, Some(snips));
-    //     assert_eq!(2, dialogues.len());
-    // }
+        let snips = vec!["I wanna die", "Me too thanks"];
+        let dialogues = querier.query_dialogues(None, None, None, Some(snips));
+        assert_eq!(1, dialogues.len());
+    }
 
-    // #[test]
-    // fn test_query_all_dialogues() {
-    //     let querier = new_valid_db("query_all_dialogues.db");
+    #[test]
+    fn test_query_all_dialogues() {
+        let querier = new_valid_db("query_all_dialogues.db");
 
-    //     let dialogues = querier.query_dialogues(None, None, None, None);
-    //     assert_eq!(6, dialogues.len());
-    // }
+        let dialogues = querier.query_dialogues(None, None, None, None);
+        assert_eq!(6, dialogues.len());
+    }
 
-    // #[test]
-    // fn test_insert_dialogue() {
-    //     let querier = new_valid_db("insert_dialogue.db");
-    //     let dialogue = models::Dialogue {
-    //         id: 0,
-    //         characters: String::from("dad,fairy,blob"),
-    //         flags: None,
-    //         location: String::from("backyard"),
-    //         dialogue: String::from("Hello! I am Blob."),
-    //     };
+    #[test]
+    fn test_insert_dialogue() {
+        let querier = new_valid_db("insert_dialogue.db");
+        let dialogue = models::Dialogue {
+            id: 50,
+            characters: String::from("dad,fairy,blob"),
+            flags: None,
+            location: String::from("backyard"),
+            dialogue: String::from("Hello! I am Blob."),
+        };
 
-    //     let inserted = querier.insert_dialogue(dialogue.clone());
-    //     assert_eq!(1, inserted);
+        let inserted = querier.insert_dialogue(dialogue.clone());
+        assert_eq!(1, inserted);
 
-    //     let got_dialogue = querier.get_dialogue(0);
-    //     assert_eq!(dialogue, got_dialogue);
-    // }
+        let got_dialogue = querier.get_dialogue(50);
+        assert_eq!(dialogue, got_dialogue);
+    }
 
-    // #[test]
-    // fn test_insert_dialogues() {
-    //     let querier = new_valid_db("insert_dialogues.db");
-    //     let mut dialogues = Vec::new();
+    #[test]
+    fn test_insert_dialogues() {
+        let querier = new_valid_db("insert_dialogues.db");
+        let mut dialogues = Vec::new();
 
-    //     dialogues.push(models::Dialogue {
-    //         id: 0,
-    //         characters: String::from("dad,fairy,blob"),
-    //         flags: None,
-    //         location: String::from("backyard"),
-    //         dialogue: String::from("Hello! I am Blob."),
-    //     });
+        dialogues.push(models::Dialogue {
+            id: 50,
+            characters: String::from("dad,fairy,blob"),
+            flags: None,
+            location: String::from("backyard"),
+            dialogue: String::from("Hello! I am Blob."),
+        });
 
-    //     dialogues.push(models::Dialogue {
-    //         id: 1,
-    //         characters: String::from("sister,mom"),
-    //         flags: None,
-    //         location: String::from("living_room"),
-    //         dialogue: String::from("Pew pew pew."),
-    //     });
+        dialogues.push(models::Dialogue {
+            id: 51,
+            characters: String::from("sister,mom,blob"),
+            flags: None,
+            location: String::from("living_room"),
+            dialogue: String::from("Pew pew pew."),
+        });
 
-    //     let inserted = querier.insert_dialogues(dialogues.clone());
-    //     assert_eq!(2, inserted);
+        let inserted = querier.insert_dialogues(dialogues.clone());
+        assert_eq!(2, inserted);
 
-    //     let q_dialogues =
-    //         querier.query_dialogues(Some("Test_Dialogue_Insert"), None, None);
-    //     assert_eq!(dialogues[0], q_dialogues[0]);
-    //     assert_eq!(dialogues[1], q_dialogues[1]);
-    // }
+        let characters = vec!["blob"];
+        let q_dialogues =
+            querier.query_dialogues(Some(characters), None, None, None);
+        assert_eq!(dialogues[0], q_dialogues[0]);
+        assert_eq!(dialogues[1], q_dialogues[1]);
+    }
 
-    // #[test]
-    // #[should_panic(
-    //     expected = "Error inserting dialogue.: DatabaseError(UniqueViolation, \"UNIQUE constraint failed: dialogues.name\")"
-    // )]
-    // fn test_insert_existing_dialogue() {
-    //     let querier = new_valid_db("insert_existing_dialogue.db");
+    #[test]
+    #[should_panic(
+        expected = "Error inserting dialogue.: DatabaseError(UniqueViolation, \"UNIQUE constraint failed: dialogues.id\")"
+    )]
+    fn test_insert_existing_dialogue() {
+        let querier = new_valid_db("insert_existing_dialogue.db");
 
-    //     querier.insert_dialogue(common_dialogue());
-    // }
+        querier.insert_dialogue(common_dialogue());
+    }
 
-    // #[test]
-    // fn test_get_dialogue() {
-    //     let querier = new_valid_db("get_dialogue.db");
+    #[test]
+    fn test_get_dialogue() {
+        let querier = new_valid_db("get_dialogue.db");
 
-    //     let got_dialogue = querier.get_dialogue("Test_Dialogue");
-    //     assert_eq!(common_dialogue(), got_dialogue);
-    // }
+        let got_dialogue = querier.get_dialogue(100);
+        assert_eq!(common_dialogue(), got_dialogue);
+    }
 
-    // #[test]
-    // #[should_panic(expected = "Failed to get dialogue.: NotFound")]
-    // fn test_get_nonexistant_dialogue() {
-    //     let querier = new_valid_db("get_nonexistant_dialogue.db");
+    #[test]
+    #[should_panic(expected = "Failed to get dialogue.: NotFound")]
+    fn test_get_nonexistant_dialogue() {
+        let querier = new_valid_db("get_nonexistant_dialogue.db");
 
-    //     querier.get_dialogue("Fake_Dialogue");
-    // }
+        querier.get_dialogue(1000);
+    }
 
-    // #[test]
-    // fn test_remove_dialogue() {
-    //     let querier = new_valid_db("remove_dialogue.db");
+    #[test]
+    fn test_remove_dialogue() {
+        let querier = new_valid_db("remove_dialogue.db");
 
-    //     assert_eq!(1, querier.remove_dialogue("Test_Dialogue"));
-    // }
+        assert_eq!(1, querier.remove_dialogue(100));
+    }
 
-    // #[test]
-    // fn test_simple_update_dialogue() {
-    //     let querier = new_valid_db("simple_update_dialogue.db");
-    //     let mut dialogue = common_dialogue();
-    //     dialogue.description = String::from("updated description.");
+    #[test]
+    fn test_simple_update_dialogue() {
+        let querier = new_valid_db("simple_update_dialogue.db");
+        let mut dialogue = common_dialogue();
+        dialogue.dialogue = String::from("updated dialogue.");
 
-    //     assert_eq!(
-    //         1,
-    //         querier.update_dialogue("Test_Dialogue", dialogue.clone())
-    //     );
+        assert_eq!(1, querier.update_dialogue(100, dialogue.clone()));
 
-    //     let got_dialogue = querier.get_dialogue("Test_Dialogue");
-    //     assert_eq!(dialogue.clone(), got_dialogue);
-    // }
+        let got_dialogue = querier.get_dialogue(100);
+        assert_eq!(dialogue.clone(), got_dialogue);
+    }
 
-    // #[test]
-    // fn test_complex_update_dialogue() {
-    //     let querier = new_valid_db("complex_update_dialogue.db");
-    //     let mut dialogue = common_dialogue();
-    //     dialogue.name = String::from("Updated_Dialogue_Name");
-    //     dialogue.description = String::from("updated description.");
-    //     dialogue.attributes = String::from("updates,test");
-    //     dialogue.components = String::from("{\"updated\": true}");
+    #[test]
+    fn test_complex_update_dialogue() {
+        let querier = new_valid_db("complex_update_dialogue.db");
+        let mut dialogue = common_dialogue();
+        dialogue.characters = String::from("mom,dad");
+        dialogue.flags = Some(String::from("hw"));
+        dialogue.location = String::from("Test_Location");
+        dialogue.dialogue = String::from("Mama mia.");
 
-    //     assert_eq!(
-    //         1,
-    //         querier.update_dialogue("Test_Dialogue", dialogue.clone())
-    //     );
+        assert_eq!(1, querier.update_dialogue(100, dialogue.clone()));
 
-    //     let got_dialogue = querier.get_dialogue("Updated_Dialogue_Name");
-    //     assert_eq!(dialogue.clone(), got_dialogue);
-    // }
+        let got_dialogue = querier.get_dialogue(100);
+        assert_eq!(dialogue.clone(), got_dialogue);
+    }
 }
