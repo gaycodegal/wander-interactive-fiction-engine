@@ -12,23 +12,38 @@ impl<'lifetime> Scene<'lifetime> {
     }
 
     pub fn ask_question<'question>(&self, sentence: &Sentence) -> bool {
-	let question = &sentence.verb;
-	let unfiltered = vec![];
-	let location = match &sentence.prep {
-	    Some(prep) => Some(self.select(&prep.noun_clause, &unfiltered)),
-	    None => None,
-	};
-	if location.is_none() && sentence.prep.is_some() {
-	    return false;
-	}
-	let location = match &location {
-	    Some(matches) => matches.first(),
-	    None => None,
-	}.unwrap_or(self.root);
-	let subject = &sentence.subject;
-	let filters = vec![exist as fn(&Value) -> bool];
-	let subjects = self.select_custom_root(subject, &filters, location);
-	return subjects.len() >= 1;
+        let result = self.ask_question_helper(sentence);
+        match result {
+            Some(result) => result,
+            None => false,
+        }
+    }
+
+    fn ask_question_helper<'question>(
+        &self,
+        sentence: &Sentence,
+    ) -> Option<bool> {
+        let qtype = &sentence.q_type.to_owned()?;
+
+        let unfiltered = vec![];
+
+        let location = match &sentence.prep {
+            Some(prep) => Some(self.select(&prep.noun_clause, &unfiltered)),
+            None => None,
+        };
+        if location.is_none() && sentence.prep.is_some() {
+            return Some(false);
+        }
+        let location = match &location {
+            Some(matches) => matches.first(),
+            None => None,
+        }
+        .unwrap_or(self.root);
+        let subject = &sentence.subject;
+        println!("{}", qtype);
+        let filters = vec![exist as fn(&Value) -> bool];
+        let subjects = self.select_custom_root(subject, &filters, location);
+        return Some(subjects.len() >= 1);
     }
 
     pub fn select(
@@ -45,7 +60,7 @@ impl<'lifetime> Scene<'lifetime> {
         &self,
         noun_clause: &NounClause,
         filters: &Vec<fn(&Value) -> bool>,
-	root: &Value
+        root: &Value,
     ) -> Vec<Value> {
         let mut results = Vec::new();
         self.select_child_helper(&mut results, noun_clause, filters, root);
@@ -101,7 +116,7 @@ impl<'lifetime> Scene<'lifetime> {
     }
 }
 
-fn exist(value: &Value) -> bool {
+fn exist(_: &Value) -> bool {
     return true;
 }
 
@@ -109,10 +124,11 @@ fn exist(value: &Value) -> bool {
 mod test {
     use super::Scene;
     use sentence::NounClause;
+    use sentence::Sentence;
+    use serde_json::Value;
 
-    #[test]
-    fn test_scene_selects_multiple_items() {
-        let mut data = json!({
+    fn test_scene() -> Value {
+        json!({
             "children": [
         // WANT
         {"noun": "apple", "adjectives": ["red", "dirty"]},
@@ -126,7 +142,31 @@ mod test {
             {"noun": "apple", "adjectives": ["clean"]},
         ]},
             ],
-        });
+        })
+    }
+
+    fn test_sentence() -> Sentence {
+        Sentence::new(
+            NounClause::new("apple".to_string(), None, Some("red".to_string())),
+            "is".to_string(),
+            None,
+            Some("exist".to_string()),
+            true,
+        )
+    }
+
+    #[test]
+    fn test_ask_question() {
+	let mut data = test_scene();
+        let scene = Scene::new(&mut data);
+	let sentence = test_sentence();
+        let result = scene.ask_question(&sentence);
+	println!("result is {}", result);
+    }
+
+    #[test]
+    fn test_scene_selects_multiple_items() {
+        let mut data = test_scene();
         let scene = Scene::new(&mut data);
         let filters = Vec::new();
         let search_term =
