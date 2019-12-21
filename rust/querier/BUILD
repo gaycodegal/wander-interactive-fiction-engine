@@ -9,6 +9,7 @@ licenses([
 rust_library(
     name = "querier",
     srcs = [
+        "dialogue_tree.rs",
         "lib.rs",
         "models.rs",
         "querier.rs",

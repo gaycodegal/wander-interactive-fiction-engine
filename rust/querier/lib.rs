@@ -5,6 +5,7 @@ extern crate serde_json;
 extern crate diesel;
 extern crate toml;
 
+pub mod dialogue_tree;
 pub mod models;
 pub mod querier;
 mod schema;
