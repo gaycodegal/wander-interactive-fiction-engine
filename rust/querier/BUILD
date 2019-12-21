@@ -26,11 +26,6 @@ rust_library(
     ],
 )
 
-rust_doc(
-    name = "querier_doc",
-    dep = ":querier",
-)
-
 filegroup(
     name = "db_test_data",
     srcs = glob([
