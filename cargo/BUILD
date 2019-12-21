@@ -14,11 +14,11 @@ alias(
 )
 alias(
     name = "serde",
-    actual = "//cargo/vendor/serde-1.0.103:serde",
+    actual = "//cargo/vendor/serde-1.0.104:serde",
 )
 alias(
     name = "serde_json",
-    actual = "//cargo/vendor/serde_json-1.0.42:serde_json",
+    actual = "//cargo/vendor/serde_json-1.0.44:serde_json",
 )
 alias(
     name = "toml",
