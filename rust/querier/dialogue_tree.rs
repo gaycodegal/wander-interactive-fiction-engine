@@ -9,6 +9,7 @@ pub enum DialogueType {
 }
 
 pub trait DialogueNode: std::any::Any + std::fmt::Display {
+    fn as_any(&self) -> &dyn std::any::Any;
     fn character(&self) -> &'static str;
     fn text(&self) -> &'static str;
     fn node_type(&self) -> DialogueType;
@@ -16,6 +17,66 @@ pub trait DialogueNode: std::any::Any + std::fmt::Display {
     fn set_visited(&mut self);
 }
 
+impl std::fmt::Debug for Box<dyn DialogueNode> {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let nt: DialogueType = self.node_type();
+        return match nt {
+            DialogueType::Select => {
+                let sel = self.as_any().downcast_ref::<Select>().unwrap();
+                write!(
+                    f,
+                    "character: {}
+text: {}
+node_type: {:?}
+visited: {}",
+                    sel.character(),
+                    sel.text(),
+                    sel.node_type(),
+                    sel.visited()
+                )
+            }
+            DialogueType::PriorityTalk => {
+                let prio_talk =
+                    self.as_any().downcast_ref::<PriorityTalk>().unwrap();
+                write!(
+                    f,
+                    "character: {}
+text: {}
+node_type: {:?}
+visited: {}
+priority: {}
+child: {:?}",
+                    prio_talk.character(),
+                    prio_talk.text(),
+                    prio_talk.node_type(),
+                    prio_talk.visited(),
+                    prio_talk.priority(),
+                    prio_talk.next()
+                )
+            }
+            DialogueType::Talk => {
+                let talk = self.as_any().downcast_ref::<Talk>().unwrap();
+                write!(
+                    f,
+                    "character: {}
+text: {}
+node_type: {:?}
+visited: {}
+child: {:?}",
+                    talk.character(),
+                    talk.text(),
+                    talk.node_type(),
+                    talk.visited(),
+                    talk.next()
+                )
+            }
+        };
+    }
+}
+
+// impl Serialize for Box<dyn DialogueNode> {}
+
+#[derive(Debug)]
 pub struct Select {
     character: &'static str,
     text: &'static str,
@@ -27,6 +88,10 @@ pub struct Select {
 impl Select {
     pub fn add_child(&mut self, child: Box<dyn DialogueNode>) {
         self.children.push(child);
+    }
+
+    pub fn num_children(&self) -> usize {
+        self.children.len()
     }
 
     pub fn select_child(&self, child: usize) -> &Box<dyn DialogueNode> {
@@ -45,6 +110,10 @@ impl Select {
 }
 
 impl DialogueNode for Select {
+    fn as_any(&self) -> &std::any::Any {
+        self
+    }
+
     fn character(&self) -> &'static str {
         self.character
     }
@@ -73,15 +142,18 @@ impl std::fmt::Display for Select {
             "character: {}
 text: {}
 node_type: {:?}
-visited: {}",
+visited: {},
+num_children: {}",
             self.character(),
             self.text(),
             self.node_type(),
-            self.visited
+            self.visited(),
+            self.num_children(),
         )
     }
 }
 
+#[derive(Debug)]
 pub struct PriorityTalk {
     character: &'static str,
     text: &'static str,
@@ -117,6 +189,10 @@ impl PriorityTalk {
 }
 
 impl DialogueNode for PriorityTalk {
+    fn as_any(&self) -> &std::any::Any {
+        self
+    }
+
     fn character(&self) -> &'static str {
         self.character
     }
@@ -140,22 +216,26 @@ impl DialogueNode for PriorityTalk {
 
 impl std::fmt::Display for PriorityTalk {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let child = self.next().is_some();
         write!(
             f,
             "character: {}
 text: {}
 node_type: {:?}
 visited: {}
-priority: {}",
+priority: {},
+has_child: {}",
             self.character(),
             self.text(),
             self.node_type(),
             self.visited,
-            self.priority()
+            self.priority(),
+            child,
         )
     }
 }
 
+#[derive(Debug)]
 pub struct Talk {
     character: &'static str,
     text: &'static str,
@@ -181,6 +261,10 @@ impl Talk {
 }
 
 impl DialogueNode for Talk {
+    fn as_any(&self) -> &std::any::Any {
+        self
+    }
+
     fn character(&self) -> &'static str {
         self.character
     }
@@ -204,16 +288,19 @@ impl DialogueNode for Talk {
 
 impl std::fmt::Display for Talk {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let child = self.next().is_some();
         write!(
             f,
             "character: {}
 text: {}
 node_type: {:?}
-visited: {}",
+visited: {}
+has_child: {}",
             self.character(),
             self.text(),
             self.node_type(),
-            self.visited
+            self.visited,
+            child,
         )
     }
 }
