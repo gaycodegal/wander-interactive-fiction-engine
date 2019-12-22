@@ -1,6 +1,7 @@
+use serde::de::{Deserialize, Deserializer, MapAccess, SeqAccess, Visitor};
 use serde::ser::{Serialize, SerializeStruct, Serializer};
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub enum DialogueType {
     Select,
     PriorityTalk,
@@ -130,12 +131,268 @@ impl Serialize for Box<dyn DialogueNode> {
     }
 }
 
+impl<'de> Deserialize<'de> for Box<dyn DialogueNode> {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        enum Field {
+            Character,
+            Text,
+            NodeType,
+            Visited,
+            Children,
+            Priority,
+            Child,
+        };
+
+        impl<'de> Deserialize<'de> for Field {
+            fn deserialize<D>(deserializer: D) -> Result<Field, D::Error>
+            where
+                D: Deserializer<'de>,
+            {
+                struct FieldVisitor;
+
+                impl<'de> Visitor<'de> for FieldVisitor {
+                    type Value = Field;
+
+                    fn expecting(
+                        &self,
+                        formatter: &mut std::fmt::Formatter,
+                    ) -> std::fmt::Result {
+                        formatter.write_str("valid struct")
+                    }
+
+                    fn visit_str<E>(self, value: &str) -> Result<Field, E>
+                    where
+                        E: serde::de::Error,
+                    {
+                        match value {
+                            "character" => Ok(Field::Character),
+                            "text" => Ok(Field::Text),
+                            "node_type" => Ok(Field::NodeType),
+                            "visited" => Ok(Field::Visited),
+                            "children" => Ok(Field::Children),
+                            "Priority" => Ok(Field::Priority),
+                            "Child" => Ok(Field::Child),
+                            _ => Err(serde::de::Error::unknown_field(
+                                value, FIELDS,
+                            )),
+                        }
+                    }
+                }
+
+                deserializer.deserialize_identifier(FieldVisitor)
+            }
+        }
+
+        struct DialogueNodeVisitor;
+        impl<'de> Visitor<'de> for DialogueNodeVisitor {
+            type Value = Box<dyn DialogueNode>;
+
+            fn expecting(
+                &self,
+                formatter: &mut std::fmt::Formatter,
+            ) -> std::fmt::Result {
+                formatter.write_str("struct DialogueNode")
+            }
+
+            fn visit_seq<V>(
+                self,
+                mut seq: V,
+            ) -> Result<Box<dyn DialogueNode>, V::Error>
+            where
+                V: SeqAccess<'de>,
+            {
+                let character = seq.next_element()?.ok_or_else(|| {
+                    serde::de::Error::invalid_length(0, &self)
+                })?;
+                let text = seq.next_element()?.ok_or_else(|| {
+                    serde::de::Error::invalid_length(1, &self)
+                })?;
+                let node_type = seq.next_element()?.ok_or_else(|| {
+                    serde::de::Error::invalid_length(2, &self)
+                })?;
+                let visited = seq.next_element()?.ok_or_else(|| {
+                    serde::de::Error::invalid_length(3, &self)
+                })?;
+                let children = seq.next_element()?.ok_or_else(|| {
+                    serde::de::Error::invalid_length(4, &self)
+                })?;
+                let priority = seq.next_element()?.ok_or_else(|| {
+                    serde::de::Error::invalid_length(5, &self)
+                })?;
+                let child = seq.next_element()?.ok_or_else(|| {
+                    serde::de::Error::invalid_length(6, &self)
+                })?;
+
+                let nt: DialogueType = DialogueType::Select;
+                return match nt {
+                    DialogueType::Select => Ok(Box::new(Select {
+                        character,
+                        text,
+                        node_type,
+                        visited,
+                        children,
+                    })),
+                    DialogueType::PriorityTalk => Ok(Box::new(PriorityTalk {
+                        character,
+                        text,
+                        node_type,
+                        visited,
+                        priority,
+                        child,
+                    })),
+                    DialogueType::Talk => Ok(Box::new(Talk {
+                        character,
+                        text,
+                        node_type,
+                        visited,
+                        child,
+                    })),
+                };
+            }
+
+            fn visit_map<V>(
+                self,
+                mut map: V,
+            ) -> Result<Box<dyn DialogueNode>, V::Error>
+            where
+                V: MapAccess<'de>,
+            {
+                let mut character = None;
+                let mut text = None;
+                let mut node_type = None;
+                let mut visited = None;
+                let mut children = None;
+                let mut priority = None;
+                let mut child = None;
+
+                while let Some(key) = map.next_key()? {
+                    match key {
+                        Field::Character => {
+                            if character.is_some() {
+                                return Err(serde::de::Error::duplicate_field(
+                                    "character",
+                                ));
+                            }
+                            character = Some(map.next_value()?);
+                        }
+                        Field::Text => {
+                            if text.is_some() {
+                                return Err(serde::de::Error::duplicate_field(
+                                    "text",
+                                ));
+                            }
+                            text = Some(map.next_value()?);
+                        }
+                        Field::NodeType => {
+                            if node_type.is_some() {
+                                return Err(serde::de::Error::duplicate_field(
+                                    "node_type",
+                                ));
+                            }
+                            node_type = Some(map.next_value()?);
+                        }
+                        Field::Visited => {
+                            if visited.is_some() {
+                                return Err(serde::de::Error::duplicate_field(
+                                    "visited",
+                                ));
+                            }
+                            visited = Some(map.next_value()?);
+                        }
+                        Field::Children => {
+                            if children.is_some() {
+                                return Err(serde::de::Error::duplicate_field(
+                                    "children",
+                                ));
+                            }
+                            children = Some(map.next_value()?);
+                        }
+                        Field::Priority => {
+                            if priority.is_some() {
+                                return Err(serde::de::Error::duplicate_field(
+                                    "priority",
+                                ));
+                            }
+                            priority = Some(map.next_value()?);
+                        }
+                        Field::Child => {
+                            if child.is_some() {
+                                return Err(serde::de::Error::duplicate_field(
+                                    "child",
+                                ));
+                            }
+                            child = Some(map.next_value()?);
+                        }
+                    }
+                }
+
+                let character = character.ok_or_else(|| {
+                    serde::de::Error::missing_field("character")
+                })?;
+                let text = text
+                    .ok_or_else(|| serde::de::Error::missing_field("text"))?;
+                let node_type = node_type.ok_or_else(|| {
+                    serde::de::Error::missing_field("node_type")
+                })?;
+                let visited = visited.ok_or_else(|| {
+                    serde::de::Error::missing_field("visited")
+                })?;
+                let children = children.ok_or_else(|| {
+                    serde::de::Error::missing_field("children")
+                })?;
+                let priority = priority.ok_or_else(|| {
+                    serde::de::Error::missing_field("priority")
+                })?;
+                let child = child
+                    .ok_or_else(|| serde::de::Error::missing_field("child"))?;
+
+                let nt: DialogueType = DialogueType::Select;
+                return match nt {
+                    DialogueType::Select => Ok(Box::new(Select {
+                        character,
+                        text,
+                        node_type,
+                        visited,
+                        children,
+                    })),
+                    DialogueType::PriorityTalk => Ok(Box::new(PriorityTalk {
+                        character,
+                        text,
+                        node_type,
+                        visited,
+                        priority,
+                        child,
+                    })),
+                    DialogueType::Talk => Ok(Box::new(Talk {
+                        character,
+                        text,
+                        node_type,
+                        visited,
+                        child,
+                    })),
+                };
+            }
+        }
+
+        const FIELDS: &'static [&'static str] =
+            &["character", "text", "node_type", "visited"];
+        deserializer.deserialize_struct(
+            "DialogueNode",
+            FIELDS,
+            DialogueNodeVisitor,
+        )
+    }
+}
+
 #[derive(Debug, serde::Serialize)]
 pub struct Select {
     character: &'static str,
     text: &'static str,
     node_type: DialogueType,
-    pub visited: bool,
+    visited: bool,
     children: Vec<Box<dyn DialogueNode>>,
 }
 
