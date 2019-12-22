@@ -48,7 +48,8 @@ fn query_test() {
     let child =
         PriorityTalk::new("mom", "You are grounded. What were you thinking?");
     tree.add_child(Box::new(child));
-    println!("{}\n\n{}", tree, tree.select_child(0));
+    println!("The debugs:\n{:?}", tree);
+    println!("\n\nThe prints:\n{}\n\n{}", tree, tree.select_child(0));
 }
 
 fn lang_test() -> Option<()> {
