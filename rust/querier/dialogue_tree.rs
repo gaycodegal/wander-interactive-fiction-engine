@@ -1,7 +1,6 @@
-//use erased_serde::Serialize;
-use serde::{Deserialize, Serialize};
+use serde::ser::{Serialize, SerializeStruct, Serializer};
 
-#[derive(Copy, Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub enum DialogueType {
     Select,
     PriorityTalk,
@@ -74,9 +73,64 @@ child: {:?}",
     }
 }
 
-// impl Serialize for Box<dyn DialogueNode> {}
+impl Serialize for Box<dyn DialogueNode> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let nt: DialogueType = self.node_type();
+        return match nt {
+            DialogueType::Select => {
+                let sel = self.as_any().downcast_ref::<Select>().unwrap();
+                let mut select_serializer =
+                    serializer.serialize_struct("select", 1)?;
+                select_serializer
+                    .serialize_field("character", sel.character())?;
+                select_serializer.serialize_field("text", sel.text())?;
+                select_serializer
+                    .serialize_field("node_type", &sel.node_type())?;
+                select_serializer.serialize_field("visited", &sel.visited())?;
+                select_serializer
+                    .serialize_field("children", sel.children())?;
+                select_serializer.end()
+            }
+            DialogueType::PriorityTalk => {
+                let prio_talk =
+                    self.as_any().downcast_ref::<PriorityTalk>().unwrap();
+                let mut priority_talk_serializer =
+                    serializer.serialize_struct("PriorityTalk", 1)?;
+                priority_talk_serializer
+                    .serialize_field("character", prio_talk.character())?;
+                priority_talk_serializer
+                    .serialize_field("text", prio_talk.text())?;
+                priority_talk_serializer
+                    .serialize_field("node_type", &prio_talk.node_type())?;
+                priority_talk_serializer
+                    .serialize_field("visited", &prio_talk.visited())?;
+                priority_talk_serializer
+                    .serialize_field("priority", &prio_talk.priority())?;
+                priority_talk_serializer
+                    .serialize_field("child", prio_talk.next())?;
+                priority_talk_serializer.end()
+            }
+            DialogueType::Talk => {
+                let talk = self.as_any().downcast_ref::<Talk>().unwrap();
+                let mut talk_serializer =
+                    serializer.serialize_struct("Talk", 1)?;
+                talk_serializer
+                    .serialize_field("character", talk.character())?;
+                talk_serializer.serialize_field("text", talk.text())?;
+                talk_serializer
+                    .serialize_field("node_type", &talk.node_type())?;
+                talk_serializer.serialize_field("visited", &talk.visited())?;
+                talk_serializer.serialize_field("child", talk.next())?;
+                talk_serializer.end()
+            }
+        };
+    }
+}
 
-#[derive(Debug)]
+#[derive(Debug, serde::Serialize)]
 pub struct Select {
     character: &'static str,
     text: &'static str,
@@ -88,6 +142,10 @@ pub struct Select {
 impl Select {
     pub fn add_child(&mut self, child: Box<dyn DialogueNode>) {
         self.children.push(child);
+    }
+
+    fn children(&self) -> &Vec<Box<dyn DialogueNode>> {
+        &self.children
     }
 
     pub fn num_children(&self) -> usize {
@@ -153,7 +211,7 @@ num_children: {}",
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, serde::Serialize)]
 pub struct PriorityTalk {
     character: &'static str,
     text: &'static str,
@@ -235,7 +293,7 @@ has_child: {}",
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, serde::Serialize)]
 pub struct Talk {
     character: &'static str,
     text: &'static str,
