@@ -7,6 +7,7 @@ extern crate serde_json;
 use cfg::lang::Lang;
 use ift::scene::Scene;
 use ift::sentence::Sentence;
+use querier::dialogue_tree::*;
 use querier::models::*;
 use std::io;
 use std::io::Write;
@@ -41,7 +42,13 @@ fn query_test() {
         .expect("unsuccesful json dump to db");
 
     let dia = q.get_dialogue(0);
-    println!("dia {:?}", dia.dialogue());
+    println!("dia {:?}", dia.dialogue_string());
+
+    let mut tree = Select::new("dad", "Hello son.");
+    let child =
+        PriorityTalk::new("mom", "You are grounded. What were you thinking?");
+    tree.add_child(Box::new(child));
+    println!("{}\n\n{}", tree, tree.select_child(0));
 }
 
 fn lang_test() -> Option<()> {
