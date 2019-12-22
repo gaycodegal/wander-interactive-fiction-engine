@@ -4,11 +4,11 @@ use serde::{Deserialize, Serialize};
 #[derive(Copy, Clone, Debug, Deserialize, Serialize)]
 pub enum DialogueType {
     Select,
-    PriortyTalk,
+    PriorityTalk,
     Talk,
 }
 
-pub trait DialogueNode: std::any::Any {
+pub trait DialogueNode: std::any::Any + std::fmt::Display {
     fn character(&self) -> &'static str;
     fn text(&self) -> &'static str;
     fn node_type(&self) -> DialogueType;
@@ -66,104 +66,154 @@ impl DialogueNode for Select {
     }
 }
 
-// pub struct PriorityTalk {
-//     character: &'static str,
-//     text: &'static str,
-//     node_type: DialogueType,
-//     visited: bool,
-//     child: Option<Box<dyn DialogueNode>>,
-//     priority: i32,
-// }
+impl std::fmt::Display for Select {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "character: {}
+text: {}
+node_type: {:?}
+visited: {}",
+            self.character(),
+            self.text(),
+            self.node_type(),
+            self.visited
+        )
+    }
+}
 
-// impl PriorityTalk {
-//     pub fn priority(&self) -> i32 {
-//         self.priority
-//     }
+pub struct PriorityTalk {
+    character: &'static str,
+    text: &'static str,
+    node_type: DialogueType,
+    visited: bool,
+    child: Option<Box<dyn DialogueNode>>,
+    priority: i32,
+}
 
-//     pub fn set_priority(&mut self, priority: i32) {
-//         self.priority = priority;
-//     }
+impl PriorityTalk {
+    pub fn priority(&self) -> i32 {
+        self.priority
+    }
 
-//     pub fn next(&self) -> &Option<Box<dyn DialogueNode>> {
-//         &self.child
-//     }
+    pub fn set_priority(&mut self, priority: i32) {
+        self.priority = priority;
+    }
 
-//     pub fn new(character: &'static str, text: &'static str) -> Self {
-//         PriorityTalk {
-//             character: character,
-//             text: text,
-//             node_type: DialogueType::Select,
-//             visited: false,
-//             child: None,
-//             priority: 0,
-//         }
-//     }
-// }
+    pub fn next(&self) -> &Option<Box<dyn DialogueNode>> {
+        &self.child
+    }
 
-// impl DialogueNode for PriorityTalk {
-//     fn character(&self) -> &'static str {
-//         self.character
-//     }
+    pub fn new(character: &'static str, text: &'static str) -> Self {
+        PriorityTalk {
+            character: character,
+            text: text,
+            node_type: DialogueType::PriorityTalk,
+            visited: false,
+            child: None,
+            priority: 0,
+        }
+    }
+}
 
-//     fn text(&self) -> &'static str {
-//         self.text
-//     }
+impl DialogueNode for PriorityTalk {
+    fn character(&self) -> &'static str {
+        self.character
+    }
 
-//     fn node_type(&self) -> DialogueType {
-//         self.node_type
-//     }
+    fn text(&self) -> &'static str {
+        self.text
+    }
 
-//     fn visited(&self) -> bool {
-//         self.visited
-//     }
+    fn node_type(&self) -> DialogueType {
+        self.node_type
+    }
 
-//     fn set_visited(&mut self) {
-//         self.visited = !self.visited;
-//     }
-// }
+    fn visited(&self) -> bool {
+        self.visited
+    }
 
-// pub struct Talk {
-//     character: &'static str,
-//     text: &'static str,
-//     node_type: DialogueType,
-//     visited: bool,
-//     child: Option<Box<dyn DialogueNode>>,
-// }
+    fn set_visited(&mut self) {
+        self.visited = !self.visited;
+    }
+}
 
-// impl Talk {
-//     pub fn next(&self) -> &Option<Box<dyn DialogueNode>> {
-//         &self.child
-//     }
+impl std::fmt::Display for PriorityTalk {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "character: {}
+text: {}
+node_type: {:?}
+visited: {}
+priority: {}",
+            self.character(),
+            self.text(),
+            self.node_type(),
+            self.visited,
+            self.priority()
+        )
+    }
+}
 
-//     pub fn new(character: &'static str, text: &'static str) -> Self {
-//         Talk {
-//             character: character,
-//             text: text,
-//             node_type: DialogueType::Select,
-//             visited: false,
-//             child: None,
-//         }
-//     }
-// }
+pub struct Talk {
+    character: &'static str,
+    text: &'static str,
+    node_type: DialogueType,
+    visited: bool,
+    child: Option<Box<dyn DialogueNode>>,
+}
 
-// impl DialogueNode for Talk {
-//     fn character(&self) -> &'static str {
-//         self.character
-//     }
+impl Talk {
+    pub fn next(&self) -> &Option<Box<dyn DialogueNode>> {
+        &self.child
+    }
 
-//     fn text(&self) -> &'static str {
-//         self.text
-//     }
+    pub fn new(character: &'static str, text: &'static str) -> Self {
+        Talk {
+            character: character,
+            text: text,
+            node_type: DialogueType::Talk,
+            visited: false,
+            child: None,
+        }
+    }
+}
 
-//     fn node_type(&self) -> DialogueType {
-//         self.node_type
-//     }
+impl DialogueNode for Talk {
+    fn character(&self) -> &'static str {
+        self.character
+    }
 
-//     fn visited(&self) -> bool {
-//         self.visited
-//     }
+    fn text(&self) -> &'static str {
+        self.text
+    }
 
-//     fn set_visited(&mut self) {
-//         self.visited = !self.visited;
-//     }
-// }
+    fn node_type(&self) -> DialogueType {
+        self.node_type
+    }
+
+    fn visited(&self) -> bool {
+        self.visited
+    }
+
+    fn set_visited(&mut self) {
+        self.visited = !self.visited;
+    }
+}
+
+impl std::fmt::Display for Talk {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "character: {}
+text: {}
+node_type: {:?}
+visited: {}",
+            self.character(),
+            self.text(),
+            self.node_type(),
+            self.visited
+        )
+    }
+}
