@@ -2,9 +2,8 @@ use crate::schema::*;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use serde::Deserialize;
-// use serde_json::Result;
 
-use dialogue_tree::*;
+// use dialogue_tree::*;
 
 /// FileType to describe a type of file.
 pub enum FileType {
