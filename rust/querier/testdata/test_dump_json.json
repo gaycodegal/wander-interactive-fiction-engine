@@ -54,7 +54,7 @@
 	    "id": 0,
 	    "characters": "dad",
 	    "location": "kitchen_json",
-	    "dialogue": "for now this is good enough"
+	    "dialogue": "{\"character\": \"dad\", \"text\": \"I am cooking a steak.\", \"node_type\": 2, \"visited\": false }"
 	},
 	{
 	    "id": 1,

@@ -913,10 +913,10 @@ impl Querier {
 
         diesel::update(dialogues.filter(id.eq(id_num)))
             .set((
-                characters.eq(updated_dialogue.characters),
-                flags.eq(updated_dialogue.flags),
-                location.eq(updated_dialogue.location),
-                dialogue.eq(updated_dialogue.dialogue),
+                characters.eq(&updated_dialogue.characters),
+                flags.eq(&updated_dialogue.flags),
+                location.eq(&updated_dialogue.location),
+                dialogue.eq(updated_dialogue.dialogue_string()),
             ))
             .execute(&self.connection)
             .expect("Error updating dialogue.")

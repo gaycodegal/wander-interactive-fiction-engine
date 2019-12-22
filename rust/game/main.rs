@@ -40,16 +40,8 @@ fn query_test() {
     q.dump_from_file(&json_path, FileType::JSON)
         .expect("unsuccesful json dump to db");
 
-    let mut toml_path_buffer = PathBuf::from("/tmp");
-    toml_path_buffer.push("test_dump_toml.toml");
-
-    let toml_path = toml_path_buffer
-        .into_os_string()
-        .into_string()
-        .expect("String conversion of path failed.");
-
-    q.dump_from_file(&toml_path, FileType::TOML)
-        .expect("unsuccesful toml dump to db");
+    let dia = q.get_dialogue(0);
+    println!("dia {:?}", dia.dialogue());
 }
 
 fn lang_test() -> Option<()> {

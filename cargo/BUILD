@@ -13,6 +13,10 @@ alias(
     actual = "//cargo/vendor/diesel-1.4.3:diesel",
 )
 alias(
+    name = "erased_serde",
+    actual = "//cargo/vendor/erased-serde-0.3.9:erased_serde",
+)
+alias(
     name = "serde",
     actual = "//cargo/vendor/serde-1.0.104:serde",
 )
@@ -23,4 +27,8 @@ alias(
 alias(
     name = "toml",
     actual = "//cargo/vendor/toml-0.5.5:toml",
+)
+alias(
+    name = "typetag",
+    actual = "//cargo/vendor/typetag-0.1.4:typetag",
 )
