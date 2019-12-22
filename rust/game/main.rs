@@ -50,6 +50,9 @@ fn query_test() {
     tree.add_child(Box::new(child));
     println!("The debugs:\n{:?}", tree);
     println!("\n\nThe prints:\n{}\n\n{}", tree, tree.select_child(0));
+
+    let serialized = serde_json::to_string(&tree).unwrap();
+    println!("\nchild_json: {}", serialized);
 }
 
 fn lang_test() -> Option<()> {
