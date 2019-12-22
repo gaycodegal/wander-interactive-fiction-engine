@@ -2,6 +2,9 @@ use crate::schema::*;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use serde::Deserialize;
+// use serde_json::Result;
+
+use dialogue_tree::*;
 
 /// FileType to describe a type of file.
 pub enum FileType {
@@ -126,5 +129,16 @@ pub struct Dialogue {
     /// The location the dialogue takes place.
     pub location: String,
     /// The dialogue tree structure, represented as a JSON formatted string.
-    pub dialogue: String,
+    dialogue: String,
+}
+
+impl Dialogue {
+    pub fn dialogue_string(&self) -> &str {
+        &self.dialogue
+    }
+
+    // fn dialogue(&self) -> Talk {
+    //     let tree: Talk = serde_json::from_str(&self.dialogue).ok().unwrap();
+    //     return tree;
+    // }
 }
