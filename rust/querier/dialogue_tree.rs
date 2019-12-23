@@ -10,8 +10,8 @@ pub enum DialogueType {
 
 pub trait DialogueNode: std::any::Any + std::fmt::Display {
     fn as_any(&self) -> &dyn std::any::Any;
-    fn character(&self) -> &'static str;
-    fn text(&self) -> &'static str;
+    fn character(&self) -> &str;
+    fn text(&self) -> &str;
     fn node_type(&self) -> DialogueType;
     fn visited(&self) -> bool;
     fn set_visited(&mut self);
@@ -216,17 +216,30 @@ impl<'de> Deserialize<'de> for Box<dyn DialogueNode> {
                 let visited = seq.next_element()?.ok_or_else(|| {
                     serde::de::Error::invalid_length(3, &self)
                 })?;
-                let children = seq.next_element()?.ok_or_else(|| {
-                    serde::de::Error::invalid_length(4, &self)
-                })?;
-                let priority = seq.next_element()?.ok_or_else(|| {
-                    serde::de::Error::invalid_length(5, &self)
-                })?;
-                let child = seq.next_element()?.ok_or_else(|| {
-                    serde::de::Error::invalid_length(6, &self)
-                })?;
+                let children_ele = seq.next_element()?;
+                let priority_ele = seq.next_element()?;
+                let child_ele = seq.next_element()?;
 
-                let nt: DialogueType = DialogueType::Select;
+                let mut children = Vec::new();
+                let mut priority = 0;
+                let mut child = None;
+                let mut nt: DialogueType = DialogueType::Select;
+
+                if let Some(c) = children_ele {
+                    nt = DialogueType::Select;
+                    children = c;
+                }
+
+                if let Some(prio) = priority_ele {
+                    nt = DialogueType::PriorityTalk;
+                    priority = prio;
+                }
+
+                if let Some(c) = child_ele {
+                    nt = DialogueType::Talk;
+                    child = c;
+                }
+
                 return match nt {
                     DialogueType::Select => Ok(Box::new(Select {
                         character,
@@ -340,16 +353,30 @@ impl<'de> Deserialize<'de> for Box<dyn DialogueNode> {
                 let visited = visited.ok_or_else(|| {
                     serde::de::Error::missing_field("visited")
                 })?;
-                let children = children.ok_or_else(|| {
-                    serde::de::Error::missing_field("children")
-                })?;
-                let priority = priority.ok_or_else(|| {
-                    serde::de::Error::missing_field("priority")
-                })?;
-                let child = child
-                    .ok_or_else(|| serde::de::Error::missing_field("child"))?;
+                let children_ele = children;
+                let priority_ele = priority;
+                let child_ele = child;
 
-                let nt: DialogueType = DialogueType::Select;
+                let mut children = Vec::new();
+                let mut priority = 0;
+                let mut child = None;
+                let mut nt: DialogueType = DialogueType::Select;
+
+                if let Some(c) = children_ele {
+                    nt = DialogueType::Select;
+                    children = c;
+                }
+
+                if let Some(prio) = priority_ele {
+                    nt = DialogueType::PriorityTalk;
+                    priority = prio;
+                }
+
+                if let Some(c) = child_ele {
+                    nt = DialogueType::Talk;
+                    child = c;
+                }
+
                 return match nt {
                     DialogueType::Select => Ok(Box::new(Select {
                         character,
@@ -389,8 +416,8 @@ impl<'de> Deserialize<'de> for Box<dyn DialogueNode> {
 
 #[derive(Debug, serde::Serialize)]
 pub struct Select {
-    character: &'static str,
-    text: &'static str,
+    character: String,
+    text: String,
     node_type: DialogueType,
     visited: bool,
     children: Vec<Box<dyn DialogueNode>>,
@@ -413,7 +440,7 @@ impl Select {
         self.children.get(child).unwrap()
     }
 
-    pub fn new(character: &'static str, text: &'static str) -> Self {
+    pub fn new(character: String, text: String) -> Self {
         Select {
             character: character,
             text: text,
@@ -425,16 +452,16 @@ impl Select {
 }
 
 impl DialogueNode for Select {
-    fn as_any(&self) -> &std::any::Any {
+    fn as_any(&self) -> &dyn std::any::Any {
         self
     }
 
-    fn character(&self) -> &'static str {
-        self.character
+    fn character(&self) -> &str {
+        &self.character
     }
 
-    fn text(&self) -> &'static str {
-        self.text
+    fn text(&self) -> &str {
+        &self.text
     }
 
     fn node_type(&self) -> DialogueType {
@@ -470,8 +497,8 @@ num_children: {}",
 
 #[derive(Debug, serde::Serialize)]
 pub struct PriorityTalk {
-    character: &'static str,
-    text: &'static str,
+    character: String,
+    text: String,
     node_type: DialogueType,
     visited: bool,
     child: Option<Box<dyn DialogueNode>>,
@@ -491,7 +518,7 @@ impl PriorityTalk {
         &self.child
     }
 
-    pub fn new(character: &'static str, text: &'static str) -> Self {
+    pub fn new(character: String, text: String) -> Self {
         PriorityTalk {
             character: character,
             text: text,
@@ -504,16 +531,16 @@ impl PriorityTalk {
 }
 
 impl DialogueNode for PriorityTalk {
-    fn as_any(&self) -> &std::any::Any {
+    fn as_any(&self) -> &dyn std::any::Any {
         self
     }
 
-    fn character(&self) -> &'static str {
-        self.character
+    fn character(&self) -> &str {
+        &self.character
     }
 
-    fn text(&self) -> &'static str {
-        self.text
+    fn text(&self) -> &str {
+        &self.text
     }
 
     fn node_type(&self) -> DialogueType {
@@ -552,8 +579,8 @@ has_child: {}",
 
 #[derive(Debug, serde::Serialize)]
 pub struct Talk {
-    character: &'static str,
-    text: &'static str,
+    character: String,
+    text: String,
     node_type: DialogueType,
     visited: bool,
     child: Option<Box<dyn DialogueNode>>,
@@ -564,7 +591,7 @@ impl Talk {
         &self.child
     }
 
-    pub fn new(character: &'static str, text: &'static str) -> Self {
+    pub fn new(character: String, text: String) -> Self {
         Talk {
             character: character,
             text: text,
@@ -576,16 +603,16 @@ impl Talk {
 }
 
 impl DialogueNode for Talk {
-    fn as_any(&self) -> &std::any::Any {
+    fn as_any(&self) -> &dyn std::any::Any {
         self
     }
 
-    fn character(&self) -> &'static str {
-        self.character
+    fn character(&self) -> &str {
+        &self.character
     }
 
-    fn text(&self) -> &'static str {
-        self.text
+    fn text(&self) -> &str {
+        &self.text
     }
 
     fn node_type(&self) -> DialogueType {

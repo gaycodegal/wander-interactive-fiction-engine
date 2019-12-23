@@ -44,15 +44,17 @@ fn query_test() {
     let dia = q.get_dialogue(0);
     println!("dia {:?}", dia.dialogue_string());
 
-    let mut tree = Select::new("dad", "Hello son.");
-    let child =
-        PriorityTalk::new("mom", "You are grounded. What were you thinking?");
+    let mut tree = Select::new(String::from("dad"), String::from("Hello son."));
+    let child = PriorityTalk::new(
+        String::from("mom"),
+        String::from("You are grounded. What were you thinking?"),
+    );
     tree.add_child(Box::new(child));
     println!("The debugs:\n{:?}", tree);
     println!("\n\nThe prints:\n{}\n\n{}", tree, tree.select_child(0));
 
     let serialized = serde_json::to_string(&tree).unwrap();
-    println!("\nchild_json: {}", serialized);
+    println!("\ntree_json: {}", serialized);
 }
 
 fn lang_test() -> Option<()> {
