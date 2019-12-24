@@ -100,8 +100,28 @@
     "nodes": [
 	{
 	    "id": 0,
-	    "data": ""
-	}
+	    "data": "{\"story\":[{\"who\":\"dad\",\"what\":\"It's steak and ash potatoes.\"}],\"choices\":null,\"visited\":false}"
+	},
+	{
+	    "id": 1,
+	    "data": "{\"story\":[{\"who\":\"dad\",\"what\":\"You better believe it.\"}],\"choices\":null,\"visited\":false}"
+	},
+	{
+	    "id": 2,
+	    "data": "{\"story\":[{\"who\":\"sister\",\"what\":\"Oh my god.\"}, {\"who\":\"mom\",\"what\":\"Have you lost your mind?.\"}, {\"who\":\"player\",\"what\":\"I'll kill you all.\"}],\"choices\":null,\"visited\":false}"
+	},
+	{
+	    "id": 3,
+	    "data": "{\"story\":[{\"who\":\"sister\",\"what\":\"Next time warn me, you could have killed me.\"}, {\"who\":\"mom\",\"what\":\"You are still grounded?.\"}, {\"who\":\"player\",\"what\":\"I'm sorry.\"}],\"choices\":null,\"visited\":false}"
+	},
+	{
+	    "id": 4,
+	    "data": "{\"story\":[{\"who\":\"sister\",\"what\":\"Don't you have eyes and a nose?.\"}],\"choices\":null,\"visited\":false}"
+	},
+	{
+	    "id": 5,
+	    "data": "{\"story\":[{\"who\":\"mom\",\"what\":\"Can you set up the silverware?\"}],\"choices\":null,\"visited\":false}"
+	},
     ],
     "locations": [
 	{
