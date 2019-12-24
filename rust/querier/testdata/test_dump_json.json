@@ -55,7 +55,7 @@
 	    "priority": 0,
 	    "characters": "dad",
 	    "location": "kitchen_json",
-	    "dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"What the fuck do you think you were doing?\"},{\"who\":\"mom\",\"what\":\"You are are grounded!\"}],\"select\":{\"choices\":[{\"what\":\"Fuck you guys.\",\"next\":0},{\"what\":\"I was trying to help her.\",\"next\":1}]},\"visited\":false}"
+	    "dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"What the fuck do you think you were doing?\"},{\"who\":\"mom\",\"what\":\"You are are grounded!\"}],\"choices\":[{\"what\":\"Fuck you guys.\",\"next\":0},{\"what\":\"I was trying to help her.\",\"next\":1}],\"visited\":false}"
 	},
 	{
 	    "id": 1,

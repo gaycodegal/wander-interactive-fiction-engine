@@ -118,7 +118,7 @@ impl Character {
 
 #[derive(Insertable, Queryable, Clone, Debug, Deserialize, PartialEq)]
 #[table_name = "dialogues"]
-/// Dualogue is struct to contain all information about a dialogue.
+/// Dialogue is struct to contain all information about a dialogue.
 pub struct Dialogue {
     /// The unique id of the location.
     pub id: i32,
@@ -135,22 +135,29 @@ pub struct Dialogue {
 }
 
 impl Dialogue {
+    /// Returns the dialogue field of the struct as a &str.
     pub fn dialogue_string(&self) -> &str {
         &self.dialogue
     }
 
+    /// Returns the dialogue field of the struct as a StoryNode struct.
     pub fn dialogue(&self) -> StoryNode {
         serde_json::from_str(&self.dialogue).unwrap()
     }
 }
 
-#[derive(Insertable, Queryable, Clone, Debug, PartialEq)]
+#[derive(Insertable, Queryable, Clone, Debug, Deserialize, PartialEq)]
+#[table_name = "nodes"]
+/// Node is struct to contain all information about a dialogue.
 pub struct Node {
+    /// The id of the node in the database.
     pub id: i32,
+    /// The data of the dialogue represented as a json string.
     pub data: String,
 }
 
 impl Node {
+    /// Returns the data field of the struct as a StoryNode struct.
     fn to_struct(&self) -> StoryNode {
         serde_json::from_str(&self.data).unwrap()
     }
