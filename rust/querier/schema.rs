@@ -31,5 +31,13 @@ table! {
     flags -> Nullable<Text>,
     location -> Text,
     dialogue -> Text,
+    priority -> Integer,
+    }
+}
+
+table! {
+    nodes (id) {
+    id -> Integer,
+    data -> Text,
     }
 }
