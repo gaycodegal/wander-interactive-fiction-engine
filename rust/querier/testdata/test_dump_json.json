@@ -121,7 +121,7 @@
 	{
 	    "id": 5,
 	    "data": "{\"story\":[{\"who\":\"mom\",\"what\":\"Can you set up the silverware?\"}],\"choices\":null,\"visited\":false}"
-	},
+	}
     ],
     "locations": [
 	{
