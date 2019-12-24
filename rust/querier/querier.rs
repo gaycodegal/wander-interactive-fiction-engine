@@ -141,7 +141,7 @@ impl Querier {
         .expect("Failed to create items table.");
         sql_query("CREATE UNIQUE INDEX nodes_id ON nodes (id)")
             .execute(&self.connection)
-            .expect("Failed to create dialogue index.");
+            .expect("Failed to create node index.");
     }
 
     /// Given a querier instance setup dup data from the DataFile struct into the db tables.
@@ -162,9 +162,9 @@ impl Querier {
             self.insert_dialogues(dialogues);
         }
 
-        // if let Some(nodes) = data.nodes {
-        //     self.insert_nodes(nodes);
-        // }
+        if let Some(nodes) = data.nodes {
+            self.insert_nodes(nodes);
+        }
     }
 
     /// Given a querier instance and a json/toml file, dump the file data to the tables in database.

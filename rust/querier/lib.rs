@@ -78,9 +78,10 @@ mod tests {
         models::Dialogue {
             id: 100,
             characters: String::from("dad,mom,sister"),
+            priority: 0,
             flags: Some(String::from("apple_acquired,brother_dead")),
             location: String::from("kitchen"),
-            dialogue: String::from("hello i am dialogue."),
+            dialogue: String::from("{\"story\":[],\"choices\": [{\"what\":\"What's for dinner y'all?.\",\"next\":4},{\"what\":\"How can I help set up?.\",\"next\":5}],\"visited\":false}"),
         }
     }
 
@@ -562,7 +563,7 @@ mod tests {
 
         let snips = vec!["I wanna die"];
         let dialogues = querier.query_dialogues(None, None, None, Some(snips));
-        assert_eq!(2, dialogues.len());
+        assert_eq!(1, dialogues.len());
 
         let snips = vec!["I wanna die", "Me too thanks"];
         let dialogues = querier.query_dialogues(None, None, None, Some(snips));
@@ -582,10 +583,11 @@ mod tests {
         let querier = new_valid_db("insert_dialogue.db");
         let dialogue = models::Dialogue {
             id: 50,
+	    priority: 1,
             characters: String::from("dad,fairy,blob"),
             flags: None,
             location: String::from("backyard"),
-            dialogue: String::from("Hello! I am Blob."),
+            dialogue: String::from("{\"story\":[{\"who\": \"Blob\", \"what\": \"Hello! I am Blob.\"}],\"choices\": null,\"visited\":false}"),
         };
 
         let inserted = querier.insert_dialogue(dialogue.clone());
@@ -603,6 +605,7 @@ mod tests {
         dialogues.push(models::Dialogue {
             id: 50,
             characters: String::from("dad,fairy,blob"),
+            priority: 1,
             flags: None,
             location: String::from("backyard"),
             dialogue: String::from("Hello! I am Blob."),
@@ -610,10 +613,11 @@ mod tests {
 
         dialogues.push(models::Dialogue {
             id: 51,
+	    priority: 1,
             characters: String::from("sister,mom,blob"),
             flags: None,
             location: String::from("living_room"),
-            dialogue: String::from("Pew pew pew."),
+            dialogue: String::from("{\"story\":[{\"who\": \"Blob\", \"what\": \"Pew pew pew!\"}],\"choices\": null,\"visited\":false}"),
         });
 
         let inserted = querier.insert_dialogues(dialogues.clone());
@@ -675,10 +679,10 @@ mod tests {
     fn test_complex_update_dialogue() {
         let querier = new_valid_db("complex_update_dialogue.db");
         let mut dialogue = common_dialogue();
-        dialogue.characters = String::from("mom,dad");
+        dialogue.characters = String::from("mario");
         dialogue.flags = Some(String::from("hw"));
         dialogue.location = String::from("Test_Location");
-        dialogue.dialogue = String::from("Mama mia.");
+        dialogue.dialogue = String::from("{\"story\":[{\"who\": \"mario\", \"what\": \"Mama Mia\"}],\"choices\": null,\"visited\":false}");
 
         assert_eq!(1, querier.update_dialogue(100, dialogue.clone()));
 

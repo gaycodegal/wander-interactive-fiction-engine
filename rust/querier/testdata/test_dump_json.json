@@ -52,41 +52,41 @@
     "dialogues": [
 	{
 	    "id": 0,
-	    "priority": 0,
+	    "priority": 1,
 	    "characters": "dad",
 	    "location": "kitchen_json",
-	    "dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"What the fuck do you think you were doing?\"},{\"who\":\"mom\",\"what\":\"You are are grounded!\"}],\"choices\":[{\"what\":\"Fuck you guys.\",\"next\":0},{\"what\":\"I was trying to help her.\",\"next\":1}],\"visited\":false}"
+	    "dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"Hope you are excited for dinner.\"}],\"choices\":[{\"what\":\"What is it?\",\"next\":0},{\"what\":\"Smells delicious.\",\"next\":1}],\"visited\":false}"
 	},
 	{
 	    "id": 1,
-	    "priority": 0,
+	    "priority": 1,
 	    "characters": "mom,sister",
 	    "location": "living room",
 	    "flags": "grounded",
-	    "dialogue": "no tv for you"
+	    "dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"What the fuck do you think you were doing?\"},{\"who\":\"mom\",\"what\":\"You are are grounded!\"}],\"choices\":[{\"what\":\"Fuck you guys.\",\"next\":2},{\"what\":\"I was trying to help her.\",\"next\":3}],\"visited\":false}"
 	},
 	{
 	    "id": 2,
-	    "priority": 0,
+	    "priority": 1,
 	    "characters": "fairy",
 	    "location": "bedroom",
 	    "flags": "gay,grounded",
-	    "dialogue": "I kissed a boy and I liked it"
+	    "dialogue": "{\"story\":[{\"who\":\"fairy\",\"what\":\"I kissed a boy and I liked it.\"}],\"choices\":null,\"visited\":false}"
 	},
 	{
 	    "id": 3,
-	    "priority": 0,
+	    "priority": 1,
 	    "characters": "fairy",
 	    "flags": "fairy,poisoned",
 	    "location": "bedroom",
-	    "dialogue": "I wanna die. Me too thanks."
+	    "dialogue": "{\"story\":[{\"who\":\"fairy\",\"what\":\"I wanna die thanks.\"}, {\"player\": \"Me too thanks.\"}],\"choices\":null,\"visited\":false}"
 	},
 	{
 	    "id": 4,
-	    "priority": 0,
+	    "priority": 1,
 	    "characters": "cat",
 	    "location": "bedroom",
-	    "dialogue": "bla bla bla I wanna die bla bla bla."
+	    "dialogue": "{\"story\":[{\"who\":\"cat\",\"what\":\"Meoooow.\"}, {\"player\": \"Cute kitty.\"}],\"choices\":null,\"visited\":false}"
 	},
 	{
 	    "id": 100,
@@ -94,7 +94,13 @@
 	    "characters": "dad,mom,sister",
 	    "location": "kitchen",
 	    "flags": "apple_acquired,brother_dead",
-	    "dialogue": "hello i am dialogue."
+	    "dialogue": "{\"story\":[],\"choices\": [{\"what\":\"What's for dinner y'all?.\",\"next\":4},{\"what\":\"How can I help set up?.\",\"next\":5}],\"visited\":false}"
+	}
+    ],
+    "nodes": [
+	{
+	    "id": 0,
+	    "data": ""
 	}
     ],
     "locations": [
