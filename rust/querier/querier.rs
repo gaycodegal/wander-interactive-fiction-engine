@@ -127,7 +127,7 @@ impl Querier {
             .execute(&self.connection)
             .expect("Failed to create characters index.");
 
-        sql_query("CREATE TABLE dialogues (id INTEGER PRIMARY KEY, characters TEXT NOT NULL, flags TEXT, location TEXT, dialogue TEXT NOT NULL)").execute(&self.connection).expect("Failed to create items table.");
+        sql_query("CREATE TABLE dialogues (id INTEGER PRIMARY KEY, characters TEXT NOT NULL, flags TEXT, location TEXT, priority INTEGER, dialogue TEXT NOT NULL)").execute(&self.connection).expect("Failed to create items table.");
         sql_query("CREATE UNIQUE INDEX dialogues_id ON dialogues (id)")
             .execute(&self.connection)
             .expect("Failed to create items index.");

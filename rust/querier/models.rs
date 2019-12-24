@@ -3,7 +3,7 @@ use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use serde::Deserialize;
 
-// use dialogue_tree::*;
+use dialogue_tree::*;
 
 /// FileType to describe a type of file.
 pub enum FileType {
@@ -115,6 +115,7 @@ impl Character {
             .expect("Could not look up dialogues.")
     }
 }
+
 #[derive(Insertable, Queryable, Clone, Debug, Deserialize, PartialEq)]
 #[table_name = "dialogues"]
 /// Dualogue is struct to contain all information about a dialogue.
@@ -129,6 +130,8 @@ pub struct Dialogue {
     pub location: String,
     /// The dialogue tree structure, represented as a JSON formatted string.
     dialogue: String,
+    /// The priority of the dialogue node.
+    pub priority: i32,
 }
 
 impl Dialogue {
@@ -136,8 +139,19 @@ impl Dialogue {
         &self.dialogue
     }
 
-    // fn dialogue(&self) -> Talk {
-    //     let tree: Talk = serde_json::from_str(&self.dialogue).ok().unwrap();
-    //     return tree;
-    // }
+    pub fn dialogue(&self) -> StoryNode {
+        serde_json::from_str(&self.dialogue).unwrap()
+    }
+}
+
+#[derive(Insertable, Queryable, Clone, Debug, PartialEq)]
+pub struct Node {
+    pub id: i32,
+    pub data: String,
+}
+
+impl Node {
+    fn to_struct(&self) -> StoryNode {
+        serde_json::from_str(&self.data).unwrap()
+    }
 }
