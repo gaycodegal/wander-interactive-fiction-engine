@@ -55,18 +55,16 @@ fn query_test() {
             what: "You are are grounded!",
         },
     ];
-    let select = Select {
-        choices: vec![
-            Choice {
-                what: "Fuck you guys.",
-                next: 0,
-            },
-            Choice {
-                what: "I was trying to help her.",
-                next: 1,
-            },
-        ],
-    };
+    let select = vec![
+        Choice {
+            what: "Fuck you guys.",
+            next: 0,
+        },
+        Choice {
+            what: "I was trying to help her.",
+            next: 1,
+        },
+    ];
     let mut tree = StoryNode {
         story: story,
         select: Some(select),
