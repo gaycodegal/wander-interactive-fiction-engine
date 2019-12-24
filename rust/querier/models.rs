@@ -129,7 +129,7 @@ pub struct Dialogue {
     /// The location the dialogue takes place.
     pub location: String,
     /// The dialogue tree structure, represented as a JSON formatted string.
-    dialogue: String,
+    pub dialogue: String,
     /// The priority of the dialogue node.
     pub priority: i32,
 }
