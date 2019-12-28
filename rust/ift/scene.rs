@@ -123,6 +123,7 @@ fn exist(_: &Value) -> bool {
 #[cfg(test)]
 mod test {
     use super::Scene;
+    use cfg::lang::Lang;
     use sentence::NounClause;
     use sentence::Sentence;
     use serde_json::Value;
@@ -145,23 +146,27 @@ mod test {
         })
     }
 
-    fn test_sentence() -> Sentence {
-        Sentence::new(
-            NounClause::new("apple".to_string(), None, Some("red".to_string())),
-            "is".to_string(),
-            None,
-            Some("exist".to_string()),
-            true,
+    fn make_lang() -> Lang {
+        Lang::from_file(
+            "rust/test-data/test-lang-rules.txt",
+            "rust/test-data/test-lang-words.txt",
         )
+    }
+
+    fn test_sentence() -> Sentence {
+        let lang = make_lang();
+        let text = "does a red apple exist";
+        let ast = lang.parse_sentence(text).unwrap();
+        Sentence::from_ast(&ast).unwrap()
     }
 
     #[test]
     fn test_ask_question() {
-	let mut data = test_scene();
+        let mut data = test_scene();
         let scene = Scene::new(&mut data);
-	let sentence = test_sentence();
+        let sentence = test_sentence();
         let result = scene.ask_question(&sentence);
-	println!("result is {}", result);
+        println!("result is {}", result);
     }
 
     #[test]
