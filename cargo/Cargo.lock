@@ -26,6 +26,17 @@ dependencies = [
 ]
 
 [[package]]
+<<<<<<< HEAD
+=======
+name = "erased-serde"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "serde 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+>>>>>>> 917c539a17c25a90524dc5093eb30df774128367
 name = "interactive-fiction"
 version = "0.0.0"
 dependencies = [
@@ -135,6 +146,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum byteorder 1.3.2 (registry+https://github.com/rust-lang/crates.io-index)" = "a7c3dd8985a7111efc5c80b44e23ecdd8c007de8ade3b96595387e812b957cf5"
 "checksum diesel 1.4.3 (registry+https://github.com/rust-lang/crates.io-index)" = "9d7cc03b910de9935007861dce440881f69102aaaedfd4bc5a6f40340ca5840c"
 "checksum diesel_derives 1.4.1 (registry+https://github.com/rust-lang/crates.io-index)" = "45f5098f628d02a7a0f68ddba586fb61e80edec3bdc1be3b921f4ceec60858d3"
+<<<<<<< HEAD
+=======
+"checksum erased-serde 0.3.9 (registry+https://github.com/rust-lang/crates.io-index)" = "3beee4bc16478a1b26f2e80ad819a52d24745e292f521a63c16eea5f74b7eb60"
+>>>>>>> 917c539a17c25a90524dc5093eb30df774128367
 "checksum itoa 0.4.4 (registry+https://github.com/rust-lang/crates.io-index)" = "501266b7edd0174f8530248f87f99c88fbe60ca4ef3dd486835b8d8d53136f7f"
 "checksum libsqlite3-sys 0.16.0 (registry+https://github.com/rust-lang/crates.io-index)" = "5e5b95e89c330291768dc840238db7f9e204fd208511ab6319b56193a7f2ae25"
 "checksum pkg-config 0.3.17 (registry+https://github.com/rust-lang/crates.io-index)" = "05da548ad6865900e60eaba7f589cc0783590a92e940c26953ff81ddbab2d677"
