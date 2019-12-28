@@ -1,0 +1,13 @@
+an indefiniteArticle
+a indefiniteArticle
+the definiteArticle
+eat verb
+on prep
+apple noun
+table noun
+is qVerb
+does qVerb
+edible type
+exist type
+red adjective
+green adjective
