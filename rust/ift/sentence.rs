@@ -33,7 +33,7 @@ impl NounClause {
     }
 
     pub fn matches(&self, value: &Value) -> bool {
-	// do we match the noun
+        // do we match the noun
         match &value["noun"] {
             Value::String(noun) => {
                 if &self.noun != noun {
@@ -43,7 +43,7 @@ impl NounClause {
             _ => return false,
         }
 
-	// do we match the adjective
+        // do we match the adjective
         if self.adjective.is_none() {
             return true;
         }
@@ -199,24 +199,27 @@ mod test {
     use cfg::lang::Lang;
 
     fn make_lang() -> Lang {
-        Lang::from_file("rust/test-data/test-lang-rules.txt", "rust/test-data/test-lang-words.txt")
+        Lang::from_file(
+            "rust/test-data/test-lang-rules.txt",
+            "rust/test-data/test-lang-words.txt",
+        )
     }
 
     #[test]
     fn test_sentence_from_ast() {
         let lang = make_lang();
-	let test = "eat the green apple on a table";
-	let ast = lang.parse_sentence(test).unwrap();
-	let sentence = Sentence::from_ast(&ast).unwrap();
-	assert_eq!("Sentence(NounClause(apple, the, green), eat, PrepClause(on, NounClause(table, a, None)), None, false)", format!("{}", sentence));
+        let test = "eat the green apple on a table";
+        let ast = lang.parse_sentence(test).unwrap();
+        let sentence = Sentence::from_ast(&ast).unwrap();
+        assert_eq!("Sentence(NounClause(apple, the, green), eat, PrepClause(on, NounClause(table, a, None)), None, false)", format!("{}", sentence));
     }
 
     #[test]
     fn test_question_sentence_from_ast() {
         let lang = make_lang();
-	let test = "does the green apple on a table exist";
-	let ast = lang.parse_sentence(test).unwrap();
-	let sentence = Sentence::from_ast(&ast).unwrap();
-	assert_eq!("Sentence(NounClause(apple, the, green), does, PrepClause(on, NounClause(table, a, None)), exist, true)", format!("{}", sentence));
+        let test = "does the green apple on a table exist";
+        let ast = lang.parse_sentence(test).unwrap();
+        let sentence = Sentence::from_ast(&ast).unwrap();
+        assert_eq!("Sentence(NounClause(apple, the, green), does, PrepClause(on, NounClause(table, a, None)), exist, true)", format!("{}", sentence));
     }
 }

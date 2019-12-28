@@ -1,6 +1,6 @@
-use std::fs;
 use ast::AST;
 use std::collections::HashMap;
+use std::fs;
 use std::iter;
 
 pub struct Lang {
@@ -23,12 +23,12 @@ impl Lang {
     }
 
     pub fn from_file(rules_file: &str, words_file: &str) -> Lang {
-	let mut lang = Lang::new();
-	let rules = fs::read_to_string(rules_file).unwrap();
-	let words = fs::read_to_string(words_file).unwrap();
-	lang.init_rules(&rules);
-	lang.init_words(&words);
-	return lang;
+        let mut lang = Lang::new();
+        let rules = fs::read_to_string(rules_file).unwrap();
+        let words = fs::read_to_string(words_file).unwrap();
+        lang.init_rules(&rules);
+        lang.init_words(&words);
+        return lang;
     }
 
     // Rules section
@@ -187,11 +187,10 @@ impl Lang {
         let words = origins.clone().filter_map(|x| self.words.get(x));
         let n = words.clone().count();
 
-	if n == 0 {
-	    return Err("Zero length sentence".to_string());
-	}
+        if n == 0 {
+            return Err("Zero length sentence".to_string());
+        }
 
-	
         // Check for and report unknown words
         if origins.clone().count() != n {
             let mut error: Vec<String> = Vec::new();
@@ -374,7 +373,10 @@ mod test {
     use super::Lang;
 
     fn make_lang() -> Lang {
-        Lang::from_file("rust/test-data/test-lang-rules.txt", "rust/test-data/test-lang-words.txt")
+        Lang::from_file(
+            "rust/test-data/test-lang-rules.txt",
+            "rust/test-data/test-lang-words.txt",
+        )
     }
 
     #[test]
