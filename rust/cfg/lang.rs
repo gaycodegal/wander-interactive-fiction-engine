@@ -1,3 +1,4 @@
+use std::fs;
 use ast::AST;
 use std::collections::HashMap;
 use std::iter;
@@ -19,6 +20,15 @@ impl Lang {
             gen: 0,
             gen_lookup: HashMap::new(),
         }
+    }
+
+    pub fn from_file(rules_file: &str, words_file: &str) -> Lang {
+	let mut lang = Lang::new();
+	let rules = fs::read_to_string(rules_file).unwrap();
+	let words = fs::read_to_string(words_file).unwrap();
+	lang.init_rules(&rules);
+	lang.init_words(&words);
+	return lang;
     }
 
     // Rules section
@@ -364,41 +374,7 @@ mod test {
     use super::Lang;
 
     fn make_lang() -> Lang {
-        let mut lang = Lang::new();
-        lang.init_rules(
-            "
-S: Verb NounClause | Verb NounClause PrepClause | QuestionVerb NounClause \
-Type | QuestionVerb NounClause PrepClause Type
-NounClause: Count ANoun | Adjective Noun | noun
-PrepClause: Prep NounClause
-ANoun: Adjective Noun | noun
-QuestionVerb: qVerb
-Adjective: adjective
-Type: type
-Prep: prep
-Verb: verb
-Noun: noun
-Count: definiteArticle | indefiniteArticle | number
-",
-        );
-        lang.init_words(
-            "
-an indefiniteArticle
-a indefiniteArticle
-the definiteArticle
-eat verb
-on prep
-apple noun
-table noun
-is qVerb
-does qVerb
-edible type
-exist type
-red adjective
-green adjective
-",
-        );
-        return lang;
+        return Lang::from_file("rust/test-data/test-lang-rules.txt", "rust/test-data/test-lang-words.txt");
     }
 
     #[test]
