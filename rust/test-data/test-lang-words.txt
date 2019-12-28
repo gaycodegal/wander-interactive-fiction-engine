@@ -11,3 +11,6 @@ edible type
 exist type
 red adjective
 green adjective
+clean adjective
+blotchy adjective
+dirty adjective
