@@ -1,5 +1,6 @@
 use cfg::ast::AST;
 use cfg::ast_search::ASTSearch;
+use cfg::lang::Lang;
 use serde_json::Value;
 use std::fmt;
 
@@ -156,6 +157,14 @@ impl Sentence {
         }
         let verb = verb?;
         Some(Sentence::new(subject, verb, prep, q_type, is_question))
+    }
+
+    pub fn from_lang(lang: &Lang, sentence: &str) -> Result<Sentence, String> {
+        let ast = lang.parse_sentence(sentence)?;
+        match Sentence::from_ast(&ast) {
+            Some(sentence) => Ok(sentence),
+            None => Err("bad sentence".to_string()),
+        }
     }
 }
 
