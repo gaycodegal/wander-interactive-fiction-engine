@@ -28,7 +28,3 @@ alias(
     name = "toml",
     actual = "//cargo/vendor/toml-0.5.5:toml",
 )
-alias(
-    name = "typetag",
-    actual = "//cargo/vendor/typetag-0.1.4:typetag",
-)
