@@ -158,7 +158,7 @@ pub struct Node {
 
 impl Node {
     /// Returns the data field of the struct as a StoryNode struct.
-    fn to_struct(&self) -> StoryNode {
+    pub fn to_struct(&self) -> StoryNode {
         serde_json::from_str(&self.data).unwrap()
     }
 }

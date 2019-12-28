@@ -698,6 +698,13 @@ mod tests {
     }
 
     #[test]
+    fn test_dialogue_dialogue_tree_conversion() {
+        let dialogue = common_dialogue();
+
+        assert_eq!(dialogue.dialogue(), serde_json::from_str("{\"story\":[],\"choices\": [{\"what\":\"What's for dinner y'all?\",\"next\":4},{\"what\":\"How can I help set up?\",\"next\":5}],\"visited\":false}").unwrap());
+    }
+
+    #[test]
     fn test_insert_node() {
         let querier = new_valid_db("insert_node.db");
         let node = models::Node {
@@ -772,5 +779,12 @@ mod tests {
 
         let got_node = querier.get_node(100);
         assert_eq!(node.clone(), got_node);
+    }
+
+    #[test]
+    fn test_node_dialogue_tree_conversion() {
+        let node = common_node();
+
+        assert_eq!(node.to_struct(), serde_json::from_str("{\"story\":[{\"what\":\"Mama milk?\",\"who\": \"dad\"},{\"what\":\"Really dad?\",\"who\": \"sister\"}],\"choices\": null,\"visited\":false}").unwrap());
     }
 }
