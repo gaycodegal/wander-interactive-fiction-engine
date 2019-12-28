@@ -210,4 +210,13 @@ mod test {
 	let sentence = Sentence::from_ast(&ast).unwrap();
 	assert_eq!("Sentence(NounClause(apple, the, green), eat, PrepClause(on, NounClause(table, a, None)), None, false)", format!("{}", sentence));
     }
+
+    #[test]
+    fn test_question_sentence_from_ast() {
+        let lang = make_lang();
+	let test = "does the green apple on a table exist";
+	let ast = lang.parse_sentence(test).unwrap();
+	let sentence = Sentence::from_ast(&ast).unwrap();
+	assert_eq!("Sentence(NounClause(apple, the, green), does, PrepClause(on, NounClause(table, a, None)), exist, true)", format!("{}", sentence));
+    }
 }
