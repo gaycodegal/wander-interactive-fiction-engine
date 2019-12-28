@@ -1,6 +1,7 @@
 use sentence::NounClause;
 use sentence::Sentence;
 use serde_json::Value;
+use std::collections::HashMap;
 
 pub struct Scene<'lifetime> {
     root: &'lifetime Value,
@@ -40,8 +41,7 @@ impl<'lifetime> Scene<'lifetime> {
         }
         .unwrap_or(self.root);
         let subject = &sentence.subject;
-        println!("{}", qtype);
-        let filters = vec![exist as fn(&Value) -> bool];
+        let filters = vec![FILTER_MAP.get(qtype)?];
         let subjects = self.select_custom_root(subject, &filters, location);
         return Some(subjects.len() >= 1);
     }
@@ -49,7 +49,7 @@ impl<'lifetime> Scene<'lifetime> {
     pub fn select(
         &self,
         noun_clause: &NounClause,
-        filters: &Vec<fn(&Value) -> bool>,
+        filters: &Vec<&fn(&Value) -> bool>,
     ) -> Vec<Value> {
         let mut results = Vec::new();
         self.select_child_helper(&mut results, noun_clause, filters, self.root);
@@ -59,7 +59,7 @@ impl<'lifetime> Scene<'lifetime> {
     fn select_custom_root(
         &self,
         noun_clause: &NounClause,
-        filters: &Vec<fn(&Value) -> bool>,
+        filters: &Vec<&fn(&Value) -> bool>,
         root: &Value,
     ) -> Vec<Value> {
         let mut results = Vec::new();
@@ -71,7 +71,7 @@ impl<'lifetime> Scene<'lifetime> {
         &self,
         results: &mut Vec<Value>,
         noun_clause: &NounClause,
-        filters: &Vec<fn(&Value) -> bool>,
+        filters: &Vec<&fn(&Value) -> bool>,
         value: &Value,
     ) {
         // check the children
@@ -89,7 +89,7 @@ impl<'lifetime> Scene<'lifetime> {
         &self,
         results: &mut Vec<Value>,
         noun_clause: &NounClause,
-        filters: &Vec<fn(&Value) -> bool>,
+        filters: &Vec<&fn(&Value) -> bool>,
         value: &Value,
     ) {
         if noun_clause.matches(value) {
@@ -117,7 +117,35 @@ impl<'lifetime> Scene<'lifetime> {
 }
 
 fn exist(_: &Value) -> bool {
-    return true;
+    true
+}
+
+fn edible(item: &Value) -> bool {
+    match &item["is"] {
+        Value::Array(array) => {
+            for item in array {
+                match item {
+                    Value::String(component) => {
+                        if component == "edible" {
+                            return true;
+                        }
+                    }
+                    _ => (),
+                }
+            }
+        }
+        _ => (),
+    };
+    return false;
+}
+
+lazy_static! {
+    static ref FILTER_MAP: HashMap<String, fn(&Value) -> bool> = {
+        let mut map = HashMap::new();
+        map.insert("exist".to_string(), exist as fn(&Value) -> bool);
+        map.insert("edible".to_string(), edible as fn(&Value) -> bool);
+        map
+    };
 }
 
 #[cfg(test)]
@@ -127,23 +155,12 @@ mod test {
     use sentence::NounClause;
     use sentence::Sentence;
     use serde_json::Value;
+    use std::fs;
 
     fn test_scene() -> Value {
-        json!({
-            "children": [
-        // WANT
-        {"noun": "apple", "adjectives": ["red", "dirty"]},
-        // not apple
-        {"noun": "table", "children": [
-            // not apple
-            {"noun": "table", "adjectives": ["red"]},
-            // WANT
-            {"noun": "apple", "adjectives": ["blotchy", "red"]},
-            // not red
-            {"noun": "apple", "adjectives": ["clean"]},
-        ]},
-            ],
-        })
+        let scene =
+            fs::read_to_string("rust/test-data/test-scene.json").unwrap();
+        serde_json::from_str(&scene).unwrap()
     }
 
     fn make_lang() -> Lang {
@@ -153,20 +170,40 @@ mod test {
         )
     }
 
-    fn test_sentence() -> Sentence {
+    fn test_sentence(sentence: &str) -> Sentence {
         let lang = make_lang();
-        let text = "does a red apple exist";
-        let ast = lang.parse_sentence(text).unwrap();
-        Sentence::from_ast(&ast).unwrap()
+        Sentence::from_lang(&lang, sentence).unwrap()
     }
 
     #[test]
-    fn test_ask_question() {
+    fn test_ask_exist() {
         let mut data = test_scene();
         let scene = Scene::new(&mut data);
-        let sentence = test_sentence();
+        let sentence = test_sentence("does a red apple exist");
         let result = scene.ask_question(&sentence);
-        println!("result is {}", result);
+        assert_eq!(true, result);
+    }
+
+    #[test]
+    fn test_ask_edible_is_true_with_component() {
+        let mut data = test_scene();
+        let scene = Scene::new(&mut data);
+        let sentence = test_sentence("is a red apple edible");
+        let result = scene.ask_question(&sentence);
+        assert_eq!(true, result);
+    }
+
+    #[test]
+    fn test_ask_edible_is_false_without_component() {
+        let mut data = test_scene();
+        let scene = Scene::new(&mut data);
+        let lang = make_lang();
+        let sentence_exists =
+            Sentence::from_lang(&lang, "does a red table exist").unwrap();
+        let sentence_edible =
+            Sentence::from_lang(&lang, "is a red table edible").unwrap();
+        assert_eq!(true, scene.ask_question(&sentence_exists));
+        assert_eq!(false, scene.ask_question(&sentence_edible));
     }
 
     #[test]
@@ -179,8 +216,8 @@ mod test {
         let result = scene.select(&search_term, &filters);
         assert_eq!(
             vec![
-                json!({"noun": "apple", "adjectives": ["red", "dirty"]}),
-                json!({"noun": "apple", "adjectives": ["blotchy", "red"]}),
+                json!({"noun": "apple", "adjectives": ["red", "dirty"], "is": ["edible"]}),
+                json!({"noun": "apple", "adjectives": ["blotchy", "red"], "is": ["edible"]}),
             ],
             result
         );

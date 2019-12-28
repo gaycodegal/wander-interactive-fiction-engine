@@ -16,6 +16,7 @@ rust_library(
     deps = [
         "//rust/cfg",
         "//cargo:serde_json",
+        "//cargo:lazy_static",
     ],
     crate_root = "lib.rs",
 )

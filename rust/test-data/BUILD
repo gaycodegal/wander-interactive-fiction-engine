@@ -6,6 +6,6 @@ licenses([
 
 filegroup(
     name = "test-data",
-    srcs = glob(["*.txt"]),
+    srcs = glob(["*.*"]),
 )
     
