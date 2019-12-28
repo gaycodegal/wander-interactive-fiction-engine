@@ -35,6 +35,6 @@ bazel_version(name = "bazel_version")
 
 new_local_repository(
     name = "qt",
-    path = "/usr/include/qt",
+    path = QT_HOME,
     build_file = "BUILD.qt"
 )
