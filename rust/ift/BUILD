@@ -23,4 +23,5 @@ rust_library(
 rust_test(
     name = "test",
     crate = ":ift",
+    data = ["//rust/test-data"],
 )

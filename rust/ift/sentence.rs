@@ -196,9 +196,18 @@ fn optional_write(
 #[cfg(test)]
 mod test {
     use super::Sentence;
+    use cfg::lang::Lang;
+
+    fn make_lang() -> Lang {
+        Lang::from_file("rust/test-data/test-lang-rules.txt", "rust/test-data/test-lang-words.txt")
+    }
 
     #[test]
     fn test_sentence_from_ast() {
-        //panic!("hi");
+        let lang = make_lang();
+	let test = "eat the green apple on a table";
+	let ast = lang.parse_sentence(test).unwrap();
+	let sentence = Sentence::from_ast(&ast).unwrap();
+	assert_eq!("Sentence(NounClause(apple, the, green), eat, PrepClause(on, NounClause(table, a, None)), None, false)", format!("{}", sentence));
     }
 }
