@@ -1,3 +1,6 @@
+[raze.crates.'libsqlite3-sys'.'0.15.0']
+gen_buildrs = true
+
 [package]
 name = "interactive-fiction"
 version = "0.0.0"
@@ -15,6 +18,9 @@ target = "x86_64-unknown-linux-gnu"
 
 [dependencies]
 serde_json = "1.0.41"
+<<<<<<< HEAD
+rusqlite = "0.19.0"
+=======
 diesel = { version = "1.4.3", features = ["sqlite"] }
 serde = { version = "1.0.104", features = ["derive"] }
 toml = "0.5.5"
@@ -27,3 +33,4 @@ gen_buildrs = true
 additional_flags = [
 "--cfg=use_proc_macro", 
 ]
+>>>>>>> 917c539a17c25a90524dc5093eb30df774128367

@@ -1,0 +1,16 @@
+[[items]]
+name = "apple_toml"
+description = "a shiny red apple that looks oh so appealing"
+attributes = "red,shiny,poisoned"
+components = "{ \"damages\": true }"
+
+[[characters]]
+name = "dad_toml"
+components = "{ \"interactable\": true }"
+
+[[locations]]
+name = "kitchen_toml"
+description = "A modern kitchen with all the appliaces and a grand wooden table. On top of the table there is a fruit bowl with a appealing red apple."
+items = "apple_toml"
+neighbors = "{ \"south\": \"hallway\", \"north\": \"backyard\" }"
+characters = "dad"

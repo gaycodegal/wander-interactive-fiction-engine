@@ -7,6 +7,7 @@ Wander is an engine in progress for making text adventures. It supports Context 
 - [Rust (1.38)](https://www.rust-lang.org/tools/install)
 - [Qt (5.12.5)](https://www.qt.io/)
 - [bazel.build](https://bazel.build)
+- [sqlite3 (3.30.1)](https://www.sqlite.org/index.html)
 
 On Linux
 

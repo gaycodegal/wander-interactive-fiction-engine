@@ -3,7 +3,10 @@ extern crate ift;
 extern crate querier;
 #[macro_use]
 extern crate serde_json;
+extern crate rusqlite;
 
+use rusqlite::{Connection, Result};
+use rusqlite::NO_PARAMS;
 use cfg::lang::Lang;
 use ift::scene::Scene;
 use ift::sentence::Sentence;
@@ -13,6 +16,10 @@ use std::io::Write;
 use std::path::PathBuf;
 
 fn main() {
+<<<<<<< HEAD
+    let _ = sqlite_test();
+    lang_test();
+=======
     query_test();
     //lang_test();
 }
@@ -42,6 +49,21 @@ fn query_test() {
 
     let dia = q.get_dialogue(0);
     println!("dia {:?}", dia.dialogue());
+>>>>>>> 917c539a17c25a90524dc5093eb30df774128367
+}
+
+fn sqlite_test() -> Result<()> {
+    let conn = Connection::open("cats.db")?;
+
+    conn.execute(
+        "create table if not exists cat_colors (
+             id integer primary key,
+             name text not null unique
+         )",
+        NO_PARAMS,
+    )?;
+
+    Ok(())
 }
 
 fn lang_test() -> Option<()> {

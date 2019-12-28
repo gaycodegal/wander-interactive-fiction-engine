@@ -9,6 +9,10 @@ licenses([
   "notice" # See individual crates for specific licenses
 ])
 alias(
+<<<<<<< HEAD
+    name = "rusqlite",
+    actual = "//cargo/vendor/rusqlite-0.19.0:rusqlite",
+=======
     name = "diesel",
     actual = "//cargo/vendor/diesel-1.4.3:diesel",
 )
@@ -19,6 +23,7 @@ alias(
 alias(
     name = "serde",
     actual = "//cargo/vendor/serde-1.0.104:serde",
+>>>>>>> 917c539a17c25a90524dc5093eb30df774128367
 )
 alias(
     name = "serde_json",
