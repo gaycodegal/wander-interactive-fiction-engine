@@ -8,6 +8,9 @@ rust_binary(
     srcs = [
         "main.rs",
     ],
+    data = [
+        "//rust/test-data",
+    ],
     deps = [
         "//rust/cfg",
         "//rust/ift",
