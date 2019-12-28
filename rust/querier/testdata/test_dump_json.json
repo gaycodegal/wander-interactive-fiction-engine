@@ -94,7 +94,7 @@
 	    "characters": "dad,mom,sister",
 	    "location": "kitchen",
 	    "flags": "apple_acquired,brother_dead",
-	    "dialogue": "{\"story\":[],\"choices\": [{\"what\":\"What's for dinner y'all?.\",\"next\":4},{\"what\":\"How can I help set up?.\",\"next\":5}],\"visited\":false}"
+	    "dialogue": "{\"story\":[],\"choices\": [{\"what\":\"What's for dinner y'all?\",\"next\":4},{\"what\":\"How can I help set up?\",\"next\":5}],\"visited\":false}"
 	}
     ],
     "nodes": [
@@ -121,6 +121,10 @@
 	{
 	    "id": 5,
 	    "data": "{\"story\":[{\"who\":\"mom\",\"what\":\"Can you set up the silverware?\"}],\"choices\":null,\"visited\":false}"
+	},
+	{
+	    "id": 100,
+	    "data": "{\"story\":[{\"what\":\"Mama milk?\",\"who\": \"dad\"},{\"what\":\"Really dad?\",\"who\": \"sister\"}],\"choices\": null,\"visited\":false}"
 	}
     ],
     "locations": [
