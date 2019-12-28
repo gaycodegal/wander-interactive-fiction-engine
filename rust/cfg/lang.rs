@@ -374,24 +374,20 @@ mod test {
     use super::Lang;
 
     fn make_lang() -> Lang {
-        return Lang::from_file("rust/test-data/test-lang-rules.txt", "rust/test-data/test-lang-words.txt");
+        Lang::from_file("rust/test-data/test-lang-rules.txt", "rust/test-data/test-lang-words.txt")
     }
 
     #[test]
     fn test_produces_ast() {
         let lang = make_lang();
         let test = "eat the green apple on a table";
-        match lang.parse_sentence(test) {
-            Err(error) => panic!("Error:\n{}", error),
-            Ok(ast) => {
-                assert_eq!("((Tagged Verb (Word verb eat)) (Tagged NounClause \
+        let ast = lang.parse_sentence(test).unwrap();
+        assert_eq!("((Tagged Verb (Word verb eat)) (Tagged NounClause \
 ((Tagged Count (Word definiteArticle the)) (Tagged ANoun ((Tagged Adjective \
 (Word adjective green)) (Tagged Noun (Word noun apple)))))) (Tagged PrepClause \
 ((Tagged Prep (Word prep on)) (Tagged NounClause ((Tagged Count (Word \
 indefiniteArticle a)) (Tagged ANoun (Word noun table)))))))",
-			   format!("{}", ast));
-            }
-        };
+		   format!("{}", ast));
     }
 
     #[test]
