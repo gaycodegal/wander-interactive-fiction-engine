@@ -89,7 +89,7 @@ impl Scene {
         match &mut value["children"] {
             Value::Array(children) => {
                 for child in children {
-		    let mut pushChild = transform.is_some();
+		    let mut pushChild = true;
 		    if noun_clause.matches(child) {
 			// if we fail a filter we don't want to check children
 			// or add this item to the results
@@ -102,7 +102,7 @@ impl Scene {
 			}
 			if !ok {
 			    if transform.is_some() {
-				// continue so pus now
+				print!("!!{}\n\n", child);
 				childs.push(child.clone());
 			    }
 			    continue;
@@ -111,7 +111,9 @@ impl Scene {
 			results.push(child.clone());
 			match transform {
 			    Some(transform) => {
-				if !transform(child) {
+				if transform(child) {
+				    print!("pushy!!!\n");
+				} else {
 				    pushChild = false;
 				}
 			    },
@@ -120,6 +122,7 @@ impl Scene {
 		    }
                     Scene::select_helper(results, noun_clause, filters, transform, child);
 		    if pushChild {
+			print!("!!{}\n\n", child);
 			childs.push(child.clone());
 		    }
                 }
