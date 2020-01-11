@@ -55,7 +55,7 @@ impl Scene {
         filters: &Vec<&fn(&Value) -> bool>,
     ) -> Vec<Value> {
         let mut results = Vec::new();
-        Scene::select_child_helper(
+        Scene::select_helper(
             &mut results,
             noun_clause,
             filters,
@@ -70,25 +70,8 @@ impl Scene {
         root: &mut Value,
     ) -> Vec<Value> {
         let mut results = Vec::new();
-        Scene::select_child_helper(&mut results, noun_clause, filters, root);
+        Scene::select_helper(&mut results, noun_clause, filters, root);
         return results;
-    }
-
-    fn select_child_helper(
-        results: &mut Vec<Value>,
-        noun_clause: &NounClause,
-        filters: &Vec<&fn(&Value) -> bool>,
-        value: &mut Value,
-    ) {
-        // check the children
-        match &mut value["children"] {
-            Value::Array(children) => {
-                for child in children {
-                    Scene::select_helper(results, noun_clause, filters, child);
-                }
-            }
-            _ => (),
-        }
     }
 
     fn select_helper(
@@ -97,22 +80,22 @@ impl Scene {
         filters: &Vec<&fn(&Value) -> bool>,
         value: &mut Value,
     ) {
-        if noun_clause.matches(value) {
-            // if we fail a filter we don't want to check children
-            // or add this item to the results
-            for filter in filters {
-                if !filter(value) {
-                    return;
-                }
-            }
-            // match found, but still check children
-            results.push(value.clone());
-        }
 
         // check the children
         match &mut value["children"] {
             Value::Array(children) => {
                 for child in children {
+		    if noun_clause.matches(child) {
+			// if we fail a filter we don't want to check children
+			// or add this item to the results
+			for filter in filters {
+			    if !filter(child) {
+				return;
+			    }
+			}
+			// match found, but still check children
+			results.push(child.clone());
+		    }
                     Scene::select_helper(results, noun_clause, filters, child);
                 }
             }
