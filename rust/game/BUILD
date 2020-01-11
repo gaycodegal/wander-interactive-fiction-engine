@@ -12,6 +12,7 @@ rust_binary(
         "//rust/cfg",
         "//rust/ift",
 	"//rust/querier",
+	"//cargo:gluon",
         "//cargo:serde_json",
     ],
 )

@@ -13,6 +13,10 @@ alias(
     actual = "//cargo/vendor/diesel-1.4.3:diesel",
 )
 alias(
+    name = "gluon",
+    actual = "//cargo/vendor/gluon-0.9.4:gluon",
+)
+alias(
     name = "serde",
     actual = "//cargo/vendor/serde-1.0.104:serde",
 )
