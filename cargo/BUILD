@@ -13,8 +13,8 @@ alias(
     actual = "//cargo/vendor/diesel-1.4.3:diesel",
 )
 alias(
-    name = "gluon",
-    actual = "//cargo/vendor/gluon-0.9.4:gluon",
+    name = "lazy_static",
+    actual = "//cargo/vendor/lazy_static-1.4.0:lazy_static",
 )
 alias(
     name = "serde",
