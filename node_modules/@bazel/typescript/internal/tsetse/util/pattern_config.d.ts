@@ -1,0 +1,78 @@
+/**
+ * The list of supported patterns useable in ConformancePatternRule. The
+ * patterns whose name match JSConformance patterns should behave similarly (see
+ * https://github.com/google/closure-compiler/wiki/JS-Conformance-Framework)
+ */
+export declare enum PatternKind {
+    BANNED_NAME = "banned-name",
+    BANNED_PROPERTY_WRITE = "banned-property-write",
+    BANNED_PROPERTY_NON_CONSTANT_WRITE = "banned-property-non-constant-write",
+    BANNED_NAME_CALL_NON_CONSTANT_ARGUMENT = "banned-call-non-constant-argument"
+}
+/**
+ * A config for ConformancePatternRule.
+ */
+export interface Config {
+    kind: PatternKind;
+    /**
+     * Values have a pattern-specific syntax.
+     *
+     * TODO(rjamet): We'll document them, but for now see each patternKind's
+     * tests for examples.
+     */
+    values: string[];
+    /** The error message this pattern will create. */
+    errorMessage: string;
+    /** A list of whitelist blocks. */
+    whitelistEntries?: WhitelistEntry[];
+    /**
+     * An optional name for that rule, which will be the rule's `ruleName`.
+     * Should be lower-dashed-case.
+     */
+    name?: string;
+}
+/**
+ * A whitelist entry, corresponding to a logical whitelisting rule. Use these
+ * to distinguish between various logical reasons for whitelisting something:
+ * for instance, tie these to particular bugs that needed whitelisting, per
+ * legacy project, manually reviewed entries, and so on.
+ *
+ * Whitelists are based on the file paths provided by the TS compiler, with
+ * both regexp-based checks and prefix-based checks.
+ *
+ *
+ * Follows the logic in
+ * https://github.com/google/closure-compiler/blob/master/src/com/google/javascript/jscomp/conformance.proto.
+ */
+export interface WhitelistEntry {
+    /** The category corresponding to this entry. */
+    reason: WhitelistReason;
+    /** Why is this okay to whitelist. */
+    explanation?: string;
+    /**
+     * Regexps for the paths of files that will be ignored by the
+     * ConformancePattern. Beware, escaping can be tricky.
+     */
+    regexp?: string[];
+    /**
+     * Prefixes for the paths of files that will be ignored by the
+     * ConformancePattern.
+     */
+    prefix?: string[];
+}
+/**
+ * The categories of whitelist entries.
+ */
+export declare enum WhitelistReason {
+    /** No reason. */
+    UNSPECIFIED = 0,
+    /** Code that has to be grandfathered in (no guarantees). */
+    LEGACY = 1,
+    /**
+     * Code that does not enter the scope of this particular check  (no
+     * guarantees).
+     */
+    OUT_OF_SCOPE = 2,
+    /** Manually reviewed exceptions (supposedly okay). */
+    MANUALLY_REVIEWED = 3
+}

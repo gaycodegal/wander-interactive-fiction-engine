@@ -1,8 +1,11 @@
+#[macro_use]
+extern crate serde_json;
+
+extern crate gluon;
+
 extern crate cfg;
 extern crate ift;
 extern crate querier;
-#[macro_use]
-extern crate serde_json;
 
 use cfg::lang::Lang;
 use ift::scene::Scene;
@@ -13,9 +16,15 @@ use std::io;
 use std::io::Write;
 use std::path::PathBuf;
 
+use dyon::{error, run};
+
 fn main() {
-    query_test();
-    //lang_test();
+    // query_test();
+    // lang_test();
+}
+
+fn dyon_test() {
+    println!("hello, world");
 }
 
 fn query_test() {

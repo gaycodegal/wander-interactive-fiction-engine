@@ -1,0 +1,27 @@
+{
+  "name": "wander-interactive-fition-engine",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "bazel build :bundle",
+    "watch": "ibazel build :app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaycodegal/wander-interactive-fiction-engine.git"
+  },
+  "keywords": [
+    "ift-engine"
+  ],
+  "author": "Sarah Maven, Jonathan Pavlik",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gaycodegal/wander-interactive-fiction-engine/issues"
+  },
+  "homepage": "https://github.com/gaycodegal/wander-interactive-fiction-engine#readme",
+  "devDependencies": {
+    "@bazel/bazel": "^2.0.0",
+    "@bazel/typescript": "^1.0.1",
+    "typescript": "^3.7.4"
+  }
+}
