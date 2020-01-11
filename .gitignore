@@ -7,3 +7,5 @@ vendor/
 *.tmp
 *.db
 *.orig
+
+node_modules/
