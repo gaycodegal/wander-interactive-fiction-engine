@@ -84,7 +84,8 @@ impl Scene {
         // check the children
         match &mut value["children"] {
             Value::Array(children) => {
-                for child in children {
+                for i in (0..children.len()).rev() {
+		    let mut child = &mut children[i];
 		    if noun_clause.matches(child) {
 			// if we fail a filter we don't want to check children
 			// or add this item to the results
@@ -96,7 +97,7 @@ impl Scene {
 			    }
 			}
 			if !ok {
-			    break;
+			    continue;
 			}
 			// match found, but still check children
 			results.push(child.clone());
@@ -209,8 +210,8 @@ mod test {
         let result = scene.select(&search_term, &filters);
         assert_eq!(
             vec![
-                json!({"noun": "apple", "adjectives": ["red", "dirty"], "is": ["edible"]}),
                 json!({"noun": "apple", "adjectives": ["blotchy", "red"], "is": ["edible"]}),
+                json!({"noun": "apple", "adjectives": ["red", "dirty"], "is": ["edible"]}),
             ],
             result
         );
