@@ -88,10 +88,15 @@ impl Scene {
 		    if noun_clause.matches(child) {
 			// if we fail a filter we don't want to check children
 			// or add this item to the results
+			let mut ok = true;
 			for filter in filters {
 			    if !filter(child) {
-				return;
+				ok = false;
+				break;
 			    }
+			}
+			if !ok {
+			    break;
 			}
 			// match found, but still check children
 			results.push(child.clone());
