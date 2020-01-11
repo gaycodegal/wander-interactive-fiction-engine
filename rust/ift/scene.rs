@@ -3,16 +3,16 @@ use sentence::Sentence;
 use serde_json::Value;
 use std::collections::HashMap;
 
-pub struct Scene<'lifetime> {
-    root: &'lifetime Value,
+pub struct Scene {
+    root: Value,
 }
 
-impl<'lifetime> Scene<'lifetime> {
-    pub fn new<'outside>(root: &'outside mut Value) -> Scene {
+impl Scene {
+    pub fn new(root: Value) -> Scene {
         Scene { root: root }
     }
 
-    pub fn ask_question<'question>(&self, sentence: &Sentence) -> bool {
+    pub fn ask_question(&mut self, sentence: &Sentence) -> bool {
         let result = self.ask_question_helper(sentence);
         match result {
             Some(result) => result,
@@ -20,65 +20,71 @@ impl<'lifetime> Scene<'lifetime> {
         }
     }
 
-    fn ask_question_helper<'question>(
-        &self,
-        sentence: &Sentence,
-    ) -> Option<bool> {
+    fn ask_question_helper(&mut self, sentence: &Sentence) -> Option<bool> {
         let qtype = &sentence.q_type.to_owned()?;
 
         let unfiltered = vec![];
 
-        let location = match &sentence.prep {
+        let mut location = match &sentence.prep {
             Some(prep) => Some(self.select(&prep.noun_clause, &unfiltered)),
             None => None,
         };
         if location.is_none() && sentence.prep.is_some() {
             return Some(false);
         }
-        let location = match &location {
-            Some(matches) => matches.first(),
+        let mut location: &mut Value = match &mut location {
+            Some(matches) => {
+                if matches.len() == 0 {
+                    None
+                } else {
+                    Some(&mut matches[0])
+                }
+            }
             None => None,
         }
-        .unwrap_or(self.root);
+        .unwrap_or(&mut self.root);
         let subject = &sentence.subject;
         let filters = vec![FILTER_MAP.get(qtype)?];
-        let subjects = self.select_custom_root(subject, &filters, location);
+        let subjects = Scene::select_custom_root(subject, &filters, location);
         return Some(subjects.len() >= 1);
     }
 
     pub fn select(
-        &self,
+        &mut self,
         noun_clause: &NounClause,
         filters: &Vec<&fn(&Value) -> bool>,
     ) -> Vec<Value> {
         let mut results = Vec::new();
-        self.select_child_helper(&mut results, noun_clause, filters, self.root);
+        Scene::select_child_helper(
+            &mut results,
+            noun_clause,
+            filters,
+            &mut self.root,
+        );
         return results;
     }
 
     fn select_custom_root(
-        &self,
         noun_clause: &NounClause,
         filters: &Vec<&fn(&Value) -> bool>,
-        root: &Value,
+        root: &mut Value,
     ) -> Vec<Value> {
         let mut results = Vec::new();
-        self.select_child_helper(&mut results, noun_clause, filters, root);
+        Scene::select_child_helper(&mut results, noun_clause, filters, root);
         return results;
     }
 
     fn select_child_helper(
-        &self,
         results: &mut Vec<Value>,
         noun_clause: &NounClause,
         filters: &Vec<&fn(&Value) -> bool>,
-        value: &Value,
+        value: &mut Value,
     ) {
         // check the children
-        match &value["children"] {
+        match &mut value["children"] {
             Value::Array(children) => {
                 for child in children {
-                    self.select_helper(results, noun_clause, filters, child);
+                    Scene::select_helper(results, noun_clause, filters, child);
                 }
             }
             _ => (),
@@ -86,11 +92,10 @@ impl<'lifetime> Scene<'lifetime> {
     }
 
     fn select_helper(
-        &self,
         results: &mut Vec<Value>,
         noun_clause: &NounClause,
         filters: &Vec<&fn(&Value) -> bool>,
-        value: &Value,
+        value: &mut Value,
     ) {
         if noun_clause.matches(value) {
             // if we fail a filter we don't want to check children
@@ -105,10 +110,10 @@ impl<'lifetime> Scene<'lifetime> {
         }
 
         // check the children
-        match &value["children"] {
+        match &mut value["children"] {
             Value::Array(children) => {
                 for child in children {
-                    self.select_helper(results, noun_clause, filters, child);
+                    Scene::select_helper(results, noun_clause, filters, child);
                 }
             }
             _ => (),
@@ -158,7 +163,7 @@ mod test {
     use std::fs;
 
     fn test_scene() -> Value {
-        let scene =
+        let mut scene =
             fs::read_to_string("rust/test-data/test-scene.json").unwrap();
         serde_json::from_str(&scene).unwrap()
     }
@@ -177,8 +182,8 @@ mod test {
 
     #[test]
     fn test_ask_exist() {
-        let mut data = test_scene();
-        let scene = Scene::new(&mut data);
+        let data = test_scene();
+        let mut scene = Scene::new(data);
         let sentence = test_sentence("does a red apple exist");
         let result = scene.ask_question(&sentence);
         assert_eq!(true, result);
@@ -186,8 +191,8 @@ mod test {
 
     #[test]
     fn test_ask_edible_is_true_with_component() {
-        let mut data = test_scene();
-        let scene = Scene::new(&mut data);
+        let data = test_scene();
+        let mut scene = Scene::new(data);
         let sentence = test_sentence("is a red apple edible");
         let result = scene.ask_question(&sentence);
         assert_eq!(true, result);
@@ -195,8 +200,8 @@ mod test {
 
     #[test]
     fn test_ask_edible_is_false_without_component() {
-        let mut data = test_scene();
-        let scene = Scene::new(&mut data);
+        let data = test_scene();
+        let mut scene = Scene::new(data);
         let lang = make_lang();
         let sentence_exists =
             Sentence::from_lang(&lang, "does a red table exist").unwrap();
@@ -208,8 +213,8 @@ mod test {
 
     #[test]
     fn test_scene_selects_multiple_items() {
-        let mut data = test_scene();
-        let scene = Scene::new(&mut data);
+        let data = test_scene();
+        let mut scene = Scene::new(data);
         let filters = Vec::new();
         let search_term =
             NounClause::new("apple".to_string(), None, Some("red".to_string()));
