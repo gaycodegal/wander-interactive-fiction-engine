@@ -26,13 +26,13 @@ impl Scene {
         let unfiltered = vec![];
 
         let mut location = match &sentence.prep {
-            Some(prep) => Some(self.select(&prep.noun_clause, &unfiltered)),
+            Some(prep) => Some(self.select(&prep.noun_clause, &unfiltered, None)),
             None => None,
         };
         if location.is_none() && sentence.prep.is_some() {
             return Some(false);
         }
-        let mut location: &mut Value = match &mut location {
+        let location: &mut Value = match &mut location {
             Some(matches) => {
                 if matches.len() == 0 {
                     None
@@ -45,7 +45,7 @@ impl Scene {
         .unwrap_or(&mut self.root);
         let subject = &sentence.subject;
         let filters = vec![FILTER_MAP.get(qtype)?];
-        let subjects = Scene::select_custom_root(subject, &filters, location);
+        let subjects = Scene::select_custom_root(subject, &filters, None, location);
         return Some(subjects.len() >= 1);
     }
 
@@ -53,12 +53,14 @@ impl Scene {
         &mut self,
         noun_clause: &NounClause,
         filters: &Vec<&fn(&Value) -> bool>,
+	transform: Option<&fn(&Value) -> bool>,
     ) -> Vec<Value> {
         let mut results = Vec::new();
         Scene::select_helper(
             &mut results,
             noun_clause,
             filters,
+	    transform,
             &mut self.root,
         );
         return results;
@@ -67,10 +69,11 @@ impl Scene {
     fn select_custom_root(
         noun_clause: &NounClause,
         filters: &Vec<&fn(&Value) -> bool>,
+	transform: Option<&fn(&Value) -> bool>,
         root: &mut Value,
     ) -> Vec<Value> {
         let mut results = Vec::new();
-        Scene::select_helper(&mut results, noun_clause, filters, root);
+        Scene::select_helper(&mut results, noun_clause, filters, transform, root);
         return results;
     }
 
@@ -78,14 +81,15 @@ impl Scene {
         results: &mut Vec<Value>,
         noun_clause: &NounClause,
         filters: &Vec<&fn(&Value) -> bool>,
+	transform: Option<&fn(&Value) -> bool>,
         value: &mut Value,
     ) {
-
+	let mut childs: Vec<Value> = Vec::new();
         // check the children
         match &mut value["children"] {
             Value::Array(children) => {
-                for i in (0..children.len()).rev() {
-		    let mut child = &mut children[i];
+                for child in children {
+		    let mut pushChild = transform.is_some();
 		    if noun_clause.matches(child) {
 			// if we fail a filter we don't want to check children
 			// or add this item to the results
@@ -97,17 +101,39 @@ impl Scene {
 			    }
 			}
 			if !ok {
+			    if transform.is_some() {
+				// continue so pus now
+				childs.push(child.clone());
+			    }
 			    continue;
 			}
 			// match found, but still check children
 			results.push(child.clone());
+			match transform {
+			    Some(transform) => {
+				if !transform(child) {
+				    pushChild = false;
+				}
+			    },
+			    None => (),
+			}
 		    }
-                    Scene::select_helper(results, noun_clause, filters, child);
+                    Scene::select_helper(results, noun_clause, filters, transform, child);
+		    if pushChild {
+			childs.push(child.clone());
+		    }
                 }
             }
             _ => (),
         }
+	if transform.is_some() && value["children"] != Value::Null {
+	    value["children"] = Value::Array(childs);
+	}
     }
+}
+
+fn remove(_: &Value) -> bool {
+    false
 }
 
 fn exist(_: &Value) -> bool {
@@ -152,7 +178,7 @@ mod test {
     use std::fs;
 
     fn test_scene() -> Value {
-        let mut scene =
+        let scene =
             fs::read_to_string("rust/test-data/test-scene.json").unwrap();
         serde_json::from_str(&scene).unwrap()
     }
@@ -176,6 +202,32 @@ mod test {
         let sentence = test_sentence("does a red apple exist");
         let result = scene.ask_question(&sentence);
         assert_eq!(true, result);
+    }
+
+    #[test]
+    fn test_remove_nothing() {
+        let data = test_scene();
+        let mut scene = Scene::new(data);
+        let filters: Vec<&fn(&Value) -> bool> = vec![&(super::edible as fn(&Value) -> bool)];
+        let search_term =
+            NounClause::new("apple".to_string(), None, Some("red".to_string()));
+        scene.select(&search_term, &filters, Some(&(super::exist as fn(&Value) -> bool)));
+	assert_eq!(test_scene(), scene.root);
+    }
+
+    #[test]
+    fn test_remove_edible() {
+        let data = test_scene();
+        let mut scene = Scene::new(data);
+        let filters: Vec<&fn(&Value) -> bool> = vec![&(super::edible as fn(&Value) -> bool)];
+        let search_term =
+            NounClause::new("apple".to_string(), None, Some("red".to_string()));
+        let results = scene.select(&search_term, &filters, Some(&(super::remove as fn(&Value) -> bool)));
+        let sentence = test_sentence("does a red apple exist");
+	print!("{:?}\n\n", results);
+	print!("{}", scene.root);
+        let result = scene.ask_question(&sentence);
+        assert_eq!(false, result);
     }
 
     #[test]
@@ -207,11 +259,11 @@ mod test {
         let filters = Vec::new();
         let search_term =
             NounClause::new("apple".to_string(), None, Some("red".to_string()));
-        let result = scene.select(&search_term, &filters);
+        let result = scene.select(&search_term, &filters, None);
         assert_eq!(
             vec![
-                json!({"noun": "apple", "adjectives": ["blotchy", "red"], "is": ["edible"]}),
                 json!({"noun": "apple", "adjectives": ["red", "dirty"], "is": ["edible"]}),
+                json!({"noun": "apple", "adjectives": ["blotchy", "red"], "is": ["edible"]}),
             ],
             result
         );
