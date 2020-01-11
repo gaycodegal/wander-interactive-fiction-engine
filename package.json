@@ -6,10 +6,7 @@
     "build": "bazel build :bundle",
     "watch": "ibazel build :app"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gaycodegal/wander-interactive-fiction-engine.git"
-  },
+  "repository": "git+https://github.com/gaycodegal/wander-interactive-fiction-engine.git",
   "keywords": [
     "ift-engine"
   ],
@@ -23,5 +20,7 @@
     "@bazel/bazel": "^2.0.0",
     "@bazel/typescript": "^1.0.1",
     "typescript": "^3.7.4"
-  }
+  },
+  "main": "index.js",
+  "private": false
 }
