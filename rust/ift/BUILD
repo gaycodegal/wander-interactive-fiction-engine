@@ -16,6 +16,7 @@ rust_library(
     deps = [
         "//rust/cfg",
         "//cargo:serde_json",
+        "//cargo:lazy_static",
     ],
     crate_root = "lib.rs",
 )
@@ -23,4 +24,5 @@ rust_library(
 rust_test(
     name = "test",
     crate = ":ift",
+    data = ["//rust/test-data"],
 )

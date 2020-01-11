@@ -12,6 +12,7 @@ use ift::scene::Scene;
 use ift::sentence::Sentence;
 use querier::dialogue_tree::*;
 use querier::models::*;
+use std::fs;
 use std::io;
 use std::io::Write;
 use std::path::PathBuf;
@@ -19,12 +20,8 @@ use std::path::PathBuf;
 use dyon::{error, run};
 
 fn main() {
-    // query_test();
-    // lang_test();
-}
-
-fn dyon_test() {
-    println!("hello, world");
+    query_test();
+    lang_test();
 }
 
 fn query_test() {
@@ -86,40 +83,13 @@ fn query_test() {
 }
 
 fn lang_test() -> Option<()> {
-    let rules = "
-S: Verb NounClause | Verb NounClause PrepClause | QuestionVerb NounClause Type | QuestionVerb NounClause PrepClause Type
-NounClause: Count ANoun | Adjective Noun | noun
-PrepClause: Prep NounClause
-ANoun: Adjective Noun | noun
-QuestionVerb: qVerb
-Adjective: adjective
-Type: type
-Prep: prep
-Verb: verb
-Noun: noun
-Count: definiteArticle | indefiniteArticle | number
-";
-    let words = "
-an indefiniteArticle
-a indefiniteArticle
-the definiteArticle
-eat verb
-on prep
-apple noun
-table noun
-is qVerb
-does qVerb
-edible type
-exist type
-red adjective
-green adjective
-clean adjective
-blotchy adjective
-dirty adjective
-";
+    let rules =
+        fs::read_to_string("rust/test-data/test-lang-rules.txt").unwrap();
+    let words =
+        fs::read_to_string("rust/test-data/test-lang-words.txt").unwrap();
     let mut lang = Lang::new();
-    lang.init_rules(rules);
-    lang.init_words(words);
+    lang.init_rules(&rules);
+    lang.init_words(&words);
     let mut data = json!({
         "children": [
     {"noun": "apple", "adjectives": ["red", "dirty"]},
@@ -131,8 +101,8 @@ dirty adjective
         ],
     });
 
-    println!("grammar:\n{}\n", rules);
-    println!("words:\n{}\n", words);
+    println!("grammar:\n\n{}", rules);
+    println!("words:\n{}", words);
     println!("the world:\n\n{}\n", data);
 
     loop {

@@ -1,5 +1,6 @@
 use ast::AST;
 use std::collections::HashMap;
+use std::fs;
 use std::iter;
 
 pub struct Lang {
@@ -19,6 +20,15 @@ impl Lang {
             gen: 0,
             gen_lookup: HashMap::new(),
         }
+    }
+
+    pub fn from_file(rules_file: &str, words_file: &str) -> Lang {
+        let mut lang = Lang::new();
+        let rules = fs::read_to_string(rules_file).unwrap();
+        let words = fs::read_to_string(words_file).unwrap();
+        lang.init_rules(&rules);
+        lang.init_words(&words);
+        return lang;
     }
 
     // Rules section
@@ -177,11 +187,10 @@ impl Lang {
         let words = origins.clone().filter_map(|x| self.words.get(x));
         let n = words.clone().count();
 
-	if n == 0 {
-	    return Err("Zero length sentence".to_string());
-	}
+        if n == 0 {
+            return Err("Zero length sentence".to_string());
+        }
 
-	
         // Check for and report unknown words
         if origins.clone().count() != n {
             let mut error: Vec<String> = Vec::new();
@@ -364,58 +373,23 @@ mod test {
     use super::Lang;
 
     fn make_lang() -> Lang {
-        let mut lang = Lang::new();
-        lang.init_rules(
-            "
-S: Verb NounClause | Verb NounClause PrepClause | QuestionVerb NounClause \
-Type | QuestionVerb NounClause PrepClause Type
-NounClause: Count ANoun | Adjective Noun | noun
-PrepClause: Prep NounClause
-ANoun: Adjective Noun | noun
-QuestionVerb: qVerb
-Adjective: adjective
-Type: type
-Prep: prep
-Verb: verb
-Noun: noun
-Count: definiteArticle | indefiniteArticle | number
-",
-        );
-        lang.init_words(
-            "
-an indefiniteArticle
-a indefiniteArticle
-the definiteArticle
-eat verb
-on prep
-apple noun
-table noun
-is qVerb
-does qVerb
-edible type
-exist type
-red adjective
-green adjective
-",
-        );
-        return lang;
+        Lang::from_file(
+            "rust/test-data/test-lang-rules.txt",
+            "rust/test-data/test-lang-words.txt",
+        )
     }
 
     #[test]
     fn test_produces_ast() {
         let lang = make_lang();
         let test = "eat the green apple on a table";
-        match lang.parse_sentence(test) {
-            Err(error) => panic!("Error:\n{}", error),
-            Ok(ast) => {
-                assert_eq!("((Tagged Verb (Word verb eat)) (Tagged NounClause \
+        let ast = lang.parse_sentence(test).unwrap();
+        assert_eq!("((Tagged Verb (Word verb eat)) (Tagged NounClause \
 ((Tagged Count (Word definiteArticle the)) (Tagged ANoun ((Tagged Adjective \
 (Word adjective green)) (Tagged Noun (Word noun apple)))))) (Tagged PrepClause \
 ((Tagged Prep (Word prep on)) (Tagged NounClause ((Tagged Count (Word \
 indefiniteArticle a)) (Tagged ANoun (Word noun table)))))))",
-			   format!("{}", ast));
-            }
-        };
+		   format!("{}", ast));
     }
 
     #[test]
