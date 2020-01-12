@@ -1,5 +1,5 @@
 workspace(
-  name="wander_interactive_fiction_engine",
+  name="wife",
   managed_directories = {"@npm": ["node_modules"]}
 )
 

@@ -1,11 +1,23 @@
+load("@npm_bazel_typescript//:index.bzl", "ts_library")
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 
-nodejs_binary(
-    name = "example",
-    data = [
-        "@//:node_modules",
+ts_library(
+    name="main",
+    srcs=[
         "main.ts",
     ],
-    entry_point = ":main.ts",
-    args = ["--node_options=--expose-gc"],
+    deps=[
+        "//typescript/testlib"
+    ]
+)
+
+nodejs_binary(
+    name = "game",
+    data = [
+        ":main",
+    ],
+    args=[
+        "--declaration",
+    ],
+    entry_point="main.ts",
 )

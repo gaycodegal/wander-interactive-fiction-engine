@@ -21,6 +21,6 @@
     "@bazel/typescript": "^1.0.1",
     "typescript": "^3.7.4"
   },
-  "main": "index.js",
+  "main": "main.js",
   "private": false
 }
