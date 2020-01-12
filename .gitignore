@@ -9,3 +9,4 @@ vendor/
 *.orig
 
 node_modules/
+dist/

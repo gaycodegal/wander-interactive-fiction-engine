@@ -1,0 +1,11 @@
+{
+  "name":"wife",
+  "version": "1.0.0",
+  "main":"index.html",
+  "window": {
+    "title": "wife",
+    "width": 800,
+    "height": 600,
+    "toolbar": false
+  }
+}
