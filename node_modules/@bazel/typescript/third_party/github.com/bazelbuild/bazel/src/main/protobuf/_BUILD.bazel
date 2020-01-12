@@ -1,6 +1,0 @@
-
-
-# Export the raw proto file so protobufjs can be used reflectively without codegen
-exports_files(["worker_protocol.proto"])
-
-
