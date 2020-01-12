@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "run": "bazel run //typescript/game",
-    "watch": "ibazel run //typescript/game",
+    "watch": "ibazel build //typescript/game:bundle",
     "compile": "bazel build //typescript/game:bundle",
-    "files": "yarn run compile && rm -f wife/main.js && cp bazel-bin/typescript/game/bundle.js wife/main.js",
+    "files:build": "yarn run compile && rm -f wife/main.js && cp bazel-bin/typescript/game/bundle.js wife/main.js",
+    "files": "rm -f wife/main.js && cp bazel-bin/typescript/game/bundle.js wife/main.js",
     "dev": "yarn run files && nw wife/",
     "prod": "yarn run files && nwbuild --platforms win32,win64,osx64,linux32,linux64 --buildDir dist/ wife/",
     "clean": "rimraf dist/",
@@ -24,6 +24,7 @@
   "homepage": "https://github.com/gaycodegal/wander-interactive-fiction-engine#readme",
   "devDependencies": {
     "@bazel/bazel": "^2.0.0",
+    "@bazel/ibazel": "^0.11.1",
     "@bazel/rollup": "^1.0.1",
     "@bazel/typescript": "^1.0.1",
     "cross-env": "^6.0.3",
