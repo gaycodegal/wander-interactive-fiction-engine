@@ -49,6 +49,11 @@
   resolved "https://registry.yarnpkg.com/@bazel/hide-bazel-files/-/hide-bazel-files-1.0.1.tgz#bfba5c73f307cd69c25411084023f60cdd89ef01"
   integrity sha512-3unoDYZIGxtePTa/bhsWZ0pxtI/G9LYr41Kkb1ZpSaSz27ZDvj6Aysbc0u9TNGTZhqkcr/w66OC9pvmeys4YnQ==
 
+"@bazel/ibazel@^0.11.1":
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/@bazel/ibazel/-/ibazel-0.11.1.tgz#c07ceaded388f1e39d6aa732953e0dd04f3dbdf0"
+  integrity sha512-qAdEquFAudYyN+CYfLzvuRWNubdsh6C8+o5CiViUEfchq1HQM5Rs8xAOE3fzGsTZ1EUsvgca/PY0kn0VIxckBA==
+
 "@bazel/rollup@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@bazel/rollup/-/rollup-1.0.1.tgz#aaef886ff6cb00fc19995479aef4275359b57eee"
