@@ -5,7 +5,8 @@
   "scripts": {
     "run": "bazel run //typescript/game",
     "watch": "ibazel run //typescript/game",
-    "files": "rm -f wife/main.js && cp bazel-bin/typescript/game/bundle.js wife/main.js",
+    "compile": "bazel build //typescript/game:bundle",
+    "files": "yarn run compile && rm -f wife/main.js && cp bazel-bin/typescript/game/bundle.js wife/main.js",
     "dev": "yarn run files && nw wife/",
     "prod": "yarn run files && nwbuild --platforms win32,win64,osx64,linux32,linux64 --buildDir dist/ wife/",
     "clean": "rimraf dist/",
