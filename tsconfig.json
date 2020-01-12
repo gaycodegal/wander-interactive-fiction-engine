@@ -1,10 +1,10 @@
 {
-  "compilerOptions": {
-    "experimentalDecorators": true,
-    "strict": true,
-    "noImplicitAny": false
-  },
-  "bazelOptions": {
-    "workspaceName": ""
-  }
+    "compilerOptions": {
+	"experimentalDecorators": true,
+	"strict": true,
+	"noImplicitAny": false,
+    },
+    "bazelOptions": {
+	"workspaceName": "wife"
+    },
 }
