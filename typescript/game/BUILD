@@ -1,19 +1,19 @@
-load("@npm_bazel_typescript//:index.bzl", "ts_library", "ts_devserver")
 load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
+load("@npm_bazel_typescript//:index.bzl", "ts_devserver", "ts_library")
 
 ts_library(
-    name="main",
-    srcs=[
+    name = "main",
+    srcs = [
         "main.ts",
     ],
-    deps=[
-        "//typescript/testlib"
-    ]
+    deps = [
+        "//typescript/testlib",
+    ],
 )
 
 ts_devserver(
-    name="game",
-    static_files=[
+    name = "game",
+    static_files = [
         "bundle.js",
         "index.html",
         "style.css",
@@ -21,8 +21,8 @@ ts_devserver(
 )
 
 rollup_bundle(
-    name="bundle",
-    deps = [":main"],
-    entry_point="main.ts",
+    name = "bundle",
     config_file = "//typescript/config:rollup.config.js",
+    entry_point = "main.ts",
+    deps = [":main"],
 )

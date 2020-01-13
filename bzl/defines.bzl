@@ -1,4 +1,3 @@
-
 def _impl(repository_ctx):
     # Create the build
     repository_ctx.file("BUILD", """
@@ -13,7 +12,8 @@ exports_files(
     repository_ctx.file("vars.bzl", "\n".join(var_defs))
 
 env_defined_repo = repository_rule(
-    implementation=_impl,
-    local=True,
-    configure=True,
-    attrs={'vars': attr.string_list(mandatory=True)})
+    implementation = _impl,
+    local = True,
+    configure = True,
+    attrs = {"vars": attr.string_list(mandatory = True)},
+)
