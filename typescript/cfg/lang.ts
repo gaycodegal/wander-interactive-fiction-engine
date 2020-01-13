@@ -1,1 +1,1 @@
-console.log("lang")
+console.log('lang');

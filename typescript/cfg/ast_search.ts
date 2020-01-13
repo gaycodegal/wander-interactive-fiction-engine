@@ -1,1 +1,1 @@
-console.log("ast_search")
+console.log('ast_search');

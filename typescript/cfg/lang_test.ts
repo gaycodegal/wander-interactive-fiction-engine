@@ -1,3 +1,3 @@
-import "wife/typescript/cfg/ast";
+import 'wife/typescript/cfg/ast';
 
-console.log("lang test");
+console.log('lang test');

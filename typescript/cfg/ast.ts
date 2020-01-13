@@ -1,3 +1,3 @@
-console.log("ast")
+console.log('ast');
 
-export let x = 2;
+export const x = 2;

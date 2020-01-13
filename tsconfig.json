@@ -1,13 +1,17 @@
 {
     "compilerOptions": {
-	"experimentalDecorators": true,
-	"strict": true,
-	"noImplicitAny": false,
+        "experimentalDecorators": true,
+        "strict": true,
+        "noImplicitAny": false,
     },
     "bazelOptions": {
-	"workspaceName": "wife"
+	    "workspaceName": "wife"
     },
+    "exclude": [
+        "typescript/game"
+    ],
     "include": [
-        "wife/typescript/**/*"
+        "wife/typescript/**/*",
+        "typescript",
     ],
 }

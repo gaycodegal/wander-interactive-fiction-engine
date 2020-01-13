@@ -1,19 +1,18 @@
 const rootpath = 'wife/';
 const newroot = 'bazel-out/k8-fastbuild/bin/';
-function RootResolver () {
+function RootResolver() {
     return {
-	name: 'root-resolver',
-	resolveId ( source ) {
-	    if (source.startsWith(rootpath)) {
-		return newroot + source.substring(rootpath.length) + ".mjs";
-	    }
-	    return null; // other ids should be handled as usually
-	},
+        name: 'root-resolver',
+        resolveId(source) {
+            if (source.startsWith(rootpath)) {
+                return newroot + source.substring(rootpath.length) + '.mjs';
+            }
+            return null; // other ids should be handled as usually
+        },
     };
 }
 
-export default ({
-    output: {
-    },
+export default {
+    output: {},
     plugins: [RootResolver()],
-});
+};
