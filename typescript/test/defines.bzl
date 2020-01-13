@@ -6,7 +6,6 @@ def ts_test(name, srcs, deps):
     libname = "_lib" + name
     bunname = "_bun" + name
     nodename = bunname + ".js"
-    print(libname, bunname, name, nodename)
     ts_library(
         name = libname,
         srcs = srcs,
