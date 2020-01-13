@@ -1,6 +1,4 @@
-const rootpath = 'wife/';
-const newroot = 'bazel-out/k8-fastbuild/bin/';
-function RootResolver () {
+function RootResolver (rootpath, newroot) {
     return {
 	name: 'root-resolver',
 	resolveId ( source ) {
@@ -15,5 +13,5 @@ function RootResolver () {
 export default ({
     output: {
     },
-    plugins: [RootResolver()],
+    plugins: [RootResolver('wife/', 'bazel-out/k8-fastbuild/bin/')],
 });
