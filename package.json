@@ -55,7 +55,7 @@
   "private": false,
   "husky": {
     "hooks": {
-      "pre-push": "yarn run ts:lint-fix && yarn run bazel:lint-fix && yarn run test"
+      "pre-push": "yarn run ts:lint-fix && yarn run bazel:lint-fix"
     }
   }
 }
