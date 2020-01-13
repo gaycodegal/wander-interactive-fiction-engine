@@ -3280,11 +3280,6 @@ widest-line@^2.0.0:
   dependencies:
     string-width "^2.1.1"
 
-wife@*:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/wife/-/wife-0.1.0.tgz#809d1f29414f796bfae9b1f7021b0b2b7b421976"
-  integrity sha1-gJ0fKUFPeWv66bH3AhsLK3tCGXY=
-
 window-size@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/window-size/-/window-size-0.1.4.tgz#f8e1aa1ee5a53ec5bf151ffa09742a6ad7697876"
