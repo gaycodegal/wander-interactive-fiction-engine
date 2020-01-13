@@ -1,6 +1,6 @@
-// tslint:disable-next-line
-import { Person } from 'wife/typescript/testlib/person';
+// eslint-disable-next-line
+import Person from 'wife/typescript/testlib/person';
 
-const person: Person = new Person('Jon');
+const person = new Person('Jon');
 console.log('owo?', person.greet());
 console.log('hi');

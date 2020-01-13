@@ -8,10 +8,9 @@
 	    "workspaceName": "wife"
     },
     "exclude": [
-        "typescript/game"
+        "node_modules",
     ],
     "include": [
         "wife/typescript/**/*",
-        "typescript",
     ],
 }
