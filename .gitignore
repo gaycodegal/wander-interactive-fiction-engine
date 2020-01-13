@@ -7,7 +7,7 @@ vendor/
 *.tmp
 *.db
 *.orig
-
+wife/
 node_modules/
 dist/
 yarn-error.log

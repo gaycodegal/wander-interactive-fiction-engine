@@ -19,10 +19,10 @@ ts_devserver(
         "style.css",
     ],
 )
-    
 
 rollup_bundle(
     name="bundle",
     deps = [":main"],
     entry_point="main.ts",
+    config_file = "//typescript/config:rollup.config.js",
 )
