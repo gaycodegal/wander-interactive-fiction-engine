@@ -7,7 +7,7 @@ vendor/
 *.tmp
 *.db
 *.orig
-wife/
 node_modules/
 dist/
+typescript/game/bundle.js
 yarn-error.log
