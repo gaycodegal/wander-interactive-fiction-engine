@@ -6,19 +6,19 @@ package(default_visibility = ["//visibility:public"])
 ts_library(
     name = "cfg",
     srcs = [
-        "lang.ts",
-        "ast_search.ts",
         "ast.ts",
+        "ast_search.ts",
+        "lang.ts",
     ],
 )
 
 ts_test(
     name = "test",
-    deps = [
-        ":cfg"
-    ],
     srcs = [
-        "lang_test.ts"
+        "lang_test.ts",
     ],
-#   data = ["//rust/test-data"],
+    deps = [
+        ":cfg",
+    ],
+    #   data = ["//rust/test-data"],
 )

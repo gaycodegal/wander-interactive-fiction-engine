@@ -7,48 +7,45 @@ licenses([
 load(
     "@io_bazel_rules_rust//rust:rust.bzl",
     "rust_library",
-    "rust_binary",
-    "rust_test",
 )
 
 genrule(
-    name="touch_config_header",
-    outs=[
+    name = "touch_config_header",
+    outs = [
         "config.h",
     ],
-    cmd="touch $@",
+    cmd = "touch $@",
 )
 
 genrule(
-    name="touch_backtrace_supported_header",
-    outs=[
+    name = "touch_backtrace_supported_header",
+    outs = [
         "backtrace-supported.h",
     ],
-    cmd="touch $@",
+    cmd = "touch $@",
 )
 
 cc_library(
-    name="backtrace_native",
-    srcs=[
-        ":touch_config_header",
-        ":touch_backtrace_supported_header",
-        "src/libbacktrace/internal.h",
-        "src/libbacktrace/backtrace.h",
+    name = "backtrace_native",
+    srcs = [
         "src/libbacktrace/alloc.c",
+        "src/libbacktrace/backtrace.h",
         "src/libbacktrace/dwarf.c",
+        "src/libbacktrace/elf.c",
         "src/libbacktrace/fileline.c",
+        "src/libbacktrace/internal.h",
         "src/libbacktrace/posix.c",
         "src/libbacktrace/read.c",
         "src/libbacktrace/sort.c",
         "src/libbacktrace/state.c",
-        "src/libbacktrace/elf.c",
+        ":touch_backtrace_supported_header",
+        ":touch_config_header",
     ],
-    includes=["."],
-    copts=[
+    copts = [
         "-fvisibility=hidden",
         "-fPIC",
     ],
-    defines=[
+    defines = [
         "BACKTRACE_ELF_SIZE=64",
         "BACKTRACE_SUPPORTED=1",
         "BACKTRACE_USES_MALLOC=1",
@@ -77,19 +74,20 @@ cc_library(
         "backtrace_create_state=__rbt_backtrace_create_state",
         "backtrace_uncompress_zdebug=__rbt_backtrace_uncompress_zdebug",
     ],
+    includes = ["."],
 )
 
 rust_library(
-    name="backtrace_sys",
-    crate_root="src/lib.rs",
-    crate_type="lib",
-    srcs=glob(["**/*.rs"]),
-    deps=[
-        "//cargo/vendor/libc-0.2.66:libc",
+    name = "backtrace_sys",
+    srcs = glob(["**/*.rs"]),
+    crate_features = [
+    ],
+    crate_root = "src/lib.rs",
+    crate_type = "lib",
+    rustc_flags = [
+    ],
+    deps = [
         ":backtrace_native",
-    ],
-    rustc_flags=[
-    ],
-    crate_features=[
+        "//cargo/vendor/libc-0.2.66:libc",
     ],
 )

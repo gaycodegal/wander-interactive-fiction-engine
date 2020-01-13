@@ -1,13 +1,16 @@
 {
     "compilerOptions": {
-	"experimentalDecorators": true,
-	"strict": true,
-	"noImplicitAny": false,
+        "experimentalDecorators": true,
+        "strict": true,
+        "noImplicitAny": false,
     },
     "bazelOptions": {
-	"workspaceName": "wife"
+	    "workspaceName": "wife"
     },
+    "exclude": [
+        "node_modules",
+    ],
     "include": [
-        "wife/typescript/**/*"
+        "wife/typescript/**/*",
     ],
 }

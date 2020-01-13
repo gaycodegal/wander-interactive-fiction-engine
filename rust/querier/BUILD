@@ -1,9 +1,9 @@
-load("@io_bazel_rules_rust//rust:rust.bzl", "rust_doc", "rust_library", "rust_test")
+load("@io_bazel_rules_rust//rust:rust.bzl", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses([
-    "notice" # MIT
+    "notice",  # MIT
 ])
 
 rust_library(
@@ -15,16 +15,15 @@ rust_library(
         "querier.rs",
         "schema.rs",
     ],
+    crate_root = "lib.rs",
+    rustc_flags = [
+        "-lsqlite3",
+    ],
     deps = [
         "//cargo:diesel",
         "//cargo:serde",
         "//cargo:serde_json",
         "//cargo:toml",
-        
-    ],
-    crate_root = "lib.rs",
-    rustc_flags = [
-        "-lsqlite3",
     ],
 )
 
@@ -33,14 +32,14 @@ filegroup(
     srcs = glob([
         "testdata/*.toml",
         "testdata/*.json",
-    ])
+    ]),
 )
 
 rust_test(
     name = "test",
     crate = ":querier",
     data = [
-        "//rust/querier:db_test_data"
+        "//rust/querier:db_test_data",
     ],
     rustc_flags = [
         "-lsqlite3",

@@ -1,11 +1,11 @@
 exports_files(
     ["defines.bzl"],
-    visibility=["//visibility:public"],
-    licenses=None,
+    licenses = None,
+    visibility = ["//visibility:public"],
 )
 
 py_binary(
-    name="env",
-    srcs=["env.py"],
-    visibility=["//visibility:public"],
+    name = "env",
+    srcs = ["env.py"],
+    visibility = ["//visibility:public"],
 )

@@ -1,17 +1,17 @@
-load("@io_bazel_rules_rust//rust:rust.bzl", "rust_binary", "rust_library", "rust_test")
+load("@io_bazel_rules_rust//rust:rust.bzl", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses([
-  "notice" # MIT
+    "notice",  # MIT
 ])
 
 rust_library(
     name = "cfg",
     srcs = [
-        "lang.rs",
-        "ast_search.rs",
         "ast.rs",
+        "ast_search.rs",
+        "lang.rs",
         "lib.rs",
     ],
     crate_root = "lib.rs",
