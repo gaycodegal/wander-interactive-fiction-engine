@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "watch": "ibazel build //typescript/game",
+    "watch": "ibazel run //typescript/game",
     "compile": "bazel build //typescript/game:bundle",
     "files:build": "yarn run compile && rm -f wife/main.js && cp bazel-bin/typescript/game/bundle.js wife/main.js",
     "files": "rm -f wife/main.js && cp bazel-bin/typescript/game/bundle.js wife/main.js",
