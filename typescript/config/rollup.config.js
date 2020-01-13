@@ -1,12 +1,11 @@
 const rootpath = 'wife/';
+const newroot = 'bazel-out/k8-fastbuild/bin/';
 function RootResolver () {
     return {
 	name: 'root-resolver',
 	resolveId ( source ) {
 	    if (source.startsWith(rootpath)) {
-		let newroot = 'bazel-out/k8-fastbuild/bin/';
-		const location = newroot + source.substring(rootpath.length) + ".mjs";
-		return location;
+		return newroot + source.substring(rootpath.length) + ".mjs";
 	    }
 	    return null; // other ids should be handled as usually
 	},
