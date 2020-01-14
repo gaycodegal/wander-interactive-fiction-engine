@@ -327,7 +327,7 @@ function index2(dim_row: number, dim_col: number, row: number, col: number): num
 }
 
 function key_of_pair_rule(k1: string, k2: string): string {
-    return `${k1}::{k2}`;
+    return `${k1}::${k2}`;
 }
 
 function first_char_uppercase(s: string): boolean {

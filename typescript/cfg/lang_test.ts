@@ -32,5 +32,6 @@ Verb: verb
 Noun: noun
 Count: definiteArticle | indefiniteArticle | number
 `);
-
-console.log("result", x.parse_sentence("eat an clean apple on the green table"));
+const sentence = "eat the clean apple on the green table";
+console.log(sentence);
+console.log("result", x.parse_sentence(sentence));
