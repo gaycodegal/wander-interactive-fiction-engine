@@ -35,11 +35,10 @@
     "@bazel/ibazel": "^0.11.1",
     "@bazel/rollup": "^1.0.1",
     "@bazel/typescript": "^1.0.1",
-    "@typescript-eslint/eslint-plugin": "^2.15.0",
-    "@typescript-eslint/parser": "^2.15.0",
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
     "cross-env": "^6.0.3",
     "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-import": "^2.20.0",
@@ -55,7 +54,7 @@
   "private": false,
   "husky": {
     "hooks": {
-      "pre-push": "yarn run ts:lint-fix && yarn run bazel:lint-fix"
+      "pre-push": "yarn run bazel:lint-fix"
     }
   }
 }
