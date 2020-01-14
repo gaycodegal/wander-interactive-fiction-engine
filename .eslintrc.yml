@@ -3,7 +3,7 @@ env:
   es6: true
   node: true
 extends:
-  - airbnb-base
+  - google
   - prettier
 globals:
   Atomics: readonly
@@ -15,5 +15,4 @@ parserOptions:
 plugins:
   - '@typescript-eslint'
   - 'prettier'
-rules:
-   import/no-extraneous-dependencies: [error, { devDependencies: false, optionalDependencies: false, peerDependencies: false }]
+rules: {}
