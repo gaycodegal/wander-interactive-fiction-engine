@@ -29,24 +29,21 @@
     "url": "https://github.com/gaycodegal/wander-interactive-fiction-engine/issues"
   },
   "homepage": "https://github.com/gaycodegal/wander-interactive-fiction-engine#readme",
-  "dependencies": {
-    "wife": "*"
-  },
   "devDependencies": {
     "@bazel/bazel": "^2.0.0",
     "@bazel/buildifier": "^0.29.0",
     "@bazel/ibazel": "^0.11.1",
     "@bazel/rollup": "^1.0.1",
     "@bazel/typescript": "^1.0.1",
-    "@typescript-eslint/eslint-plugin": "^2.15.0",
-    "@typescript-eslint/parser": "^2.15.0",
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
     "cross-env": "^6.0.3",
     "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.0.7",
     "nw": "0.43.4-sdk",
     "nw-builder": "^3.5.7",
     "prettier": "^1.19.1",
@@ -54,5 +51,10 @@
     "rollup": "^1.29.0",
     "typescript": "^3.7.4"
   },
-  "private": false
+  "private": false,
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn run bazel:lint-fix"
+    }
+  }
 }

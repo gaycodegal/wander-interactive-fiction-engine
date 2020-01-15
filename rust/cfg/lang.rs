@@ -8,7 +8,7 @@ pub struct Lang {
     pairs: HashMap<String, Vec<String>>,
     words: HashMap<String, String>,
     gen: i32,
-    gen_lookup: HashMap<String, String>,
+    genLookup: HashMap<String, String>,
 }
 
 impl Lang {
@@ -18,7 +18,7 @@ impl Lang {
             pairs: HashMap::new(),
             words: HashMap::new(),
             gen: 0,
-            gen_lookup: HashMap::new(),
+            genLookup: HashMap::new(),
         }
     }
 
@@ -52,7 +52,7 @@ impl Lang {
             {
                 let values = values.split("|");
                 for value in values {
-                    self.parse_rule_value(rule_type, value);
+                    self.parseRuleValue(rule_type, value);
                 }
             } else {
                 eprintln!("[Ignored] Badly formatted rule \"{}\"", rule);
@@ -60,7 +60,7 @@ impl Lang {
         }
     }
 
-    fn parse_rule_value(&mut self, rule_type: &str, value: &str) {
+    fn parseRuleValue(&mut self, rule_type: &str, value: &str) {
         let names = value.trim().split_whitespace().collect::<Vec<&str>>();
         let len_names = names.len();
         if len_names == 0 {
@@ -80,7 +80,7 @@ impl Lang {
 
         // non-terminal pair
         if len_names == 2 {
-            if first_char_uppercase(names[0]) && first_char_uppercase(names[0])
+            if firstCharUppercase(names[0]) && firstCharUppercase(names[0])
             {
                 self.new_pair_rule(rule_type, names[0], names[1])
             } else {
@@ -94,7 +94,7 @@ impl Lang {
         }
 
         // terminal definition handling
-        if first_char_lowercase(names[0]) {
+        if firstCharLowercase(names[0]) {
             self.new_terminal_rule(rule_type, names[0]);
         } else {
             self.rule_parsing_error("No unit rules", rule_type, value);
@@ -105,7 +105,7 @@ impl Lang {
         let tvals = vals.clone();
         // check all non-terminal symbols
         for sym in tvals {
-            if !first_char_uppercase(sym) {
+            if !firstCharUppercase(sym) {
                 self.rule_parsing_error(
                     "Unions must be between non-terminal vars",
                     rule_type,
@@ -139,7 +139,7 @@ impl Lang {
     fn new_pair_rule(&mut self, rule_type: &str, k1: &str, k2: &str) {
         let vals = self
             .pairs
-            .entry(key_of_pair_rule(k1, k2))
+            .entry(keyOfPairRule(k1, k2))
             .or_insert(Vec::new());
         vals.push(rule_type.to_string());
     }
@@ -162,7 +162,7 @@ impl Lang {
     fn next_gen_name(&mut self, rule_type: &str) -> String {
         self.gen += 1;
         let name = format!("__{}", self.gen);
-        self.gen_lookup
+        self.genLookup
             .entry(name.to_string())
             .or_insert(rule_type.to_string());
         return name;
@@ -273,7 +273,7 @@ impl Lang {
     ) {
         for l_sym in left.keys() {
             for r_sym in right.keys() {
-                let pair = key_of_pair_rule(l_sym, r_sym);
+                let pair = keyOfPairRule(l_sym, r_sym);
                 if let Some(derivations) = self.pairs.get(&pair) {
                     for rule_type in derivations {
                         let derivation = CYKIntermediate::Derivation((
@@ -302,30 +302,30 @@ impl Lang {
             CYKIntermediate::Derivation((l_sym, r_sym, l_ind, r_ind)) => {
                 let l_val = matrix[l_ind.clone()].get(l_sym)?;
                 let r_val = matrix[r_ind.clone()].get(r_sym)?;
-                let l_answer = self.derive_answer(matrix, l_val)?;
-                let r_answer = AST::Tagged(
+                let lAnswer = self.derive_answer(matrix, l_val)?;
+                let rAnswer = AST::Tagged(
                     r_sym.to_string(),
                     Box::new(self.derive_answer(matrix, r_val)?),
                 );
 
                 // Handle N-Pair
-                if let (Some(c), AST::Rule(l_answer)) =
-                    (l_sym.chars().next(), l_answer.clone())
+                if let (Some(c), AST::Rule(lAnswer)) =
+                    (l_sym.chars().next(), lAnswer.clone())
                 {
                     if c == '_' {
                         let mut ans: Vec<AST> = Vec::new();
-                        ans.extend(l_answer);
-                        ans.push(r_answer);
+                        ans.extend(lAnswer);
+                        ans.push(rAnswer);
                         return Some(AST::Rule(ans));
                     }
                 }
 
                 // Normal 2-Pair rule
-                let l_answer =
-                    AST::Tagged(l_sym.to_string(), Box::new(l_answer));
+                let lAnswer =
+                    AST::Tagged(l_sym.to_string(), Box::new(lAnswer));
                 let mut ans: Vec<AST> = Vec::new();
-                ans.push(l_answer);
-                ans.push(r_answer);
+                ans.push(lAnswer);
+                ans.push(rAnswer);
                 Some(AST::Rule(ans))
             }
         }
@@ -338,19 +338,19 @@ enum CYKIntermediate {
     Derivation((String, String, usize, usize)),
 }
 
-fn index2(dim_row: usize, dim_col: usize, row: usize, col: usize) -> usize {
-    if row >= dim_row || col >= dim_col {
+fn index2(dimRow: usize, dimCol: usize, row: usize, col: usize) -> usize {
+    if row >= dimRow || col >= dimCol {
         eprintln!("indexing broke");
         return 0;
     }
-    return row + col * dim_row;
+    return row + col * dimRow;
 }
 
-fn key_of_pair_rule(k1: &str, k2: &str) -> String {
+fn keyOfPairRule(k1: &str, k2: &str) -> String {
     return format!("{}::{}", k1, k2);
 }
 
-fn first_char_uppercase(s: &str) -> bool {
+fn firstCharUppercase(s: &str) -> bool {
     if let Some(c) = s.chars().next() {
         if c.is_uppercase() {
             return true;
@@ -359,7 +359,7 @@ fn first_char_uppercase(s: &str) -> bool {
     return false;
 }
 
-fn first_char_lowercase(s: &str) -> bool {
+fn firstCharLowercase(s: &str) -> bool {
     if let Some(c) = s.chars().next() {
         if c.is_lowercase() {
             return true;
