@@ -78,9 +78,17 @@ mod tests {
         models::Dialogue {
             id: 100,
             characters: String::from("dad,mom,sister"),
+            priority: 0,
             flags: Some(String::from("apple_acquired,brother_dead")),
             location: String::from("kitchen"),
-            dialogue: String::from("hello i am dialogue."),
+            dialogue: String::from("{\"story\":[],\"choices\": [{\"what\":\"What's for dinner y'all?\",\"next\":4},{\"what\":\"How can I help set up?\",\"next\":5}],\"visited\":false}"),
+        }
+    }
+
+    fn common_node() -> models::Node {
+        models::Node {
+            id: 100,
+            data: String::from("{\"story\":[{\"what\":\"Mama milk?\",\"who\": \"dad\"},{\"what\":\"Really dad?\",\"who\": \"sister\"}],\"choices\": null,\"visited\":false}"),
         }
     }
 
@@ -562,7 +570,7 @@ mod tests {
 
         let snips = vec!["I wanna die"];
         let dialogues = querier.query_dialogues(None, None, None, Some(snips));
-        assert_eq!(2, dialogues.len());
+        assert_eq!(1, dialogues.len());
 
         let snips = vec!["I wanna die", "Me too thanks"];
         let dialogues = querier.query_dialogues(None, None, None, Some(snips));
@@ -582,10 +590,11 @@ mod tests {
         let querier = new_valid_db("insert_dialogue.db");
         let dialogue = models::Dialogue {
             id: 50,
+	    priority: 1,
             characters: String::from("dad,fairy,blob"),
             flags: None,
             location: String::from("backyard"),
-            dialogue: String::from("Hello! I am Blob."),
+            dialogue: String::from("{\"story\":[{\"who\": \"Blob\", \"what\": \"Hello! I am Blob.\"}],\"choices\": null,\"visited\":false}"),
         };
 
         let inserted = querier.insert_dialogue(dialogue.clone());
@@ -603,6 +612,7 @@ mod tests {
         dialogues.push(models::Dialogue {
             id: 50,
             characters: String::from("dad,fairy,blob"),
+            priority: 1,
             flags: None,
             location: String::from("backyard"),
             dialogue: String::from("Hello! I am Blob."),
@@ -610,10 +620,11 @@ mod tests {
 
         dialogues.push(models::Dialogue {
             id: 51,
+	    priority: 1,
             characters: String::from("sister,mom,blob"),
             flags: None,
             location: String::from("living_room"),
-            dialogue: String::from("Pew pew pew."),
+            dialogue: String::from("{\"story\":[{\"who\": \"Blob\", \"what\": \"Pew pew pew!\"}],\"choices\": null,\"visited\":false}"),
         });
 
         let inserted = querier.insert_dialogues(dialogues.clone());
@@ -675,14 +686,105 @@ mod tests {
     fn test_complex_update_dialogue() {
         let querier = new_valid_db("complex_update_dialogue.db");
         let mut dialogue = common_dialogue();
-        dialogue.characters = String::from("mom,dad");
+        dialogue.characters = String::from("mario");
         dialogue.flags = Some(String::from("hw"));
         dialogue.location = String::from("Test_Location");
-        dialogue.dialogue = String::from("Mama mia.");
+        dialogue.dialogue = String::from("{\"story\":[{\"who\": \"mario\", \"what\": \"Mama Mia\"}],\"choices\": null,\"visited\":false}");
 
         assert_eq!(1, querier.update_dialogue(100, dialogue.clone()));
 
         let got_dialogue = querier.get_dialogue(100);
         assert_eq!(dialogue.clone(), got_dialogue);
+    }
+
+    #[test]
+    fn test_dialogue_dialogue_tree_conversion() {
+        let dialogue = common_dialogue();
+
+        assert_eq!(dialogue.dialogue(), serde_json::from_str("{\"story\":[],\"choices\": [{\"what\":\"What's for dinner y'all?\",\"next\":4},{\"what\":\"How can I help set up?\",\"next\":5}],\"visited\":false}").unwrap());
+    }
+
+    #[test]
+    fn test_insert_node() {
+        let querier = new_valid_db("insert_node.db");
+        let node = models::Node {
+            id: 50,
+            data: String::from("Test_Node_Insert"),
+        };
+
+        let inserted = querier.insert_node(node.clone());
+        assert_eq!(1, inserted);
+
+        let got_node = querier.get_node(50);
+        assert_eq!(node, got_node);
+    }
+
+    #[test]
+    fn test_insert_nodes() {
+        let querier = new_valid_db("insert_nodes.db");
+        let mut nodes = Vec::new();
+
+        nodes.push(models::Node {
+            id: 101,
+            data: String::from("Test node for insert testing."),
+        });
+
+        nodes.push(models::Node {
+            id: 102,
+            data: String::from("Test_Node_Insert_2"),
+        });
+
+        let inserted = querier.insert_nodes(nodes.clone());
+        assert_eq!(2, inserted);
+
+        let node_101 = querier.get_node(101);
+        let node_102 = querier.get_node(102);
+        assert_eq!(nodes[0], node_101);
+        assert_eq!(nodes[1], node_102);
+    }
+
+    #[test]
+    #[should_panic(
+        expected = "Error inserting node.: DatabaseError(UniqueViolation, \"UNIQUE constraint failed: nodes.id\")"
+    )]
+    fn test_insert_existing_node() {
+        let querier = new_valid_db("insert_existing_node.db");
+
+        querier.insert_node(common_node());
+    }
+
+    #[test]
+    fn test_get_node() {
+        let querier = new_valid_db("get_node.db");
+
+        let got_node = querier.get_node(100);
+        assert_eq!(common_node(), got_node);
+    }
+
+    #[test]
+    #[should_panic(expected = "Failed to get node.: NotFound")]
+    fn test_get_nonexistant_node() {
+        let querier = new_valid_db("get_nonexistant_node.db");
+
+        querier.get_node(666);
+    }
+
+    #[test]
+    fn test_simple_update_node() {
+        let querier = new_valid_db("simple_update_node.db");
+        let mut node = common_node();
+        node.data = String::from("updated data.");
+
+        assert_eq!(1, querier.update_node(100, node.clone()));
+
+        let got_node = querier.get_node(100);
+        assert_eq!(node.clone(), got_node);
+    }
+
+    #[test]
+    fn test_node_dialogue_tree_conversion() {
+        let node = common_node();
+
+        assert_eq!(node.to_struct(), serde_json::from_str("{\"story\":[{\"what\":\"Mama milk?\",\"who\": \"dad\"},{\"what\":\"Really dad?\",\"who\": \"sister\"}],\"choices\": null,\"visited\":false}").unwrap());
     }
 }

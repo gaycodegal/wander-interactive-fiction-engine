@@ -1,0 +1,11 @@
+{
+    "children": [
+        {"noun": "apple", "adjectives": ["red", "dirty"], "is": ["edible"]},
+        {"noun": "table", "children": [
+            {"noun": "table", "adjectives": ["red"]},
+            {"noun": "apple", "adjectives": ["blotchy", "red"], "is": ["edible"]},
+            {"noun": "apple", "adjectives": ["clean"], "is": ["edible"]}
+        ]}
+    ]
+}
+

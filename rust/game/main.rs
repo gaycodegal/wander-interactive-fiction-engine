@@ -1,20 +1,27 @@
+#[macro_use]
+extern crate serde_json;
+
+extern crate gluon;
+
 extern crate cfg;
 extern crate ift;
 extern crate querier;
-#[macro_use]
-extern crate serde_json;
 
 use cfg::lang::Lang;
 use ift::scene::Scene;
 use ift::sentence::Sentence;
+use querier::dialogue_tree::*;
 use querier::models::*;
+use std::fs;
 use std::io;
 use std::io::Write;
 use std::path::PathBuf;
 
+use dyon::{error, run};
+
 fn main() {
     query_test();
-    //lang_test();
+    lang_test();
 }
 
 fn query_test() {
@@ -41,44 +48,48 @@ fn query_test() {
         .expect("unsuccesful json dump to db");
 
     let dia = q.get_dialogue(0);
+    println!("dia {:?}", dia.dialogue_string());
     println!("dia {:?}", dia.dialogue());
+
+    let story = vec![
+        Talk {
+            who: "dad",
+            what: "What the fuck do you think you were doing?",
+        },
+        Talk {
+            who: "mom",
+            what: "You are are grounded!",
+        },
+    ];
+    let select = vec![
+        Choice {
+            what: "Fuck you guys.",
+            next: 0,
+        },
+        Choice {
+            what: "I was trying to help her.",
+            next: 1,
+        },
+    ];
+    let mut tree = StoryNode {
+        story: story,
+        select: Some(select),
+        visited: false,
+    };
+    println!("The debugs:\n{:?}", tree);
+
+    let serialized = serde_json::to_string(&tree).unwrap();
+    println!("\ntree_json: {}", serialized);
 }
 
 fn lang_test() -> Option<()> {
-    let rules = "
-S: Verb NounClause | Verb NounClause PrepClause | QuestionVerb NounClause Type | QuestionVerb NounClause PrepClause Type
-NounClause: Count ANoun | Adjective Noun | noun
-PrepClause: Prep NounClause
-ANoun: Adjective Noun | noun
-QuestionVerb: qVerb
-Adjective: adjective
-Type: type
-Prep: prep
-Verb: verb
-Noun: noun
-Count: definiteArticle | indefiniteArticle | number
-";
-    let words = "
-an indefiniteArticle
-a indefiniteArticle
-the definiteArticle
-eat verb
-on prep
-apple noun
-table noun
-is qVerb
-does qVerb
-edible type
-exist type
-red adjective
-green adjective
-clean adjective
-blotchy adjective
-dirty adjective
-";
+    let rules =
+        fs::read_to_string("rust/test-data/test-lang-rules.txt").unwrap();
+    let words =
+        fs::read_to_string("rust/test-data/test-lang-words.txt").unwrap();
     let mut lang = Lang::new();
-    lang.init_rules(rules);
-    lang.init_words(words);
+    lang.init_rules(&rules);
+    lang.init_words(&words);
     let mut data = json!({
         "children": [
     {"noun": "apple", "adjectives": ["red", "dirty"]},
@@ -90,8 +101,8 @@ dirty adjective
         ],
     });
 
-    println!("grammar:\n{}\n", rules);
-    println!("words:\n{}\n", words);
+    println!("grammar:\n\n{}", rules);
+    println!("words:\n{}", words);
     println!("the world:\n\n{}\n", data);
 
     loop {

@@ -1,5 +1,0 @@
-reorder_imports = true
-edition = "2018"
-# wrap_comments = true
-# brace_style = "PreferSameLine"
-max_width = 80

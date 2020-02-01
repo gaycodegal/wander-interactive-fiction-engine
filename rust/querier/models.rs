@@ -2,7 +2,6 @@ use crate::schema::*;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use serde::Deserialize;
-// use serde_json::Result;
 
 use dialogue_tree::*;
 
@@ -116,9 +115,10 @@ impl Character {
             .expect("Could not look up dialogues.")
     }
 }
+
 #[derive(Insertable, Queryable, Clone, Debug, Deserialize, PartialEq)]
 #[table_name = "dialogues"]
-/// Dualogue is struct to contain all information about a dialogue.
+/// Dialogue is struct to contain all information about a dialogue.
 pub struct Dialogue {
     /// The unique id of the location.
     pub id: i32,
@@ -129,16 +129,36 @@ pub struct Dialogue {
     /// The location the dialogue takes place.
     pub location: String,
     /// The dialogue tree structure, represented as a JSON formatted string.
-    dialogue: String,
+    pub dialogue: String,
+    /// The priority of the dialogue node.
+    pub priority: i32,
 }
 
 impl Dialogue {
+    /// Returns the dialogue field of the struct as a &str.
     pub fn dialogue_string(&self) -> &str {
         &self.dialogue
     }
 
-    // fn dialogue(&self) -> Talk {
-    //     let tree: Talk = serde_json::from_str(&self.dialogue).ok().unwrap();
-    //     return tree;
-    // }
+    /// Returns the dialogue field of the struct as a StoryNode struct.
+    pub fn dialogue(&self) -> StoryNode {
+        serde_json::from_str(&self.dialogue).unwrap()
+    }
+}
+
+#[derive(Insertable, Queryable, Clone, Debug, Deserialize, PartialEq)]
+#[table_name = "nodes"]
+/// Node is struct to contain all information about a dialogue.
+pub struct Node {
+    /// The id of the node in the database.
+    pub id: i32,
+    /// The data of the dialogue represented as a json string.
+    pub data: String,
+}
+
+impl Node {
+    /// Returns the data field of the struct as a StoryNode struct.
+    pub fn to_struct(&self) -> StoryNode {
+        serde_json::from_str(&self.data).unwrap()
+    }
 }

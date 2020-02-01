@@ -6,3 +6,8 @@ __pycache__/
 vendor/
 *.tmp
 *.db
+*.orig
+node_modules/
+dist/
+typescript/game/bundle.js
+yarn-error.log

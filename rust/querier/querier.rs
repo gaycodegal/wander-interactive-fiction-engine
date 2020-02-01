@@ -19,6 +19,8 @@ struct DataFile {
     characters: Option<Vec<Character>>,
     /// The vector of dialogues in the file.
     dialogues: Option<Vec<Dialogue>>,
+    /// The nodes of dialogues in the file.
+    nodes: Option<Vec<Node>>,
 }
 
 impl Querier {
@@ -127,10 +129,19 @@ impl Querier {
             .execute(&self.connection)
             .expect("Failed to create characters index.");
 
-        sql_query("CREATE TABLE dialogues (id INTEGER PRIMARY KEY, characters TEXT NOT NULL, flags TEXT, location TEXT, dialogue TEXT NOT NULL)").execute(&self.connection).expect("Failed to create items table.");
+        sql_query("CREATE TABLE dialogues (id INTEGER PRIMARY KEY, characters TEXT NOT NULL, flags TEXT, location TEXT, priority INTEGER, dialogue TEXT NOT NULL)").execute(&self.connection).expect("Failed to create items table.");
         sql_query("CREATE UNIQUE INDEX dialogues_id ON dialogues (id)")
             .execute(&self.connection)
-            .expect("Failed to create items index.");
+            .expect("Failed to create dialogue index.");
+
+        sql_query(
+            "CREATE TABLE nodes (id INTEGER PRIMARY KEY, data TEXT NOT NULL)",
+        )
+        .execute(&self.connection)
+        .expect("Failed to create items table.");
+        sql_query("CREATE UNIQUE INDEX nodes_id ON nodes (id)")
+            .execute(&self.connection)
+            .expect("Failed to create node index.");
     }
 
     /// Given a querier instance setup dup data from the DataFile struct into the db tables.
@@ -149,6 +160,10 @@ impl Querier {
 
         if let Some(dialogues) = data.dialogues {
             self.insert_dialogues(dialogues);
+        }
+
+        if let Some(nodes) = data.nodes {
+            self.insert_nodes(nodes);
         }
     }
 
@@ -920,5 +935,98 @@ impl Querier {
             ))
             .execute(&self.connection)
             .expect("Error updating dialogue.")
+    }
+
+    /// Given a querier instance and node name fetch it if it exists.
+    ///
+    /// # Arguements
+    ///
+    /// * `node_id` - The id of the node you wish to fetch.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use querier::models::{FileType, Querier};
+    /// let querier = Querier::new_file("file_name.db");
+    /// querier.setup_db();
+    /// querier.dump_from_file("/path/to/data.json", FileType::JSON).expect("Unsuccesful dump to database");
+    /// let node = querier.get_node(0);
+    /// ```
+    pub fn get_node(&self, node_id: i32) -> Node {
+        use crate::schema::nodes::dsl::*;
+
+        nodes
+            .find(node_id)
+            .get_result::<Node>(&self.connection)
+            .expect("Failed to get node.")
+    }
+
+    /// Given a querier instance and node struct to insert into the database instance.
+    ///
+    /// # Arguements
+    ///
+    /// * `node` - The node struct to be inserted.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use querier::models::{Node, FileType, Querier};
+    /// let querier = Querier::new_file("file_name.db");
+    /// querier.setup_db();
+    /// querier.dump_from_file("/path/to/data.json", FileType::JSON).expect("Unsuccesful dump to database");
+    /// querier.insert_node(Node {
+    /// id: 0,
+    /// data: String::from("{\"story\":[{\"who\":\"dad\",\"what\":\"What the fuck do you think you were doing?\"},{\"who\":\"mom\",\"what\":\"You are are grounded!\"}],\"choices\":[{\"what\":\"Fuck you guys.\",\"next\":0},{\"what\":\"I was trying to help her.\",\"next\":1}],\"visited\":false}"),
+    /// });
+    /// ```
+    pub fn insert_node(&self, node: Node) -> usize {
+        use crate::schema::nodes::dsl::*;
+
+        diesel::insert_into(nodes)
+            .values(&node)
+            .execute(&self.connection)
+            .expect("Error inserting node.")
+    }
+
+    /// Given a querier instance and vector of node structs to be inserted into the database instance.
+    ///
+    /// # Arguements
+    ///
+    /// * `nodes` - The vector of node structs to be inserted.
+    pub fn insert_nodes(&self, insert_nodes: Vec<Node>) -> usize {
+        use crate::schema::nodes::dsl::*;
+
+        diesel::insert_into(nodes)
+            .values(&insert_nodes)
+            .execute(&self.connection)
+            .expect("Error inserting nodes.")
+    }
+
+    /// Given a querier instance, node name, and an Node struct to update the node with.
+    ///
+    /// # Arguements
+    ///
+    /// * `node_id` - The id of the node you wish to update.
+    /// * `updated_node` - The updated Node struct to replace the old one.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use querier::models::{Node, FileType, Querier};
+    /// let querier = Querier::new_file("file_name.db");
+    /// querier.setup_db();
+    /// querier.dump_from_file("/path/to/data.json", FileType::JSON).expect("Unsuccesful dump to database");
+    /// querier.update_node(0, Node {
+    /// id: 0,
+    /// data: String::from("{\"story\":[{\"who\":\"dad\",\"what\":\"What the fuck do you think you were doing?\"},{\"who\":\"mom\",\"what\":\"You are are grounded!\"}],\"choices\":[{\"what\":\"Fuck you guys.\",\"next\":0},{\"what\":\"I was trying to help her.\",\"next\":1}],\"visited\":false}"),
+    /// });
+    /// ```
+    pub fn update_node(&self, node_id: i32, updated_node: Node) -> usize {
+        use crate::schema::nodes::dsl::*;
+
+        diesel::update(nodes.filter(id.eq(node_id)))
+            .set((data.eq(updated_node.data),))
+            .execute(&self.connection)
+            .expect("Error updating node.")
     }
 }

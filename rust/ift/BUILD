@@ -1,26 +1,28 @@
-load("@io_bazel_rules_rust//rust:rust.bzl", "rust_binary", "rust_library", "rust_test")
+load("@io_bazel_rules_rust//rust:rust.bzl", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses([
-  "notice" # MIT
+    "notice",  # MIT
 ])
 
 rust_library(
     name = "ift",
     srcs = [
+        "lib.rs",
         "scene.rs",
         "sentence.rs",
-        "lib.rs",
-    ],
-    deps = [
-        "//rust/cfg",
-        "//cargo:serde_json",
     ],
     crate_root = "lib.rs",
+    deps = [
+        "//cargo:lazy_static",
+        "//cargo:serde_json",
+        "//rust/cfg",
+    ],
 )
 
 rust_test(
     name = "test",
     crate = ":ift",
+    data = ["//rust/test-data"],
 )

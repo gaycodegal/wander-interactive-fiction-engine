@@ -10,13 +10,14 @@ def rust_docs(name, deps, **kwargs):
     """
     for dep in deps:
         rust_doc(
-            name = '_'.join(dep.split('/')),
+            name = "_".join(dep.split("/")),
             dep = dep,
             **kwargs
         )
     native.filegroup(
         name = name,
         srcs = [
-            ":" + '_'.join(dep.split('/')) for dep in deps
-        ]
+            ":" + "_".join(dep.split("/"))
+            for dep in deps
+        ],
     )

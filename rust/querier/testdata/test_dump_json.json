@@ -52,43 +52,79 @@
     "dialogues": [
 	{
 	    "id": 0,
+	    "priority": 1,
 	    "characters": "dad",
 	    "location": "kitchen_json",
-	    "dialogue": "{\"character\": \"dad\", \"text\": \"I am cooking a steak.\", \"node_type\": 2, \"visited\": false }"
+	    "dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"Hope you are excited for dinner.\"}],\"choices\":[{\"what\":\"What is it?\",\"next\":0},{\"what\":\"Smells delicious.\",\"next\":1}],\"visited\":false}"
 	},
 	{
 	    "id": 1,
+	    "priority": 1,
 	    "characters": "mom,sister",
 	    "location": "living room",
 	    "flags": "grounded",
-	    "dialogue": "no tv for you"
+	    "dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"What the fuck do you think you were doing?\"},{\"who\":\"mom\",\"what\":\"You are are grounded!\"}],\"choices\":[{\"what\":\"Fuck you guys.\",\"next\":2},{\"what\":\"I was trying to help her.\",\"next\":3}],\"visited\":false}"
 	},
 	{
 	    "id": 2,
+	    "priority": 1,
 	    "characters": "fairy",
 	    "location": "bedroom",
 	    "flags": "gay,grounded",
-	    "dialogue": "I kissed a boy and I liked it"
+	    "dialogue": "{\"story\":[{\"who\":\"fairy\",\"what\":\"I kissed a boy and I liked it.\"}],\"choices\":null,\"visited\":false}"
 	},
 	{
 	    "id": 3,
+	    "priority": 1,
 	    "characters": "fairy",
 	    "flags": "fairy,poisoned",
 	    "location": "bedroom",
-	    "dialogue": "I wanna die. Me too thanks."
+	    "dialogue": "{\"story\":[{\"who\":\"fairy\",\"what\":\"I wanna die thanks.\"}, {\"player\": \"Me too thanks.\"}],\"choices\":null,\"visited\":false}"
 	},
 	{
 	    "id": 4,
+	    "priority": 1,
 	    "characters": "cat",
 	    "location": "bedroom",
-	    "dialogue": "bla bla bla I wanna die bla bla bla."
+	    "dialogue": "{\"story\":[{\"who\":\"cat\",\"what\":\"Meoooow.\"}, {\"player\": \"Cute kitty.\"}],\"choices\":null,\"visited\":false}"
 	},
 	{
 	    "id": 100,
+	    "priority": 0,
 	    "characters": "dad,mom,sister",
 	    "location": "kitchen",
 	    "flags": "apple_acquired,brother_dead",
-	    "dialogue": "hello i am dialogue."
+	    "dialogue": "{\"story\":[],\"choices\": [{\"what\":\"What's for dinner y'all?\",\"next\":4},{\"what\":\"How can I help set up?\",\"next\":5}],\"visited\":false}"
+	}
+    ],
+    "nodes": [
+	{
+	    "id": 0,
+	    "data": "{\"story\":[{\"who\":\"dad\",\"what\":\"It's steak and ash potatoes.\"}],\"choices\":null,\"visited\":false}"
+	},
+	{
+	    "id": 1,
+	    "data": "{\"story\":[{\"who\":\"dad\",\"what\":\"You better believe it.\"}],\"choices\":null,\"visited\":false}"
+	},
+	{
+	    "id": 2,
+	    "data": "{\"story\":[{\"who\":\"sister\",\"what\":\"Oh my god.\"}, {\"who\":\"mom\",\"what\":\"Have you lost your mind?.\"}, {\"who\":\"player\",\"what\":\"I'll kill you all.\"}],\"choices\":null,\"visited\":false}"
+	},
+	{
+	    "id": 3,
+	    "data": "{\"story\":[{\"who\":\"sister\",\"what\":\"Next time warn me, you could have killed me.\"}, {\"who\":\"mom\",\"what\":\"You are still grounded?.\"}, {\"who\":\"player\",\"what\":\"I'm sorry.\"}],\"choices\":null,\"visited\":false}"
+	},
+	{
+	    "id": 4,
+	    "data": "{\"story\":[{\"who\":\"sister\",\"what\":\"Don't you have eyes and a nose?.\"}],\"choices\":null,\"visited\":false}"
+	},
+	{
+	    "id": 5,
+	    "data": "{\"story\":[{\"who\":\"mom\",\"what\":\"Can you set up the silverware?\"}],\"choices\":null,\"visited\":false}"
+	},
+	{
+	    "id": 100,
+	    "data": "{\"story\":[{\"what\":\"Mama milk?\",\"who\": \"dad\"},{\"what\":\"Really dad?\",\"who\": \"sister\"}],\"choices\": null,\"visited\":false}"
 	}
     ],
     "locations": [
