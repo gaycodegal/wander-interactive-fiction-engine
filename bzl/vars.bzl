@@ -47,6 +47,7 @@ LINKOPTS = select({
 		"-lGL",
 		"-ldl",
 		"-lm",
+		"-lsqlite3",
 	],
 	"@bazel_tools//src/conditions:windows": [],
 	"//conditions:default": [
@@ -58,5 +59,6 @@ LINKOPTS = select({
 		"-lGL",
 		"-ldl",
 		"-lm",
+		"-lsqlite3",
 	],
 })
