@@ -1,29 +1,42 @@
-#include <memory>
-
+#include "models.hh"
 #include "sqlite_orm.hh"
-
-struct User{
-	int id;
-	std::string firstName;
-	std::string lastName;
-	int birthDate;
-	std::shared_ptr<std::string> imageUrl;
-	int typeId;
-};
 
 using namespace sqlite_orm;
 
 auto initStorage(const std::string &path){
-    return make_storage(
-			path,
-			make_table("users",
-			make_column("id", &User::id, autoincrement(), primary_key()),
-			make_column("first_name", &User::firstName),
-			make_column("last_name", &User::lastName),
-			make_column("birth_date", &User::birthDate),
-			make_column("image_url", &User::imageUrl),
-			make_column("type_id", &User::typeId))
-		);
+	return make_storage(
+		path,
+		make_table("items",
+
+		make_column("name", &Item::name, primary_key()),
+		make_column("description", &Item::description),
+		make_column("attributes", &Item::attributes),
+		make_column("components", &Item::components)),
+
+		make_table("locations",
+		make_column("name", &Location::name, primary_key()),
+		make_column("description", &Location::description),
+		make_column("neighbors", &Location::neighbors),
+		make_column("characters", &Location::characters),
+		make_column("items", &Location::getItems, &Location::setItems)),
+
+		make_table("characters",
+		make_column("name", &Character::name, primary_key()),
+		make_column("components", &Character::components)),
+
+		make_table("dialogues",
+		make_column("id", &Dialogue::id, autoincrement(), primary_key()),
+		make_column("name", &Dialogue::name),
+		make_column("characters", &Dialogue::characters),
+		make_column("flags", &Dialogue::flags),
+		make_column("location", &Dialogue::location),
+		make_column("priority", &Dialogue::priority),
+		make_column("dialogue", &Dialogue::getDialogue, &Dialogue::setDialogue)),
+
+		make_table("nodes",
+		make_column("id", &Node::id, autoincrement(), primary_key()),
+		make_column("dialogue", &Node::getDialogue, &Dialogue::setDialogue))
+	);
 }
 using Storage = decltype(initStorage(""));
 

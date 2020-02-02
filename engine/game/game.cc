@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 
+#include "engine/querier/querier.hh"
 #include "engine/sdl/sdl_include.hh"
 
 using namespace std;
@@ -12,6 +13,7 @@ struct sdl_deleter {
 };
 
 int main() {
+  Querier q(":memory:");
   cout << "Hello, World!" << endl;
 
   SDL_Init(SDL_INIT_VIDEO);
@@ -36,5 +38,6 @@ int main() {
   SDL_Delay(3000);
 
   SDL_Quit();
+  
   return 0;
 }
