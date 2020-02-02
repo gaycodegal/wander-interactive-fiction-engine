@@ -3,9 +3,11 @@ load("//bzl:vars.bzl", "COPTS", "DEPS", "LINKOPTS")
 
 cc_library(
     name = "querier",
+    srcs = glob([
+      "*.cc"
+    ]),
     hdrs = glob([
-        "*.hh",
-				"*.cc"
+        "*.hh"
     ]),
     copts = COPTS,
 		deps = DEPS,
@@ -14,9 +16,11 @@ cc_library(
 
 cc_library(
     name = "debug",
+    srcs = glob([
+      "*.cc"
+    ]),
     hdrs = glob([
-        "*.hh",
-				"*.cc"
+        "*.hh"
     ]),
     copts = COPTS + [ "-g" ],
 		deps = DEPS,

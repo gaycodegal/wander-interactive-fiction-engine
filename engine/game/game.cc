@@ -14,6 +14,7 @@ struct sdl_deleter {
 
 int main() {
   Querier q(":memory:");
+  q.test();
   cout << "Hello, World!" << endl;
 
   SDL_Init(SDL_INIT_VIDEO);
@@ -38,6 +39,6 @@ int main() {
   SDL_Delay(3000);
 
   SDL_Quit();
-  
+
   return 0;
 }
