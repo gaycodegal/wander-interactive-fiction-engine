@@ -4,7 +4,7 @@
 #include "models.hh"
 #include "sqlite_orm.hh"
 
-auto initStorage(const std::string &path) {
+static auto initStorage(const std::string &path) {
 	return sqlite_orm::make_storage(
 		path,
 		sqlite_orm::make_table("items",
