@@ -53,10 +53,10 @@ class Querier {
 
 		std::vector<Item> query_items(std::optional<std::string> name, std::optional<std::vector<std::string>> attributes, std::optional<std::vector<std::string>> components);
 		Item get_item(std::string name);
-		void insert_item(Item item);
-		void insert_items(std::vector<Item> items);
-		void remove_item(std::string name);
-		void update_item(std::string name, Item update_item);
+		inline auto insert_item(Item item);
+		auto insert_items(std::vector<Item> items);
+		inline auto remove_item(std::string name);
+		inline auto update_item(Item updated_item);
 	private:
 		std::unique_ptr<Storage> m_storage;
 }; 
