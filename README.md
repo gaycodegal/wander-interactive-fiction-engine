@@ -4,7 +4,7 @@ Wander is an engine in progress for making text adventures. It supports Context 
 
 ## Dependencies
 
-- [Rust (1.38)](https://www.rust-lang.org/tools/install)
+- C++ 17
 - [bazel.build](https://bazel.build)
 - [sqlite3 (3.30.1)](https://www.sqlite.org/index.html)
 
@@ -16,20 +16,10 @@ Also install cargo-vendor & cargo-raze
 ## Setup
 
 	bazel sync --configure
-    cd cargo
-	sh ../scripts/init-dependencies.sh
 	
 ## Running
 
-    bazel run //rust/game
-
-## Rust
-
-### Add a crate
-
-	cd cargo
-    cargo add <crate>
-	sh ../scripts/init-dependencies.sh
+    bazel run //engine/game
 
 ## License
 
