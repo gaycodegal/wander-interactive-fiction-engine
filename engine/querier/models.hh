@@ -45,15 +45,14 @@ class Character {
 class Dialogue {
 	public:
 		int id;
-		std::string name;
 		std::string characters;
 		std::shared_ptr<std::string> flags;
 		std::string location;
 		int priority;
 
 		Dialogue() {}
-		Dialogue(int id_, std::string name_, std::string characters_, std::shared_ptr<std::string> flags_, std::string location_, int priority_, std::string dialogue_)
-			: id(id_), name(move(name_)), characters(move(characters_)), flags(move(flags_)), location(move(location_)), priority(priority_), m_dialogue(move(dialogue_)) {}
+		Dialogue(int id_, std::string characters_, std::shared_ptr<std::string> flags_, std::string location_, int priority_, std::string dialogue_)
+			: id(id_), characters(move(characters_)), flags(move(flags_)), location(move(location_)), priority(priority_), m_dialogue(move(dialogue_)) {}
 		
 		inline std::string getDialogue() { return this->m_dialogue; }
 		inline void setDialogue(std::string dialogue) { this->m_dialogue = move(dialogue); }

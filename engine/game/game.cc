@@ -14,7 +14,6 @@ struct sdl_deleter {
 
 int main() {
   Querier q(":memory:");
-  q.test();
   cout << "Hello, World!" << endl;
 
   SDL_Init(SDL_INIT_VIDEO);
