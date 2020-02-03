@@ -21,6 +21,10 @@ Also install cargo-vendor & cargo-raze
 
     bazel run //engine/game
 
+## Formatting (C++)
+
+	bazel run //:format
+
 ## License
 
 MIT License. See [the LICENSE](./LICENSE) for more. [IARC](https://opensource.google.com/docs/iarc/) permission received.
