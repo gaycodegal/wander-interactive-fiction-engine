@@ -1,3 +1,0 @@
-cd "$BUILD_WORKING_DIRECTORY"
-exec "$@"
-
