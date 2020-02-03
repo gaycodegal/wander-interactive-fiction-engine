@@ -1,6 +1,6 @@
 COPTS = select({
 	"@bazel_tools//src/conditions:darwin": [
-		"-std=c++2a",
+		"-std=c++17",
 		"-stdlib=libc++",
 		"-F/Library/Frameworks",
 		"-Wall",
@@ -9,14 +9,14 @@ COPTS = select({
 		"-O3",
 	],
 	"@bazel_tools//src/conditions:windows": [
-		"-std=c++2a",
+		"-std=c++17",
 		"-Wall",
 		"-Werror",
 		"-pedantic",
 		"-O3",
 	],
 	"//conditions:default": [
-		"-std=c++2a",
+		"-std=c++17",
 		"-Wall",
 		"-Werror",
 		"-pedantic",
