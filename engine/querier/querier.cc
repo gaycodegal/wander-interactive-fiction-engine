@@ -37,3 +37,24 @@ std::vector<Item> Querier::query_items(
 
 	return items;
 }
+
+inline auto Querier::insert_item(Item item) {
+	return this->m_storage->insert(item);
+}
+
+auto Querier::insert_items(std::vector<Item> items) {
+	return this->m_storage->transaction([&] {
+		for(const auto &item : items) {
+				this->m_storage->insert(item);
+		}
+		return true;
+	});
+}
+
+inline auto Querier::remove_item(std::string name) {
+	return this->m_storage->remove<Item>(name);
+}
+
+inline auto Querier::update_item(Item updated_item) {
+	return this->m_storage->update(updated_item);
+}
