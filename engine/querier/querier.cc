@@ -9,10 +9,10 @@ Querier::Querier(const std::string &path) {
   this->m_storage->pragma.synchronous(0);
 }
 
-std::vector<Item>
-Querier::query_items(std::optional<std::string> name,
-                     std::optional<std::vector<std::string>> attributes,
-                     std::optional<std::vector<std::string>> components) {
+std::vector<Item> Querier::query_items(
+    std::optional<std::string> name,
+    std::optional<std::vector<std::string>> attributes,
+    std::optional<std::vector<std::string>> components) {
   std::vector<Item> items;
   if (name) {
     return this->m_storage->get_all<Item>(
