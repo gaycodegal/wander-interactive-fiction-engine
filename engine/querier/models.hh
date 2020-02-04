@@ -11,7 +11,7 @@ struct Item {
 };
 
 class Location {
-public:
+ public:
   std::string name;
   std::shared_ptr<std::string> description;
   std::shared_ptr<std::string> neighbors;
@@ -22,8 +22,10 @@ public:
            std::shared_ptr<std::string> neighbors_,
            std::shared_ptr<std::string> characters_,
            std::shared_ptr<std::string> items_)
-      : name(move(name_)), description(move(description_)),
-        neighbors(move(neighbors)), characters(move(characters_)),
+      : name(move(name_)),
+        description(move(description_)),
+        neighbors(move(neighbors)),
+        characters(move(characters_)),
         m_items(move(items_)) {}
 
   inline std::shared_ptr<std::string> getItems() { return this->m_items; }
@@ -33,12 +35,12 @@ public:
   void dialogues();
   void items();
 
-private:
+ private:
   std::shared_ptr<std::string> m_items;
 };
 
 class Character {
-public:
+ public:
   std::string name;
   std::shared_ptr<std::string> components;
 
@@ -50,7 +52,7 @@ public:
 };
 
 class Dialogue {
-public:
+ public:
   int id;
   std::string characters;
   std::shared_ptr<std::string> flags;
@@ -61,8 +63,11 @@ public:
   Dialogue(int id_, std::string characters_,
            std::shared_ptr<std::string> flags_, std::string location_,
            int priority_, std::string dialogue_)
-      : id(id_), characters(move(characters_)), flags(move(flags_)),
-        location(move(location_)), priority(priority_),
+      : id(id_),
+        characters(move(characters_)),
+        flags(move(flags_)),
+        location(move(location_)),
+        priority(priority_),
         m_dialogue(move(dialogue_)) {}
 
   inline std::string getDialogue() { return this->m_dialogue; }
@@ -71,12 +76,12 @@ public:
   }
   void dialogue();
 
-private:
+ private:
   std::string m_dialogue;
 };
 
 class Node {
-public:
+ public:
   int id;
   Node() {}
   Node(int id_, std::string dialogue_) : id(id_), m_dialogue(move(dialogue_)) {}
@@ -87,8 +92,8 @@ public:
   }
   void dialogue();
 
-private:
+ private:
   std::string m_dialogue;
 };
 
-#endif // _QUERIER_MODELS_HH_
+#endif  // _QUERIER_MODELS_HH_

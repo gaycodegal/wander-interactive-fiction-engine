@@ -60,21 +60,21 @@ static auto initStorage(const std::string &path) {
 using Storage = decltype(initStorage(""));
 
 class Querier {
-public:
+ public:
   Querier(const std::string &path);
 
-  std::vector<Item>
-  query_items(std::optional<std::string> name,
-              std::optional<std::vector<std::string>> attributes,
-              std::optional<std::vector<std::string>> components);
+  std::vector<Item> query_items(
+      std::optional<std::string> name,
+      std::optional<std::vector<std::string>> attributes,
+      std::optional<std::vector<std::string>> components);
   Item get_item(std::string name);
   inline auto insert_item(Item item);
   auto insert_items(std::vector<Item> items);
   inline auto remove_item(std::string name);
   inline auto update_item(Item updated_item);
 
-private:
+ private:
   std::unique_ptr<Storage> m_storage;
 };
 
-#endif // _QUERIER_HH_
+#endif  // _QUERIER_HH_
