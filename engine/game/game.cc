@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <vector>
 
 #include "engine/querier/querier.hh"
 #include "engine/sdl/sdl_include.hh"
@@ -13,7 +14,9 @@ struct sdl_deleter {
 };
 
 int main() {
+  // std::vector<string> attrs = { "test", "monkey" };
   Querier q(":memory:");
+  q.query_items({}, {}, {});
   cout << "Hello, World!" << endl;
 
   SDL_Init(SDL_INIT_VIDEO);
