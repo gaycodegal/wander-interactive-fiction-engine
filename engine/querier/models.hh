@@ -1,8 +1,8 @@
-#ifndef _QUERIER_MODELS_HH_
-#define _QUERIER_MODELS_HH_
+#pragma once
 
 #include <memory>
 
+namespace models {
 struct Item {
   std::string name;
   std::shared_ptr<std::string> description;
@@ -96,4 +96,4 @@ class Node {
   std::string m_dialogue;
 };
 
-#endif  // _QUERIER_MODELS_HH_
+}  // namespace models

@@ -1,5 +1,5 @@
 package(default_visibility = ["//visibility:public"])
-load("//bzl:vars.bzl", "COPTS", "DEPS", "LINKOPTS")
+load("//bzl:vars.bzl", "COPTS", "LINKOPTS")
 
 cc_library(
     name = "querier",
@@ -10,7 +10,9 @@ cc_library(
         "*.hh"
     ]),
     copts = COPTS,
-		deps = DEPS,
+		deps = [
+      "//third_party/sqlite_orm"
+    ],
     linkopts = LINKOPTS,
 )
 
@@ -23,6 +25,8 @@ cc_library(
         "*.hh"
     ]),
     copts = COPTS + [ "-g" ],
-		deps = DEPS,
+		deps = [
+      "//third_party/sqlite_orm"
+    ],
     linkopts = LINKOPTS,
 )
