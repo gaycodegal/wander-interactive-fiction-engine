@@ -15,7 +15,11 @@ Also install cargo-vendor & cargo-raze
 
 ## Setup
 
-	bazel sync --configure
+1. Download a googletest release
+    - I'm using 1.10.0
+1. set environment variable `GOOGLETEST_HOME` to the path of googletest
+    - Should point to the folder containing the WORKSPACE
+2. run `bazel sync --configure`
 	
 ## Running
 
