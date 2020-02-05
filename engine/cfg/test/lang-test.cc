@@ -1,4 +1,5 @@
 #include "lang.hh"
+
 #include "gtest/gtest.h"
 
 namespace {
