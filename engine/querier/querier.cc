@@ -9,21 +9,32 @@ Querier::Querier(const std::string &path) {
   this->m_storage->pragma.synchronous(0);
 }
 
-std::vector<Item> Querier::query_items(
-    std::optional<std::string> name,
-    std::optional<std::vector<std::string>> attributes,
-    std::optional<std::vector<std::string>> components) {
-  std::vector<Item> items;
-  if (name) {
+std::vector<Item>
+Querier::query_items(std::optional<std::string> name,
+                     std::optional<std::vector<std::string>> attributes,
+                     std::optional<std::vector<std::string>> components) {
+	if (!name && ! attributes && !components) return this->m_storage->get_all<Item>();
+  
+	if (name) {
     return this->m_storage->get_all<Item>(
         where(like(&Item::name, "%" + name.value() + "%")));
   }
 
-  // auto query = this->m_storage->prepare();
+  std::vector<Item> items;
+
+
+  /* auto query = this->m_storage->prepare(get_all<Item>(
+    where(
+      like(&Item::attributes, "%%")
+    )
+  )); */
+
+	// auto likes = like(&Item::name, "%%");
 
   if (attributes) {
     for (const auto &attr : attributes.value()) {
-      std::cout << attr << std::endl;
+			std::cout << attr << std::endl;
+			// likes = likes and like(&Item::attributes, attr);
     }
   }
 
