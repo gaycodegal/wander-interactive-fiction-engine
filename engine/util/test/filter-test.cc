@@ -1,5 +1,6 @@
 #include "filter.hh"
 #include <vector>
+#include <string>
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
@@ -35,5 +36,36 @@ TEST(Filter, FiltersStrings) {
       util::filter<std::string>(v, [](auto a) { return a.size() > 0; });
   EXPECT_THAT(filtered, testing::ElementsAre("one", "cat", "is", "me"));
 }
+  
+TEST(Map, DoublesNumbers) {
+  std::vector<int> v{1, 2, 3, 4, 5};
+  auto transformed = util::map<int, int>(v, [](auto a) { return a * 2; });
+  EXPECT_THAT(transformed, testing::ElementsAre(2,4,6,8,10));
+}
 
+TEST(Map, DoublesSingleElement) {
+  std::vector<int> v{1};
+  auto transformed = util::map<int, int>(v, [](auto a) { return a * 2; });
+  EXPECT_THAT(transformed, testing::ElementsAre(2));
+}
+
+TEST(Map, HandlesEmpty) {
+  std::vector<int> v{};
+  auto transformed = util::map<int, int>(v, [](auto a) { return a * 2; });
+  ASSERT_EQ(0, transformed.size());
+}
+
+TEST(Map, HandlesStrings) {
+  std::vector<std::string> v{"one", "", "is", "me"};
+  auto transformed =
+      util::map<std::string, std::string>(v, [](auto a) { return "new"; });
+  EXPECT_THAT(transformed, testing::ElementsAre("new", "new", "new", "new"));
+}
+
+TEST(Map, ConvertsTypes) {
+  std::vector<int> v{1, 32, -3};
+  auto transformed =
+    util::map<int, std::string>(v, [](auto a) { return std::to_string(a); });
+  EXPECT_THAT(transformed, testing::ElementsAre("1", "32", "-3"));
+}
 }  // namespace

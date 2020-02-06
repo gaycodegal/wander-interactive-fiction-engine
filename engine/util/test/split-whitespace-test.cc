@@ -7,14 +7,14 @@ namespace {
 
 TEST(SplitWhitespace, HandlesNormalInput) {
   std::string t1 = "this is a test";
-  std::string t2 = " this is a test ";
+  std::string t2 = " this    is  a test ";
   auto split = util::split_whitespace(t1);
   EXPECT_THAT(split, testing::ElementsAre("this", "is", "a", "test"));
   split = util::split_whitespace(t2);
   EXPECT_THAT(split, testing::ElementsAre("this", "is", "a", "test"));
 }
 
-TEST(Filter, SplitsEmpty) {
+TEST(SplitWhitespace, SplitsEmpty) {
   std::string t1 = "";
   std::string t2 = " ";
   auto split = util::split_whitespace(t1);
@@ -23,7 +23,7 @@ TEST(Filter, SplitsEmpty) {
   EXPECT_EQ(0, split.size());
 }
 
-TEST(Filter, SplitsSingleElement) {
+TEST(SplitWhitespace, SplitsSingleElement) {
   std::string t = "hi";
   auto split = util::split_whitespace(t);
   EXPECT_THAT(split, testing::ElementsAre("hi"));
