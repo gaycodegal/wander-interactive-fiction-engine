@@ -18,7 +18,6 @@ COPTS = select({
 	"//conditions:default": [
 		"-std=c++17",
 		"-Wall",
-		"-Werror",
 		"-pedantic",
 #		"-O3",
 	],
