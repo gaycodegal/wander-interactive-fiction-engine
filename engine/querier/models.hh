@@ -28,8 +28,8 @@ class Location {
         characters(move(characters_)),
         m_items(move(items_)) {}
 
-  inline std::shared_ptr<std::string> getItems() { return this->m_items; }
-  inline void setItems(std::shared_ptr<std::string> items) {
+  std::shared_ptr<std::string> getItems() { return this->m_items; }
+  void setItems(std::shared_ptr<std::string> items) {
     this->m_items = move(items);
   }
   void dialogues();
@@ -70,10 +70,8 @@ class Dialogue {
         priority(priority_),
         m_dialogue(move(dialogue_)) {}
 
-  inline std::string getDialogue() { return this->m_dialogue; }
-  inline void setDialogue(std::string dialogue) {
-    this->m_dialogue = move(dialogue);
-  }
+  std::string getDialogue() { return this->m_dialogue; }
+  void setDialogue(std::string dialogue) { this->m_dialogue = move(dialogue); }
   void dialogue();
 
  private:
@@ -86,10 +84,8 @@ class Node {
   Node() {}
   Node(int id_, std::string dialogue_) : id(id_), m_dialogue(move(dialogue_)) {}
 
-  inline std::string getDialogue() { return this->m_dialogue; }
-  inline void setDialogue(std::string dialogue) {
-    this->m_dialogue = move(dialogue);
-  }
+  std::string getDialogue() { return this->m_dialogue; }
+  void setDialogue(std::string dialogue) { this->m_dialogue = move(dialogue); }
   void dialogue();
 
  private:

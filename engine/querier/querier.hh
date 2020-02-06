@@ -69,11 +69,35 @@ class Querier {
       std::optional<std::string> name,
       std::optional<std::vector<std::string>> attributes,
       std::optional<std::vector<std::string>> components);
-  models::Item get_item(std::string name);
+  inline models::Item get_item(std::string name);
   inline auto insert_item(models::Item item);
   auto insert_items(std::vector<models::Item> items);
   inline auto remove_item(std::string name);
   inline auto update_item(models::Item updated_item);
+
+  inline models::Location get_location(std::string name);
+  inline auto insert_location(models::Location location);
+  auto insert_locations(std::vector<models::Location> locations);
+  inline auto remove_location(std::string name);
+  inline auto update_location(models::Location updated_location);
+
+  inline models::Character get_character(std::string name);
+  inline auto insert_character(models::Character character);
+  auto insert_characters(std::vector<models::Character> characters);
+  inline auto remove_character(std::string name);
+  inline auto update_character(models::Character updated_character);
+
+  inline models::Dialogue get_dialogue(std::string name);
+  inline auto insert_dialogue(models::Dialogue dialogue);
+  auto insert_dialogues(std::vector<models::Dialogue> dialogues);
+  inline auto remove_dialogue(std::string name);
+  inline auto update_dialogue(models::Dialogue updated_dialogue);
+
+  inline models::Node get_node(std::string name);
+  inline auto insert_node(models::Node node);
+  auto insert_nodes(std::vector<models::Node> nodes);
+  inline auto remove_node(std::string name);
+  inline auto update_node(models::Node updated_node);
 
  private:
   std::unique_ptr<Storage> m_storage;
