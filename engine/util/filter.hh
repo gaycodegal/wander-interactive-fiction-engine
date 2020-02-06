@@ -13,11 +13,11 @@ std::vector<T> filter(std::vector<T> vec,
   return result;
 }
 
-  template <typename P, typename Q>
+template <typename P, typename Q>
 std::vector<Q> map(std::vector<P> vec,
-                      std::function<Q(const P&)> transformation) {
+                   std::function<Q(const P&)> transformation) {
   std::vector<Q> result(vec.size());
   std::transform(vec.begin(), vec.end(), result.begin(), transformation);
   return result;
-  }
+}
 }  // namespace util
