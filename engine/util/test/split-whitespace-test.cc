@@ -1,5 +1,7 @@
 #include "split-whitespace.hh"
+
 #include <vector>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
