@@ -15,11 +15,6 @@ static auto like_attr(const std::string &attr) {
 }
 using attr_like_type = decltype(like_attr(""));
 
-template <typename T>
-inline auto const &Combine(auto &cexpr, attr_like_type &expr) {
-  return cexpr and expr;
-}
-
 std::vector<models::Item> Querier::query_items(
     std::optional<std::string> name,
     std::optional<std::vector<std::string>> attributes,
@@ -43,7 +38,7 @@ std::vector<models::Item> Querier::query_items(
     }
   }
 
-  return this->m_storage->get_all<models::Item>(where(attr_likes[0]));
+  // return this->m_storage->get_all<models::Item>(where(attr_likes[0]));
 
   if (components) {
     for (const auto &comp : components.value()) {
@@ -52,6 +47,10 @@ std::vector<models::Item> Querier::query_items(
   }
 
   return items;
+}
+
+inline models::Item Querier::get_item(std::string name) {
+  return this->m_storage->get<models::Item>(name);
 }
 
 inline auto Querier::insert_item(models::Item item) {
@@ -74,3 +73,103 @@ inline auto Querier::remove_item(std::string name) {
 inline auto Querier::update_item(models::Item updated_item) {
   return this->m_storage->update(updated_item);
 }
+
+inline models::Location Querier::get_location(std::string name) {
+  return this->m_storage->get<models::Location>(name);
+}
+
+/* inline auto Querier::insert_location(models::Location location) {
+  return this->m_storage->insert(location);
+} */
+
+/* auto Querier::insert_locations(std::vector<models::Location> locations) {
+  return this->m_storage->transaction([&] {
+    for (const auto &location : locations) {
+      this->m_storage->insert(location);
+    }
+    return true;
+  });
+} */
+
+inline auto Querier::remove_location(std::string name) {
+  return this->m_storage->remove<models::Location>(name);
+}
+
+/* inline auto Querier::update_location(models::Location updated_location) {
+  return this->m_storage->update(updated_location);
+} */
+
+inline models::Character Querier::get_character(std::string name) {
+  return this->m_storage->get<models::Character>(name);
+}
+
+inline auto Querier::insert_character(models::Character character) {
+  return this->m_storage->insert(character);
+}
+
+auto Querier::insert_characters(std::vector<models::Character> characters) {
+  return this->m_storage->transaction([&] {
+    for (const auto &character : characters) {
+      this->m_storage->insert(character);
+    }
+    return true;
+  });
+}
+
+inline auto Querier::remove_character(std::string name) {
+  return this->m_storage->remove<models::Character>(name);
+}
+
+inline auto Querier::update_character(models::Character updated_character) {
+  return this->m_storage->update(updated_character);
+}
+
+inline models::Dialogue Querier::get_dialogue(std::string name) {
+  return this->m_storage->get<models::Dialogue>(name);
+}
+
+/* inline auto Querier::insert_dialogue(models::Dialogue dialogue) {
+  return this->m_storage->insert(dialogue);
+} */
+
+/* auto Querier::insert_dialogues(std::vector<models::Dialogue> dialogues) {
+  return this->m_storage->transaction([&] {
+    for (const auto &dialogue : dialogues) {
+      this->m_storage->insert(dialogue);
+    }
+    return true;
+  });
+} */
+
+inline auto Querier::remove_dialogue(std::string name) {
+  return this->m_storage->remove<models::Dialogue>(name);
+}
+
+/* inline auto Querier::update_dialogue(models::Dialogue updated_dialogue) {
+  return this->m_storage->update(updated_dialogue);
+} */
+
+inline models::Node Querier::get_node(std::string name) {
+  return this->m_storage->get<models::Node>(name);
+}
+
+/* inline auto Querier::insert_node(models::Node node) {
+  return this->m_storage->insert(node);
+} */
+
+/* auto Querier::insert_nodes(std::vector<models::Node> nodes) {
+  return this->m_storage->transaction([&] {
+    for (const auto &node : nodes) {
+      this->m_storage->insert(node);
+    }
+    return true;
+  });
+} */
+
+inline auto Querier::remove_node(std::string name) {
+  return this->m_storage->remove<models::Node>(name);
+}
+
+/* inline auto Querier::update_node(models::Node updated_node) {
+  return this->m_storage->update(updated_node);
+} */
