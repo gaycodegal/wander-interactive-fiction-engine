@@ -22,6 +22,7 @@ __pragma(push_macro("min"))
 #pragma once
 
 #include <sqlite3.h>
+
 #include <sstream>  //  std::ostringstream
 #include <stdexcept>
 #include <string>        //  std::string
@@ -4414,6 +4415,7 @@ using arithmetic_tag_t = typename arithmetic_tag<V>::type;
 #pragma once
 
 #include <sqlite3.h>
+
 #include <string>       //  std::string, std::wstring
 #include <type_traits>  //  std::enable_if_t, std::is_arithmetic, std::is_same, std::true_type, std::false_type
 #ifndef SQLITE_ORM_OMITS_CODECVT
@@ -4639,6 +4641,7 @@ struct bindable_filter<std::tuple<Args...>> {
 #pragma once
 
 #include <sqlite3.h>
+
 #include <cstdlib>  //  atof, atoi, atoll
 #include <string>   //  std::string, std::wstring
 #include <type_traits>  //  std::enable_if_t, std::is_arithmetic, std::is_same, std::enable_if
@@ -5914,6 +5917,7 @@ internal::table_t<T, Cs...> make_table(const std::string &name, Cs... args) {
 #pragma once
 
 #include <sqlite3.h>
+
 #include <algorithm>     //  std::find_if
 #include <cstddef>       //  std::nullptr_t
 #include <cstdlib>       //  std::atoi
@@ -6505,6 +6509,7 @@ struct is_storage_impl<storage_impl<Ts...>> : std::true_type {};
 #pragma once
 
 #include <sqlite3.h>
+
 #include <algorithm>   //  std::find
 #include <cstddef>     //  std::ptrdiff_t
 #include <functional>  //  std::function
@@ -6572,6 +6577,7 @@ struct is_storage_impl<storage_impl<Ts...>> : std::true_type {};
 // #include "view.h"
 
 #include <sqlite3.h>
+
 #include <memory>        //  std::shared_ptr
 #include <string>        //  std::string
 #include <system_error>  //  std::system_error
@@ -6587,6 +6593,7 @@ struct is_storage_impl<storage_impl<Ts...>> : std::true_type {};
 // #include "iterator.h"
 
 #include <sqlite3.h>
+
 #include <cstddef>       //  std::ptrdiff_t
 #include <ios>           //  std::make_error_code
 #include <iterator>      //  std::input_iterator_tag
@@ -6741,6 +6748,7 @@ struct iterator_t {
 // #include "prepared_statement.h"
 
 #include <sqlite3.h>
+
 #include <iterator>     //  std::iterator_traits
 #include <string>       //  std::string
 #include <type_traits>  //  std::true_type, std::false_type
@@ -6749,6 +6757,7 @@ struct iterator_t {
 // #include "connection_holder.h"
 
 #include <sqlite3.h>
+
 #include <string>        //  std::string
 #include <system_error>  //  std::system_error
 
@@ -7698,6 +7707,7 @@ struct view_t {
 // #include "storage_base.h"
 
 #include <sqlite3.h>
+
 #include <algorithm>   //  std::iter_swap
 #include <functional>  //  std::function, std::bind
 #include <map>         //  std::map
@@ -7712,6 +7722,7 @@ struct view_t {
 // #include "pragma.h"
 
 #include <sqlite3.h>
+
 #include <functional>  //  std::function
 #include <memory>      // std::shared_ptr
 #include <string>      //  std::string
@@ -7778,16 +7789,16 @@ struct pragma_t {
     auto query = "PRAGMA " + name;
     T res;
     auto db = connection.get();
-    auto rc =
-        sqlite3_exec(db, query.c_str(),
-                     [](void *data, int argc, char **argv, char **) -> int {
-                       auto &res = *(T *)data;
-                       if (argc) {
-                         res = row_extractor<T>().extract(argv[0]);
-                       }
-                       return 0;
-                     },
-                     &res, nullptr);
+    auto rc = sqlite3_exec(
+        db, query.c_str(),
+        [](void *data, int argc, char **argv, char **) -> int {
+          auto &res = *(T *)data;
+          if (argc) {
+            res = row_extractor<T>().extract(argv[0]);
+          }
+          return 0;
+        },
+        &res, nullptr);
     if (rc == SQLITE_OK) {
       return res;
     } else {
@@ -7843,6 +7854,7 @@ struct pragma_t {
 // #include "limit_accesor.h"
 
 #include <sqlite3.h>
+
 #include <functional>  //  std::function
 #include <map>         //  std::map
 #include <memory>      //  std::shared_ptr
@@ -8033,6 +8045,7 @@ struct transaction_guard_t {
 // #include "backup.h"
 
 #include <sqlite3.h>
+
 #include <memory>
 #include <string>  //  std::string
 
@@ -8443,16 +8456,16 @@ struct storage_base {
   bool foreign_keys(sqlite3 *db) {
     std::string query = "PRAGMA foreign_keys";
     auto res = false;
-    auto rc =
-        sqlite3_exec(db, query.c_str(),
-                     [](void *data, int argc, char **argv, char **) -> int {
-                       auto &res = *(bool *)data;
-                       if (argc) {
-                         res = row_extractor<bool>().extract(argv[0]);
-                       }
-                       return 0;
-                     },
-                     &res, nullptr);
+    auto rc = sqlite3_exec(
+        db, query.c_str(),
+        [](void *data, int argc, char **argv, char **) -> int {
+          auto &res = *(bool *)data;
+          if (argc) {
+            res = row_extractor<bool>().extract(argv[0]);
+          }
+          return 0;
+        },
+        &res, nullptr);
     if (rc != SQLITE_OK) {
       throw std::system_error(
           std::error_code(sqlite3_errcode(db), get_sqlite_error_category()),
@@ -8567,18 +8580,18 @@ struct storage_base {
     std::stringstream ss;
     ss << "SELECT CURRENT_TIMESTAMP";
     auto query = ss.str();
-    auto rc =
-        sqlite3_exec(db, query.c_str(),
-                     [](void *data, int argc, char **argv, char **) -> int {
-                       auto &res = *(std::string *)data;
-                       if (argc) {
-                         if (argv[0]) {
-                           res = row_extractor<std::string>().extract(argv[0]);
-                         }
-                       }
-                       return 0;
-                     },
-                     &res, nullptr);
+    auto rc = sqlite3_exec(
+        db, query.c_str(),
+        [](void *data, int argc, char **argv, char **) -> int {
+          auto &res = *(std::string *)data;
+          if (argc) {
+            if (argv[0]) {
+              res = row_extractor<std::string>().extract(argv[0]);
+            }
+          }
+          return 0;
+        },
+        &res, nullptr);
     if (rc != SQLITE_OK) {
       throw std::system_error(
           std::error_code(sqlite3_errcode(db), get_sqlite_error_category()),
