@@ -6,21 +6,21 @@ COPTS = select({
 		"-Wall",
 		"-Werror",
 		"-pedantic",
-		"-O3",
+#		"-O3",
 	],
 	"@bazel_tools//src/conditions:windows": [
 		"-std=c++17",
 		"-Wall",
 		"-Werror",
 		"-pedantic",
-		"-O3",
+#		"-O3",
 	],
 	"//conditions:default": [
 		"-std=c++17",
 		"-Wall",
 		"-Werror",
 		"-pedantic",
-		"-O3",
+#		"-O3",
 	],
 })
 
