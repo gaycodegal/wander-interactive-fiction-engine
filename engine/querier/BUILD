@@ -14,6 +14,7 @@ cc_library(
       "//third_party/sqlite_orm"
     ],
     linkopts = LINKOPTS,
+    includes = [""],
 )
 
 cc_library(
@@ -29,4 +30,5 @@ cc_library(
       "//third_party/sqlite_orm"
     ],
     linkopts = LINKOPTS,
+    includes = [""],
 )

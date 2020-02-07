@@ -1,51 +1,56 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 
 namespace models {
+struct Pattern {
+  std::string value;
+};
+
 struct Item {
   std::string name;
-  std::shared_ptr<std::string> description;
-  std::shared_ptr<std::string> attributes;
-  std::shared_ptr<std::string> components;
+  std::optional<std::string> description;
+  std::optional<std::string> attributes;
+  std::optional<std::string> components;
 };
 
 class Location {
  public:
   std::string name;
-  std::shared_ptr<std::string> description;
-  std::shared_ptr<std::string> neighbors;
-  std::shared_ptr<std::string> characters;
+  std::optional<std::string> description;
+  std::optional<std::string> neighbors;
+  std::optional<std::string> characters;
 
   Location() {}
-  Location(std::string name_, std::shared_ptr<std::string> description_,
-           std::shared_ptr<std::string> neighbors_,
-           std::shared_ptr<std::string> characters_,
-           std::shared_ptr<std::string> items_)
+  Location(std::string name_, std::optional<std::string> description_,
+           std::optional<std::string> neighbors_,
+           std::optional<std::string> characters_,
+           std::optional<std::string> items_)
       : name(move(name_)),
         description(move(description_)),
         neighbors(move(neighbors)),
         characters(move(characters_)),
         m_items(move(items_)) {}
 
-  std::shared_ptr<std::string> getItems() { return this->m_items; }
-  void setItems(std::shared_ptr<std::string> items) {
+  std::optional<std::string> getItems() { return this->m_items; }
+  void setItems(std::optional<std::string> items) {
     this->m_items = move(items);
   }
   void dialogues();
   void items();
 
  private:
-  std::shared_ptr<std::string> m_items;
+  std::optional<std::string> m_items;
 };
 
 class Character {
  public:
   std::string name;
-  std::shared_ptr<std::string> components;
+  std::optional<std::string> components;
 
   Character() {}
-  Character(std::string name_, std::shared_ptr<std::string> components_)
+  Character(std::string name_, std::optional<std::string> components_)
       : name(move(name_)), components(move(components_)) {}
 
   void dialogues();
@@ -55,14 +60,13 @@ class Dialogue {
  public:
   int id;
   std::string characters;
-  std::shared_ptr<std::string> flags;
+  std::optional<std::string> flags;
   std::string location;
   int priority;
 
   Dialogue() {}
-  Dialogue(int id_, std::string characters_,
-           std::shared_ptr<std::string> flags_, std::string location_,
-           int priority_, std::string dialogue_)
+  Dialogue(int id_, std::string characters_, std::optional<std::string> flags_,
+           std::string location_, int priority_, std::string dialogue_)
       : id(id_),
         characters(move(characters_)),
         flags(move(flags_)),

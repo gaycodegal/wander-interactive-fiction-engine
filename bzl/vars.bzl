@@ -6,6 +6,7 @@ COPTS = select({
 		"-Wall",
 		"-Werror",
 		"-pedantic",
+		"-fpermissive", #TODO: Yell at sqlite_orm that it no work without this
 #		"-O3",
 	],
 	"@bazel_tools//src/conditions:windows": [
@@ -13,6 +14,7 @@ COPTS = select({
 		"-Wall",
 		"-Werror",
 		"-pedantic",
+		"-fpermissive",
 #		"-O3",
 	],
 	"//conditions:default": [
@@ -20,6 +22,7 @@ COPTS = select({
 		"-Wall",
 		"-Werror",
 		"-pedantic",
+		"-fpermissive",
 #		"-O3",
 	],
 })
