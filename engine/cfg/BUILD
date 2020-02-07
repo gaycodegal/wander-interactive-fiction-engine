@@ -27,6 +27,9 @@ cc_test(
         ":cfg",
         "@googletest//:gtest_main",
     ],
+    data = [
+        "test-lang-rules.txt",
+    ],
     copts = COPTS,
     linkopts = LINKOPTS,
     linkstatic = 0,
