@@ -41,6 +41,7 @@ DEPS = select({
 
 LINKOPTS = select({
 	"@bazel_tools//src/conditions:darwin": [
+                "-lstdc++fs",
 		"-F/Library/Frameworks",
 		"-framework SDL2",
 		"-framework SDL2_image",
@@ -54,6 +55,7 @@ LINKOPTS = select({
 	],
 	"@bazel_tools//src/conditions:windows": [],
 	"//conditions:default": [
+                "-lstdc++fs",
 		"-lSDL2",
 		"-lSDL2_image",
 		"-lSDL2_ttf",
