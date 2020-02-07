@@ -17,8 +17,10 @@ class Lang {
   std::unordered_map<std::string, std::string> genLookup;
 
   void parse_rule_value(const std::string& rule_type, const std::string& value);
-  void new_n_pair_rule(const std::string& rule_type, const std::vector<std::string>& vals);
-  void new_pair_rule(const std::string& rule_type, const std::string& k1, const std::string& k2);
+  void new_n_pair_rule(const std::string& rule_type,
+                       const std::vector<std::string>& vals);
+  void new_pair_rule(const std::string& rule_type, const std::string& k1,
+                     const std::string& k2);
   void new_terminal_rule(const std::string& rule_type, const std::string& k1);
   std::string next_gen_name(const std::string& rule_type);
 
