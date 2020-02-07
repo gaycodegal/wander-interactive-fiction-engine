@@ -1,3 +1,6 @@
+package(default_visibility = ["//visibility:public"])
+load("//bzl:vars.bzl", "COPTS", "LINKOPTS")
+
 cc_library(
     name = "cfg",
     srcs = glob([
@@ -6,6 +9,11 @@ cc_library(
     hdrs = glob([
         "*.hh",
     ]),
+    deps = [
+        "//engine/util",
+    ],
+    copts = COPTS,
+    linkopts = LINKOPTS,
     includes = [""],
 )
 
@@ -19,5 +27,7 @@ cc_test(
         ":cfg",
         "@googletest//:gtest_main",
     ],
+    copts = COPTS,
+    linkopts = LINKOPTS,
     linkstatic = 0,
 )
