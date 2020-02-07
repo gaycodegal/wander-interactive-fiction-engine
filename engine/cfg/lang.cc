@@ -23,31 +23,30 @@ int Lang::parse_sentence(std::string sentence) {
   return 0;
 }
 
-
-    /**
-     * Parses and initializes up the Lang's rules.
+/**
+ * Parses and initializes up the Lang's rules.
 
 int Lang::init_rules(std::string rules) {
-        let split_rules = util::split_whitespace(rules);
-        for rule in split_rules {
-            let mut parts = rule.split(":");
-            let rule_type = parts.next();
-            let values = parts.next();
-            if parts.next() != None {
-                eprintln!("[Ignored] Badly formatted rule \"{}\"", rule);
-                continue;
-            }
+    let split_rules = util::split_whitespace(rules);
+    for rule in split_rules {
+        let mut parts = rule.split(":");
+        let rule_type = parts.next();
+        let values = parts.next();
+        if parts.next() != None {
+            eprintln!("[Ignored] Badly formatted rule \"{}\"", rule);
+            continue;
+        }
 
-            if let (&Some(rule_type), &Some(values)) =
-                (&rule_type.as_ref(), &values.as_ref())
-            {
-                let values = values.split("|");
-                for value in values {
-                    self.parseRuleValue(rule_type, value);
-                }
-            } else {
-                eprintln!("[Ignored] Badly formatted rule \"{}\"", rule);
+        if let (&Some(rule_type), &Some(values)) =
+            (&rule_type.as_ref(), &values.as_ref())
+        {
+            let values = values.split("|");
+            for value in values {
+                self.parseRuleValue(rule_type, value);
             }
+        } else {
+            eprintln!("[Ignored] Badly formatted rule \"{}\"", rule);
         }
     }
-    */
+}
+*/

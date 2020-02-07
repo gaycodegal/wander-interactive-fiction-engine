@@ -29,7 +29,6 @@ TEST(SplitWhitespace, SplitsSingleElement) {
   EXPECT_THAT(split, testing::ElementsAre("hi"));
 }
 
-  
 TEST(Split, HandlesNormalInput) {
   std::string t1 = "this, is,a ,test";
   std::string t2 = ",this,,is,a,test,";
