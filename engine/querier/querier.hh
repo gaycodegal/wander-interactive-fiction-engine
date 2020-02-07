@@ -4,11 +4,16 @@
 #include <vector>
 
 #include "models.hh"
-#include "third_party/sqlite_orm/sqlite_orm.hh"
+#include "sqlite_orm.hh"
 
 static auto initStorage(const std::string &path) {
   return sqlite_orm::make_storage(
-      path, sqlite_orm::make_index("item_names", &models::Item::name),
+      path,
+      sqlite_orm::make_table(
+          "patterns",
+          sqlite_orm::make_column("pattern", &models::Pattern::value)),
+
+      sqlite_orm::make_index("item_names", &models::Item::name),
       sqlite_orm::make_table(
           "items",
           sqlite_orm::make_column("name", &models::Item::name,

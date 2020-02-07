@@ -8,4 +8,5 @@ cc_library(
     ]),
     copts = COPTS,
     linkopts = LINKOPTS,
+    includes = [""],
 )
