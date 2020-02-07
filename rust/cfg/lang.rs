@@ -80,7 +80,7 @@ impl Lang {
 
         // non-terminal pair
         if len_names == 2 {
-            if firstCharUppercase(names[0]) && firstCharUppercase(names[0])
+            if firstCharUppercase(names[0]) && firstCharUppercase(names[1])
             {
                 self.new_pair_rule(rule_type, names[0], names[1])
             } else {
