@@ -13,14 +13,14 @@ static void rule_parsing_error(const char* message,
             << "\nReason: " << message << "" << std::endl;
 }
 
-static std::string key_of_pair(std::string& k1, std::string& k2) {
+static std::string key_of_pair(const std::string& k1, const std::string& k2) {
   return k1 + "::" + k2;
 }
 
-int Lang::parse_sentence(std::string& sentence) {
+int Lang::parse_sentence(const std::string& sentence) {
   auto origins = util::split_whitespace(sentence);
   auto temp_words =
-      util::map<std::string, std::string>(origins, [&](auto origin) {
+      util::map<std::string, std::string>(origins, [&](const auto& origin) {
         if (auto match = words.find(origin); match != this->words.end()) {
           return match->second;
         } else {
@@ -28,7 +28,7 @@ int Lang::parse_sentence(std::string& sentence) {
         }
       });
   auto words =
-      util::filter<std::string>(temp_words, [](auto s) { return !s.empty(); });
+      util::filter<std::string>(temp_words, [](const auto& s) { return !s.empty(); });
   auto n = words.size();
   if (n != origins.size()) {
     return -1;
@@ -40,10 +40,10 @@ int Lang::parse_sentence(std::string& sentence) {
 /**
  * Parses and initializes up the Lang's rules.
  */
-void Lang::init_rules(std::string& rules) {
+void Lang::init_rules(const std::string& rules) {
   auto split_rules = util::split(rules, '\n');
   split_rules =
-      util::filter<std::string>(split_rules, [](auto s) { return !s.empty(); });
+      util::filter<std::string>(split_rules, [](const auto& s) { return !s.empty(); });
   for (auto& rule : split_rules) {
     auto parts = util::split(rule, ':');
     if (parts.size() != 2) {
@@ -61,8 +61,8 @@ void Lang::init_rules(std::string& rules) {
   return;
 }
 
-void Lang::parse_rule_value(std::string& rule_type, std::string& value) {
-  auto names = util::split_whitespace(util::trim(value));
+void Lang::parse_rule_value(const std::string& rule_type, const std::string& value) {
+  auto names = util::split_whitespace(value);
   auto len_names = names.size();
   if (len_names == 0) {
     rule_parsing_error("Length must be >=1 for rule", rule_type, value);
@@ -95,8 +95,8 @@ void Lang::parse_rule_value(std::string& rule_type, std::string& value) {
   return;
 }
 
-void Lang::new_n_pair_rule(std::string& rule_type,
-                           std::vector<std::string>& vals) {
+void Lang::new_n_pair_rule(const std::string& rule_type,
+                           const std::vector<std::string>& vals) {
   // check all non-terminal symbols
   for (const auto& sym : vals) {
     if (!std::isupper(sym[0])) {
@@ -126,18 +126,18 @@ void Lang::new_n_pair_rule(std::string& rule_type,
   new_pair_rule(rule_type, first, second);
 }
 
-void Lang::new_terminal_rule(std::string& rule_type, std::string& terminal) {
-  if (auto match = pairs.find(terminal); match != pairs.end()) {
+void Lang::new_terminal_rule(const std::string& rule_type, const std::string& terminal) {
+  if (auto match = terminals.find(terminal); match != terminals.end()) {
     auto& val = match->second;
     val.push_back(rule_type);
     return;
   }
   std::vector<std::string> val = {rule_type};
-  pairs.insert({terminal, val});
+  terminals.insert({terminal, val});
 }
 
-void Lang::new_pair_rule(std::string& rule_type, std::string& k1,
-                         std::string& k2) {
+void Lang::new_pair_rule(const std::string& rule_type, const std::string& k1,
+                         const std::string& k2) {
   auto key = key_of_pair(k1, k2);
   if (auto match = pairs.find(key); match != pairs.end()) {
     auto& val = match->second;
@@ -146,4 +146,21 @@ void Lang::new_pair_rule(std::string& rule_type, std::string& k1,
   }
   std::vector<std::string> val = {rule_type};
   pairs.insert({key, val});
+}
+
+void Lang::init_words(const std::string& definitions) {
+  auto split_words = util::split(definitions, '\n');
+  util::map_in_place<std::string>(split_words, util::trim);
+  split_words = util::filter<std::string>(split_words, [](const auto& s) { return !s.empty(); });
+  for(const auto& word : split_words) {
+    auto pair = util::split_whitespace(word);
+    if (pair.size() == 2) {
+      auto word = pair[0];
+      auto terminal = pair[1];
+      auto match = words.find(word);
+      if (match == words.end()) {
+	words.insert({word, terminal});	
+      }
+    }
+  }
 }
