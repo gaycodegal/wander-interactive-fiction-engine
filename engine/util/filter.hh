@@ -23,8 +23,8 @@ std::vector<Q> map(const std::vector<P>& vec,
 
 template <typename P>
 std::vector<P>& map_in_place(std::vector<P>& vec,
-                   std::function<void(P&)> transformation) {
-  for(auto& item : vec) {
+                             std::function<void(P&)> transformation) {
+  for (auto& item : vec) {
     transformation(item);
   }
   return vec;
