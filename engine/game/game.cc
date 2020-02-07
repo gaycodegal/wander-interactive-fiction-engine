@@ -14,9 +14,10 @@ struct sdl_deleter {
 };
 
 int main() {
-  // std::vector<string> attrs = { "test", "monkey" };
+  std::vector<string> attrs = {"test",  "monkey", "more",
+                               "words", "for",    "test"};
   Querier q(":memory:");
-  q.query_items({}, {}, {});
+  q.query_items({}, attrs, {});
   cout << "Hello, World!" << endl;
 
   SDL_Init(SDL_INIT_VIDEO);
