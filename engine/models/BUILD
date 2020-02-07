@@ -2,7 +2,7 @@ package(default_visibility = ["//visibility:public"])
 load("//bzl:vars.bzl", "COPTS", "LINKOPTS")
 
 cc_library(
-    name = "querier",
+    name = "models",
     srcs = glob([
       "*.cc"
     ]),
@@ -11,9 +11,7 @@ cc_library(
     ]),
     copts = COPTS,
 		deps = [
-      "//engine/models",
       "//third_party/json",
-      "//third_party/sqlite_orm"
     ],
     linkopts = LINKOPTS,
     includes = [""],

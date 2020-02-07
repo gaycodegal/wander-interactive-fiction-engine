@@ -22,6 +22,7 @@ std::vector<models::Item> Querier::query_items(
   }
 
   std::vector<models::Item> items;
+  this->m_storage->begin_transaction();
 
   if (attributes) {
     for (const auto &attr : attributes.value()) {
@@ -31,15 +32,19 @@ std::vector<models::Item> Querier::query_items(
     }
   }
 
-  return this->m_storage->get_all<models::Item>(
-      where(like(&models::Item::attributes,
-                 conc(conc("%", &models::Pattern::value), "%"))));
+  /* return this->m_storage->get_all<models::Item>(
+                where(in(&models::Item::name, select(
+                        &models::Item::name,
+     where(like(&models::Item::attributes, &models::Pattern::value)))))
+        ); */
 
   if (components) {
     for (const auto &comp : components.value()) {
       std::cout << comp << std::endl;
     }
   }
+
+  this->m_storage->rollback();
 
   return items;
 }
