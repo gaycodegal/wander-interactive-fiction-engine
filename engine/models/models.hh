@@ -3,17 +3,55 @@
 #include <memory>
 #include <optional>
 
+#include "json.hh"
+
+namespace nlohmann {
+template <typename T>
+struct adl_serializer<std::optional<T>> {
+  static void to_json(json& j, const std::optional<T>& opt) {
+    if (!opt) {
+      j = {};
+    } else {
+      j = opt.value();
+    }
+  }
+
+  static void from_json(const json& j, std::optional<T>& opt) {
+    if (j.is_null()) {
+      opt = {};
+    } else {
+      opt = j.get<T>();
+    }
+  }
+};
+}  // namespace nlohmann
+
+using nlohmann::json;
+
 namespace models {
 struct Pattern {
   std::string value;
 };
 
-struct Item {
+class Item {
+ public:
   std::string name;
   std::optional<std::string> description;
   std::optional<std::string> attributes;
   std::optional<std::string> components;
+
+  Item() {}
+  Item(std::string name_, std::optional<std::string> description_,
+       std::optional<std::string> attributes_,
+       std::optional<std::string> components_)
+      : name(move(name_)),
+        description(move(description_)),
+        attributes(move(attributes_)),
+        components(move(components_)) {}
 };
+
+void to_json(json& j, const Item& item);
+void from_json(const json& j, Item& item);
 
 class Location {
  public:

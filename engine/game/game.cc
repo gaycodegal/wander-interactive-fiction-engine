@@ -14,9 +14,14 @@ struct sdl_deleter {
 };
 
 int main() {
-  std::vector<string> attrs = {"test",  "monkey", "more",
-                               "words", "for",    "test"};
+  vector<string> attrs = {"test", "monkey", "more", "words", "for", "test"};
   Querier q(":memory:");
+
+  models::Item i("apple", "A delicious red apple.", "red,fruit,edible", {});
+  json j = i;
+  cout << "json Item: " << j << endl;
+  auto item = j.get<models::Item>();
+  cout << "name of item json back to Item class: " << item.name << endl;
   q.query_items({}, attrs, {});
   cout << "Hello, World!" << endl;
 
