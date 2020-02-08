@@ -2,22 +2,6 @@
 
 using namespace sqlite_orm;
 
-void to_json(json &j, const File &file) {
-  j = json{
-      {"items", file.items},           {"locations", file.locations},
-      {"characters", file.characters}, {"dialogues", file.dialogues},
-      {"nodes", file.nodes},
-  };
-}
-
-void from_json(const json &j, File &file) {
-  j.at("items").get_to(file.items);
-  j.at("locations").get_to(file.locations);
-  j.at("characters").get_to(file.characters);
-  j.at("dialogues").get_to(file.dialogues);
-  j.at("nodes").get_to(file.nodes);
-}
-
 Querier::Querier(const std::filesystem::path &path) {
   this->m_storage = std::make_unique<Storage>(initStorage(path));
   if (!std::filesystem::exists(path)) this->m_storage->sync_schema();
@@ -190,6 +174,30 @@ inline void Querier::update_node(models::Node updated_node) {
 
 #ifdef TESTING
 #include <fstream>
+
+struct File {
+  std::optional<std::vector<models::Item>> items;
+  std::optional<std::vector<models::Location>> locations;
+  std::optional<std::vector<models::Character>> characters;
+  std::optional<std::vector<models::Dialogue>> dialogues;
+  std::optional<std::vector<models::Node>> nodes;
+};
+
+void to_json(json &j, const File &file) {
+  j = json{
+      {"items", file.items},           {"locations", file.locations},
+      {"characters", file.characters}, {"dialogues", file.dialogues},
+      {"nodes", file.nodes},
+  };
+}
+
+void from_json(const json &j, File &file) {
+  j.at("items").get_to(file.items);
+  j.at("locations").get_to(file.locations);
+  j.at("characters").get_to(file.characters);
+  j.at("dialogues").get_to(file.dialogues);
+  j.at("nodes").get_to(file.nodes);
+}
 
 void Querier::dump_from_file(const std::filesystem::path &path) {
   std::fstream file(path);
