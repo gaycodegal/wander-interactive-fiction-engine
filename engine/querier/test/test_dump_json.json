@@ -55,7 +55,8 @@
 	    "priority": 1,
 	    "characters": "dad",
 	    "location": "kitchen_json",
-	    "dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"Hope you are excited for dinner.\"}],\"choices\":[{\"what\":\"What is it?\",\"next\":0},{\"what\":\"Smells delicious.\",\"next\":1}],\"visited\":false}"
+	    "dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"Hope you are excited for dinner.\"}],\"choices\":[{\"what\":\"What is it?\",\"next\":0},{\"what\":\"Smells delicious.\",\"next\":1}],\"visited\":false}",
+	    "flags": null
 	},
 	{
 	    "id": 1,
@@ -86,7 +87,8 @@
 	    "priority": 1,
 	    "characters": "cat",
 	    "location": "bedroom",
-	    "dialogue": "{\"story\":[{\"who\":\"cat\",\"what\":\"Meoooow.\"}, {\"player\": \"Cute kitty.\"}],\"choices\":null,\"visited\":false}"
+	    "dialogue": "{\"story\":[{\"who\":\"cat\",\"what\":\"Meoooow.\"}, {\"player\": \"Cute kitty.\"}],\"choices\":null,\"visited\":false}",
+	    "flags": null
 	},
 	{
 	    "id": 100,
@@ -100,31 +102,31 @@
     "nodes": [
 	{
 	    "id": 0,
-	    "data": "{\"story\":[{\"who\":\"dad\",\"what\":\"It's steak and ash potatoes.\"}],\"choices\":null,\"visited\":false}"
+	    "dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"It's steak and ash potatoes.\"}],\"choices\":null,\"visited\":false}"
 	},
 	{
 	    "id": 1,
-	    "data": "{\"story\":[{\"who\":\"dad\",\"what\":\"You better believe it.\"}],\"choices\":null,\"visited\":false}"
+	    "dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"You better believe it.\"}],\"choices\":null,\"visited\":false}"
 	},
 	{
 	    "id": 2,
-	    "data": "{\"story\":[{\"who\":\"sister\",\"what\":\"Oh my god.\"}, {\"who\":\"mom\",\"what\":\"Have you lost your mind?.\"}, {\"who\":\"player\",\"what\":\"I'll kill you all.\"}],\"choices\":null,\"visited\":false}"
+	    "dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"Oh my god.\"}, {\"who\":\"mom\",\"what\":\"Have you lost your mind?.\"}, {\"who\":\"player\",\"what\":\"I'll kill you all.\"}],\"choices\":null,\"visited\":false}"
 	},
 	{
 	    "id": 3,
-	    "data": "{\"story\":[{\"who\":\"sister\",\"what\":\"Next time warn me, you could have killed me.\"}, {\"who\":\"mom\",\"what\":\"You are still grounded?.\"}, {\"who\":\"player\",\"what\":\"I'm sorry.\"}],\"choices\":null,\"visited\":false}"
+	    "dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"Next time warn me, you could have killed me.\"}, {\"who\":\"mom\",\"what\":\"You are still grounded?.\"}, {\"who\":\"player\",\"what\":\"I'm sorry.\"}],\"choices\":null,\"visited\":false}"
 	},
 	{
 	    "id": 4,
-	    "data": "{\"story\":[{\"who\":\"sister\",\"what\":\"Don't you have eyes and a nose?.\"}],\"choices\":null,\"visited\":false}"
+	    "dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"Don't you have eyes and a nose?.\"}],\"choices\":null,\"visited\":false}"
 	},
 	{
 	    "id": 5,
-	    "data": "{\"story\":[{\"who\":\"mom\",\"what\":\"Can you set up the silverware?\"}],\"choices\":null,\"visited\":false}"
+	    "dialogue": "{\"story\":[{\"who\":\"mom\",\"what\":\"Can you set up the silverware?\"}],\"choices\":null,\"visited\":false}"
 	},
 	{
 	    "id": 100,
-	    "data": "{\"story\":[{\"what\":\"Mama milk?\",\"who\": \"dad\"},{\"what\":\"Really dad?\",\"who\": \"sister\"}],\"choices\": null,\"visited\":false}"
+	    "dialogue": "{\"story\":[{\"what\":\"Mama milk?\",\"who\": \"dad\"},{\"what\":\"Really dad?\",\"who\": \"sister\"}],\"choices\": null,\"visited\":false}"
 	}
     ],
     "locations": [
@@ -153,7 +155,8 @@
 	    "name": "hallway",
 	    "description": "A long corridor of many rooms.",
 	    "items": "fairy",
-	    "neighbors": "{ \"west\": \"living room\", \"north\": \"kitchen\", \"south\": \"entry hall\" }"
+	    "neighbors": "{ \"west\": \"living room\", \"north\": \"kitchen\", \"south\": \"entry hall\" }",
+	    "characters": null
 	},
 	{
 	    "name": "your bedroom",
