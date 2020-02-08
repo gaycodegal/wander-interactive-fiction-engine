@@ -18,21 +18,14 @@ int main() {
 
   models::Item i("apple", "A delicious red apple.", "red,fruit,edible", {});
   json j = i;
-  cout << "json Item: " << j << endl;
+  cout << "json Item: " << j.dump(4) << endl;
   auto item = j.get<models::Item>();
-  cout << "name of item json back to Item class: " << item.name << endl;
+  cout << "json back to Item class: " << item << endl;
 
-<<<<<<< HEAD
   std::unique_ptr<Querier> q = std::make_unique<Querier>(":memory:");
   // auto i2 = q->get_item(item.name);
 
   // q->dump_from_file("/tmp/test_dump_json.json");
-=======
-  std::unique_ptr<Querier> q = std::make_unique<Querier>("/tmp/test.db");
-  // auto i2 = q->get_item(item.name);
-
-  q->dump_from_file("/tmp/test_dump_json.json");
->>>>>>> 59988bb8cf7630a6962a534b7861f6deb0d37a0d
   auto items = q->query_items({}, {}, {});
   for (const auto& item : items) {
     cout << "item: " << item.name << endl;
