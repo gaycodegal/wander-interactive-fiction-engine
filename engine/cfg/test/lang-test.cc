@@ -19,6 +19,10 @@ std::string read_file(fs::path path) {
 
 TEST(Lang, ParseSentence_Exists) {
   auto lang = cfg::Lang();
+  auto rules = read_file("engine/cfg/test-lang-rules.txt");
+  lang.init_rules(rules);
+  auto words = read_file("engine/cfg/test-lang-words.txt");
+  lang.init_words(words);
   std::string sentence = "eat a clean apple";
   EXPECT_EQ(-1, lang.parse_sentence(sentence));
 }
