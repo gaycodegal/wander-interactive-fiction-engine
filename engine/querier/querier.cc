@@ -6,19 +6,19 @@ using namespace sqlite_orm;
 void to_json(json& j, const File& file) {
 	j = json{
       {"items", file.items},
-			/* {"locations", file.locations},
+			{"locations", file.locations},
 			{"characters", file.characters},
 			{"dialogues", file.dialogues},
-			{"nodes", file.nodes}, */
+			{"nodes", file.nodes},
   };
 }
 
 void from_json(const json& j, File& file) {
   j.at("items").get_to(file.items);
-	/* j.at("locations").get_to(file.locations);
+	j.at("locations").get_to(file.locations);
 	j.at("characters").get_to(file.characters);
 	j.at("dialogues").get_to(file.dialogues);
-	j.at("nodes").get_to(file.nodes); */
+	j.at("nodes").get_to(file.nodes);
 }
 
 Querier::Querier(const std::string &path) {
@@ -76,14 +76,6 @@ auto Querier::insert_items(std::vector<models::Item> items) {
   });
 }
 
-inline models::Location Querier::get_location(std::string name) {
-  return this->m_storage->get<models::Location>(name);
-}
-
-inline auto Querier::insert_location(models::Location location) {
-  return this->m_storage->insert(location);
-}
-
 auto Querier::insert_locations(std::vector<models::Location> locations) {
   return this->m_storage->transaction([&] {
     for (const auto &location : locations) {
@@ -91,22 +83,6 @@ auto Querier::insert_locations(std::vector<models::Location> locations) {
     }
     return true;
   });
-}
-
-inline auto Querier::remove_location(std::string name) {
-  return this->m_storage->remove<models::Location>(name);
-}
-
-inline auto Querier::update_location(models::Location updated_location) {
-  return this->m_storage->update(updated_location);
-}
-
-inline models::Character Querier::get_character(std::string name) {
-  return this->m_storage->get<models::Character>(name);
-}
-
-inline auto Querier::insert_character(models::Character character) {
-  return this->m_storage->insert(character);
 }
 
 auto Querier::insert_characters(std::vector<models::Character> characters) {
@@ -118,22 +94,6 @@ auto Querier::insert_characters(std::vector<models::Character> characters) {
   });
 }
 
-inline auto Querier::remove_character(std::string name) {
-  return this->m_storage->remove<models::Character>(name);
-}
-
-inline auto Querier::update_character(models::Character updated_character) {
-  return this->m_storage->update(updated_character);
-}
-
-inline models::Dialogue Querier::get_dialogue(std::string name) {
-  return this->m_storage->get<models::Dialogue>(name);
-}
-
-inline auto Querier::insert_dialogue(models::Dialogue dialogue) {
-  return this->m_storage->insert(dialogue);
-}
-
 auto Querier::insert_dialogues(std::vector<models::Dialogue> dialogues) {
   return this->m_storage->transaction([&] {
     for (const auto &dialogue : dialogues) {
@@ -143,22 +103,6 @@ auto Querier::insert_dialogues(std::vector<models::Dialogue> dialogues) {
   });
 }
 
-inline auto Querier::remove_dialogue(std::string name) {
-  return this->m_storage->remove<models::Dialogue>(name);
-}
-
-inline auto Querier::update_dialogue(models::Dialogue updated_dialogue) {
-  return this->m_storage->update(updated_dialogue);
-}
-
-inline models::Node Querier::get_node(std::string name) {
-  return this->m_storage->get<models::Node>(name);
-}
-
-inline auto Querier::insert_node(models::Node node) {
-  return this->m_storage->insert(node);
-}
-
 auto Querier::insert_nodes(std::vector<models::Node> nodes) {
   return this->m_storage->transaction([&] {
     for (const auto &node : nodes) {
@@ -166,14 +110,6 @@ auto Querier::insert_nodes(std::vector<models::Node> nodes) {
     }
     return true;
   });
-}
-
-inline auto Querier::remove_node(std::string name) {
-  return this->m_storage->remove<models::Node>(name);
-}
-
-inline auto Querier::update_node(models::Node updated_node) {
-  return this->m_storage->update(updated_node);
 }
 
 #include <iostream>
