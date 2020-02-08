@@ -14,16 +14,24 @@ struct sdl_deleter {
 };
 
 int main() {
-  vector<string> attrs = {"test", "monkey", "more", "words", "for", "test"};
-  Querier q(":memory:");
+  // vector<string> attrs = {"test", "monkey", "more", "words", "for", "test"};
+  
 
   models::Item i("apple", "A delicious red apple.", "red,fruit,edible", {});
   json j = i;
   cout << "json Item: " << j << endl;
   auto item = j.get<models::Item>();
   cout << "name of item json back to Item class: " << item.name << endl;
-  q.query_items({}, attrs, {});
-  cout << "Hello, World!" << endl;
+
+  std::unique_ptr<Querier> q =  std::make_unique<Querier>("/tmp/test.db");
+  // auto i2 = q->get_item(item.name);
+  
+  q->dump_from_file("/tmp/test_dump_json.json");
+  auto items = q->query_items({}, {}, {});
+  cout << "what: " << items.size() << endl;
+  for (const auto& item : items) {
+    cout << "item: " << item.name << endl;
+  }
 
   SDL_Init(SDL_INIT_VIDEO);
 

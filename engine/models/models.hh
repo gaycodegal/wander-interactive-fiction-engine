@@ -50,9 +50,6 @@ class Item {
         components(move(components_)) {}
 };
 
-void to_json(json& j, const Item& item);
-void from_json(const json& j, Item& item);
-
 class Location {
  public:
   std::string name;
@@ -80,6 +77,9 @@ class Location {
 
  private:
   std::optional<std::string> m_items;
+
+  friend void to_json(json& j, const Location& item);
+  friend void from_json(const json& j, Location& item);
 };
 
 class Character {
@@ -118,6 +118,9 @@ class Dialogue {
 
  private:
   std::string m_dialogue;
+
+  friend void to_json(json& j, const Dialogue& item);
+  friend void from_json(const json& j, Dialogue& item);
 };
 
 class Node {
@@ -132,6 +135,25 @@ class Node {
 
  private:
   std::string m_dialogue;
+
+  friend void to_json(json& j, const Node& item);
+  friend void from_json(const json& j, Node& item);
 };
+
+// Item JSON functions
+void to_json(json& j, const Item& item);
+void from_json(const json& j, Item& item);
+// Location JSON functions
+void to_json(json& j, const Location& item);
+void from_json(const json& j, Location& item);
+// Character JSON functions
+void to_json(json& j, const Character& item);
+void from_json(const json& j, Character& item);
+// Dialogue JSON functions
+void to_json(json& j, const Dialogue& item);
+void from_json(const json& j, Dialogue& item);
+// Node JSON functions
+void to_json(json& j, const Node& item);
+void from_json(const json& j, Node& item);
 
 }  // namespace models
