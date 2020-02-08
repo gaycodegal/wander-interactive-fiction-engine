@@ -186,7 +186,7 @@ int Lang::parse_sentence(const string& sentence) {
         cerr << "Not a word: '" << invalid << "'" << std::endl;
       }
     }
-    return -1;
+    return 0;
   }
 
   vector<unordered_map<string, CYKIntermediate>> matrix{n * n};
@@ -204,8 +204,8 @@ int Lang::parse_sentence(const string& sentence) {
       const auto ind = index2(n, n, 0, s);
       auto& map = matrix[ind];
       for (const auto& key : keys) {
-        Word word_val = {word, origin};
-        CYKIntermediate val{word_val};
+        const Word word_val{word, origin};
+        const CYKIntermediate val{word_val};
         map.insert({key, word_val});
       }
     } else {
@@ -215,5 +215,49 @@ int Lang::parse_sentence(const string& sentence) {
     ++s;
   }
 
-  return -1;
+  // Execute CYK algorithm
+  for (size_t l = 2; l <= n; ++l) {
+    for (size_t s = 1; s <= n - l + 1; ++s) {
+      for (size_t p = 1; p < l; ++p) {
+        const auto l_ind = index2(n, n, p - 1, s - 1);
+        auto& left = matrix[l_ind];
+        const auto r_ind = index2(n, n, l - p - 1, s + p - 1);
+        auto& right = matrix[r_ind];
+        const auto insert_ind = index2(n, n, l - 1, s - 1);
+        cyk_add_pairs_to_matrix(matrix, left, right, l_ind, r_ind, insert_ind);
+      }
+    }
+  }
+
+  // Derive a sentence AST
+  const auto& answer_table = matrix[index2(n, n, n - 1, 0)];
+  if (const auto answer = answer_table.find("S");
+      answer != answer_table.end()) {
+    return -1;
+    /*const auto ast = derive_answer(&matrix, answer);
+    if (ast) {
+      return ast;
+      }*/
+  }
+  return 0;
+}
+
+void Lang::cyk_add_pairs_to_matrix(
+    vector<unordered_map<string, CYKIntermediate>>& matrix,
+    unordered_map<string, CYKIntermediate>& left,
+    unordered_map<string, CYKIntermediate>& right, size_t l_ind, size_t r_ind,
+    size_t insert_ind) {
+  for (const auto& l_val : left) {
+    for (const auto& r_val : right) {
+      const auto pair = key_of_pair(l_val.first, r_val.first);
+      if (const auto derivations = pairs.find(pair);
+          derivations != pairs.end()) {
+        for (const auto& rule_type : derivations->second) {
+          const Derivation derivation{l_val.first, r_val.first, l_ind, r_ind};
+          const CYKIntermediate val{derivation};
+          matrix[insert_ind].insert({rule_type, derivation});
+        }
+      }
+    }
+  }
 }

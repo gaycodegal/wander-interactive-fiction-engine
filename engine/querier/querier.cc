@@ -3,22 +3,20 @@
 #include <fstream>
 using namespace sqlite_orm;
 
-void to_json(json& j, const File& file) {
-	j = json{
-      {"items", file.items},
-			{"locations", file.locations},
-			{"characters", file.characters},
-			{"dialogues", file.dialogues},
-			{"nodes", file.nodes},
+void to_json(json &j, const File &file) {
+  j = json{
+      {"items", file.items},           {"locations", file.locations},
+      {"characters", file.characters}, {"dialogues", file.dialogues},
+      {"nodes", file.nodes},
   };
 }
 
-void from_json(const json& j, File& file) {
+void from_json(const json &j, File &file) {
   j.at("items").get_to(file.items);
-	j.at("locations").get_to(file.locations);
-	j.at("characters").get_to(file.characters);
-	j.at("dialogues").get_to(file.dialogues);
-	j.at("nodes").get_to(file.nodes);
+  j.at("locations").get_to(file.locations);
+  j.at("characters").get_to(file.characters);
+  j.at("dialogues").get_to(file.dialogues);
+  j.at("nodes").get_to(file.nodes);
 }
 
 Querier::Querier(const std::string &path) {
@@ -113,31 +111,31 @@ auto Querier::insert_nodes(std::vector<models::Node> nodes) {
 }
 
 #include <iostream>
-void Querier::dump_from_file(const std::filesystem::path& path) {
-	std::fstream file(path);
-	json j;
-	file >> j;
+void Querier::dump_from_file(const std::filesystem::path &path) {
+  std::fstream file(path);
+  json j;
+  file >> j;
 
-	auto data = j.get<File>();
-	std::cout << "here" << std::endl;
-	/* for (const auto& item : data.items.value()) {
-		std::cout << "item: " << item.name << std::endl;
-		this->insert_item(item);
-	} */
+  auto data = j.get<File>();
+  std::cout << "here" << std::endl;
+  /* for (const auto& item : data.items.value()) {
+          std::cout << "item: " << item.name << std::endl;
+          this->insert_item(item);
+  } */
 
-	if (data.items) {
-		this->insert_items(data.items.value());
-	}
+  if (data.items) {
+    this->insert_items(data.items.value());
+  }
 
-	/* if (data.characters) {
-		this->insert_characters(data.characters.value());
-	}
+  /* if (data.characters) {
+          this->insert_characters(data.characters.value());
+  }
 
-	if (data.dialogues) {
-		this->insert_dialogues(data.dialogues.value());
-	}
+  if (data.dialogues) {
+          this->insert_dialogues(data.dialogues.value());
+  }
 
-	if (data.nodes) {
-		this->insert_nodes(data.nodes.value());
-	} */
+  if (data.nodes) {
+          this->insert_nodes(data.nodes.value());
+  } */
 }
