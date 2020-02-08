@@ -1,5 +1,5 @@
 #include "lang.hh"
-#include "cyk_intermediate.hh"
+#include "cyk_intermediate.cc"
 
 using namespace cfg;
 using std::cerr;
