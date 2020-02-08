@@ -8,13 +8,14 @@ using std::string;
 using std::unordered_map;
 using std::vector;
 
-static inline size_t index2(size_t dimX, size_t dimY, size_t x, size_t y) {
-  if (x >= dimX || y >= dimY) {
-    cerr << "indexing broke" << std::endl;
-    return 0;
-  }
-  return x + y * dimX;
-}
+static inline void cyk_add_pairs_to_matrix(
+    unordered_map<string, vector<string>> pairs,
+    vector<unordered_map<string, CYKIntermediate>>& matrix,
+    unordered_map<string, CYKIntermediate>& left,
+    unordered_map<string, CYKIntermediate>& right, size_t l_ind, size_t r_ind,
+    size_t insert_ind);
+
+static inline size_t index2(size_t dimX, size_t dimY, size_t x, size_t y);
 
 static inline bool is_first_char_lower(const string& s) {
   return s.size() >= 1 && std::islower(s[0]);
@@ -224,7 +225,8 @@ int Lang::parse_sentence(const string& sentence) {
         const auto r_ind = index2(n, n, l - p - 1, s + p - 1);
         auto& right = matrix[r_ind];
         const auto insert_ind = index2(n, n, l - 1, s - 1);
-        cyk_add_pairs_to_matrix(matrix, left, right, l_ind, r_ind, insert_ind);
+        cyk_add_pairs_to_matrix(pairs, matrix, left, right, l_ind, r_ind,
+                                insert_ind);
       }
     }
   }
@@ -242,7 +244,8 @@ int Lang::parse_sentence(const string& sentence) {
   return 0;
 }
 
-void Lang::cyk_add_pairs_to_matrix(
+void cyk_add_pairs_to_matrix(
+    unordered_map<string, vector<string>> pairs,
     vector<unordered_map<string, CYKIntermediate>>& matrix,
     unordered_map<string, CYKIntermediate>& left,
     unordered_map<string, CYKIntermediate>& right, size_t l_ind, size_t r_ind,
@@ -260,4 +263,12 @@ void Lang::cyk_add_pairs_to_matrix(
       }
     }
   }
+}
+
+static inline size_t index2(size_t dimX, size_t dimY, size_t x, size_t y) {
+  if (x >= dimX || y >= dimY) {
+    cerr << "indexing broke" << std::endl;
+    return 0;
+  }
+  return x + y * dimX;
 }
