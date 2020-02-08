@@ -40,7 +40,7 @@ void models::from_json(const json& j, Location& location) {
   j.at("name").get_to(location.name);
   j.at("description").get_to(location.description);
   j.at("neighbors").get_to(location.neighbors);
-  j.at("characters").get_to(location.characters);
+	j.at("characters").get_to(location.characters);
 	j.at("items").get_to(location.m_items);
 }
 
