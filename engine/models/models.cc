@@ -27,12 +27,10 @@ void models::from_json(const json& j, Item& item) {
 }
 
 void models::to_json(json& j, const Location& location) {
-	j = json{
-      {"name", location.name},
-      {"description", location.description},
-      {"neighbors", location.neighbors},
-      {"characters", location.characters},
-			{"items", location.m_items},
+  j = json{
+      {"name", location.name},           {"description", location.description},
+      {"neighbors", location.neighbors}, {"characters", location.characters},
+      {"items", location.m_items},
   };
 }
 
@@ -40,8 +38,8 @@ void models::from_json(const json& j, Location& location) {
   j.at("name").get_to(location.name);
   j.at("description").get_to(location.description);
   j.at("neighbors").get_to(location.neighbors);
-	j.at("characters").get_to(location.characters);
-	j.at("items").get_to(location.m_items);
+  j.at("characters").get_to(location.characters);
+  j.at("items").get_to(location.m_items);
 }
 
 void models::to_json(json& j, const Character& character) {
@@ -57,13 +55,13 @@ void models::from_json(const json& j, Character& character) {
 }
 
 void models::to_json(json& j, const Dialogue& dialogue) {
-	j = json{
+  j = json{
       {"id", dialogue.id},
       {"characters", dialogue.characters},
       {"flags", dialogue.flags},
       {"location", dialogue.location},
-			{"priority", dialogue.priority},
-			{"dialogue", dialogue.m_dialogue},
+      {"priority", dialogue.priority},
+      {"dialogue", dialogue.m_dialogue},
   };
 }
 
@@ -72,18 +70,18 @@ void models::from_json(const json& j, Dialogue& dialogue) {
   j.at("characters").get_to(dialogue.characters);
   j.at("flags").get_to(dialogue.flags);
   j.at("location").get_to(dialogue.location);
-	j.at("priority").get_to(dialogue.priority);
-	j.at("dialogue").get_to(dialogue.m_dialogue);
+  j.at("priority").get_to(dialogue.priority);
+  j.at("dialogue").get_to(dialogue.m_dialogue);
 }
 
 void models::to_json(json& j, const Node& node) {
-	j = json{
+  j = json{
       {"id", node.id},
-			{"dialogue", node.m_dialogue},
+      {"dialogue", node.m_dialogue},
   };
 }
 
 void models::from_json(const json& j, Node& node) {
   j.at("id").get_to(node.id);
-	j.at("dialogue").get_to(node.m_dialogue);
+  j.at("dialogue").get_to(node.m_dialogue);
 }

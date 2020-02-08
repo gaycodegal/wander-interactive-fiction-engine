@@ -9,7 +9,7 @@ cc_library(
     hdrs = glob([
         "*.hh"
     ]),
-    copts = COPTS,
+    copts = COPTS + ["-DTESTING"],
 		deps = [
       "//engine/models",
       "//third_party/json",
