@@ -1,11 +1,11 @@
 #include "filter.hh"
-#include "split.hh"
 
 #include <string>
 #include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "split.hh"
 
 namespace {
 

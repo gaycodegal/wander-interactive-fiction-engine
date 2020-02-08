@@ -21,13 +21,3 @@ cc_binary(
 	deps = DEPS,
 	linkopts = LINKOPTS,
 )
-
-cc_binary(
-	name = "debug",
-	srcs = [
-		"game.cc",
-	],
-	copts = COPTS + [ "-g" ],
-	deps = DEPS,
-	linkopts = LINKOPTS,
-)
