@@ -69,6 +69,10 @@ using Storage = decltype(initStorage(""));
 
 struct File {
 	std::optional<std::vector<models::Item>> items;
+	std::optional<std::vector<models::Location>> locations;
+	std::optional<std::vector<models::Character>> characters;
+	std::optional<std::vector<models::Dialogue>> dialogues;
+	std::optional<std::vector<models::Node>> nodes;
 };
 
 void to_json(json& j, const File& file);
@@ -90,29 +94,29 @@ class Querier {
   inline auto remove_item(std::string name) { return this->m_storage->remove<models::Item>(name); }
   inline auto update_item(models::Item updated_item) { return this->m_storage->update(updated_item); }
 
-  inline models::Location get_location(std::string name);
-  inline auto insert_location(models::Location location);
+  inline models::Location get_location(std::string name)  { return this->m_storage->get<models::Location>(name); }
+  inline auto insert_location(models::Location location) { return this->m_storage->insert(location); }
   auto insert_locations(std::vector<models::Location> locations);
-  inline auto remove_location(std::string name);
-  inline auto update_location(models::Location updated_location);
+  inline auto remove_location(std::string name) { return this->m_storage->remove<models::Location>(name); }
+  inline auto update_location(models::Location updated_location) { return this->m_storage->update(updated_location); }
 
-  inline models::Character get_character(std::string name);
-  inline auto insert_character(models::Character character);
+  inline models::Character get_character(std::string name) { return this->m_storage->get<models::Character>(name); }
+  inline auto insert_character(models::Character character) { return this->m_storage->insert(character); }
   auto insert_characters(std::vector<models::Character> characters);
-  inline auto remove_character(std::string name);
+  inline auto remove_character(std::string name) { return this->m_storage->remove<models::Character>(name); }
   inline auto update_character(models::Character updated_character);
 
-  inline models::Dialogue get_dialogue(std::string name);
-  inline auto insert_dialogue(models::Dialogue dialogue);
+  inline models::Dialogue get_dialogue(std::string name) { return this->m_storage->get<models::Dialogue>(name); }
+  inline auto insert_dialogue(models::Dialogue dialogue) { return this->m_storage->insert(dialogue); }
   auto insert_dialogues(std::vector<models::Dialogue> dialogues);
-  inline auto remove_dialogue(std::string name);
-  inline auto update_dialogue(models::Dialogue updated_dialogue);
+  inline auto remove_dialogue(std::string name) { return this->m_storage->remove<models::Dialogue>(name); }
+  inline auto update_dialogue(models::Dialogue updated_dialogue) { return this->m_storage->update(updated_dialogue); }
 
-  inline models::Node get_node(std::string name);
-  inline auto insert_node(models::Node node);
+  inline models::Node get_node(std::string name) { return this->m_storage->get<models::Node>(name); }
+  inline auto insert_node(models::Node node) { return this->m_storage->insert(node); }
   auto insert_nodes(std::vector<models::Node> nodes);
-  inline auto remove_node(std::string name);
-  inline auto update_node(models::Node updated_node);
+  inline auto remove_node(std::string name) { return this->m_storage->remove<models::Node>(name); }
+  inline auto update_node(models::Node updated_node) { return this->m_storage->update(updated_node); }
 
  private:
   std::unique_ptr<Storage> m_storage;
