@@ -12,6 +12,27 @@ struct Pattern {
   std::string value;
 };
 
+// Item JSON functions
+class Item;
+void to_json(json& j, const Item& item);
+void from_json(const json& j, Item& item);
+// Location JSON functions
+class Location;
+void to_json(json& j, const Location& item);
+void from_json(const json& j, Location& item);
+// Character JSON functions
+class Character;
+void to_json(json& j, const Character& item);
+void from_json(const json& j, Character& item);
+// Dialogue JSON functions
+class Dialogue;
+void to_json(json& j, const Dialogue& item);
+void from_json(const json& j, Dialogue& item);
+// Node JSON functions
+class Node;
+void to_json(json& j, const Node& item);
+void from_json(const json& j, Node& item);
+
 class Item {
  public:
   std::string name;
@@ -27,6 +48,12 @@ class Item {
         description(move(description_)),
         attributes(move(attributes_)),
         components(move(components_)) {}
+
+  friend std::ostream& operator<<(std::ostream &out, models::Item const& item) {
+    json j = item;
+    out << j.dump(4);
+    return out;
+  }
 };
 
 class Location {
@@ -54,6 +81,12 @@ class Location {
   void dialogues();
   void items();
 
+  friend std::ostream& operator<<(std::ostream &out, models::Location const& location) {
+    json j = location;
+    out << j.dump(4);
+    return out;
+  }
+
  private:
   std::optional<std::string> m_items;
 
@@ -69,6 +102,12 @@ class Character {
   Character() {}
   Character(std::string name_, std::optional<std::string> components_)
       : name(move(name_)), components(move(components_)) {}
+
+  friend std::ostream& operator<<(std::ostream &out, models::Character const& character) {
+    json j = character;
+    out << j.dump(4);
+    return out;
+  }
 
   void dialogues();
 };
@@ -95,6 +134,12 @@ class Dialogue {
   void setDialogue(std::string dialogue) { this->m_dialogue = move(dialogue); }
   void dialogue();
 
+  friend std::ostream& operator<<(std::ostream &out, models::Dialogue const& dialogue) {
+    json j = dialogue;
+    out << j.dump(4);
+    return out;
+  }
+
  private:
   std::string m_dialogue;
 
@@ -112,27 +157,17 @@ class Node {
   void setDialogue(std::string dialogue) { this->m_dialogue = move(dialogue); }
   void dialogue();
 
+  friend std::ostream& operator<<(std::ostream &out, models::Node const& node) {
+    json j = node;
+    out << j.dump(4);
+    return out;
+  }
+
  private:
   std::string m_dialogue;
 
   friend void to_json(json& j, const Node& item);
   friend void from_json(const json& j, Node& item);
 };
-
-// Item JSON functions
-void to_json(json& j, const Item& item);
-void from_json(const json& j, Item& item);
-// Location JSON functions
-void to_json(json& j, const Location& item);
-void from_json(const json& j, Location& item);
-// Character JSON functions
-void to_json(json& j, const Character& item);
-void from_json(const json& j, Character& item);
-// Dialogue JSON functions
-void to_json(json& j, const Dialogue& item);
-void from_json(const json& j, Dialogue& item);
-// Node JSON functions
-void to_json(json& j, const Node& item);
-void from_json(const json& j, Node& item);
 
 }  // namespace models
