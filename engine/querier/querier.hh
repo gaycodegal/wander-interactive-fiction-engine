@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <optional>
 #include <vector>
 
@@ -66,19 +67,28 @@ static auto initStorage(const std::string &path) {
 }
 using Storage = decltype(initStorage(""));
 
+struct File {
+	std::optional<std::vector<models::Item>> items;
+};
+
+void to_json(json& j, const File& file);
+void from_json(const json& j, File& file);
+
 class Querier {
  public:
   Querier(const std::string &path);
+
+	void dump_from_file(const std::filesystem::path& path);
 
   std::vector<models::Item> query_items(
       std::optional<std::string> name,
       std::optional<std::vector<std::string>> attributes,
       std::optional<std::vector<std::string>> components);
-  inline models::Item get_item(std::string name);
-  inline auto insert_item(models::Item item);
+  inline models::Item get_item(std::string name) {  return this->m_storage->get<models::Item>(name); }
+  inline auto insert_item(models::Item item) { return this->m_storage->insert(item); }
   auto insert_items(std::vector<models::Item> items);
-  inline auto remove_item(std::string name);
-  inline auto update_item(models::Item updated_item);
+  inline auto remove_item(std::string name) { return this->m_storage->remove<models::Item>(name); }
+  inline auto update_item(models::Item updated_item) { return this->m_storage->update(updated_item); }
 
   inline models::Location get_location(std::string name);
   inline auto insert_location(models::Location location);

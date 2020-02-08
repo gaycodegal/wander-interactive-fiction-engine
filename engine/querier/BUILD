@@ -18,3 +18,10 @@ cc_library(
     linkopts = LINKOPTS,
     includes = [""],
 )
+
+filegroup(
+    name = "db_test_data",
+    srcs = glob([
+        "*.json",
+    ]),
+)
