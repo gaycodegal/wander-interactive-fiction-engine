@@ -8,8 +8,6 @@ cc_library(
     ]),
     hdrs = glob([
         "*.hh",
-    ], exclude = [
-        "cyk_intermediate.hh",
     ]),
     deps = [
         "//engine/util",
