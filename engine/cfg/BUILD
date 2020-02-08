@@ -29,6 +29,7 @@ cc_test(
     ],
     data = [
         "test-lang-rules.txt",
+        "test-lang-words.txt",
     ],
     copts = COPTS,
     linkopts = LINKOPTS,
