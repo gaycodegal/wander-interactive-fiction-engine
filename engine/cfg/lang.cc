@@ -1,4 +1,5 @@
 #include "lang.hh"
+
 #include "cyk_intermediate.cc"
 
 using namespace cfg;

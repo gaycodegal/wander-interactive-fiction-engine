@@ -15,7 +15,7 @@ struct sdl_deleter {
 
 int main() {
   // vector<string> attrs = {"test", "monkey", "more", "words", "for", "test"};
-
+  initStorage("");
   models::Item i("apple", "A delicious red apple.", "red,fruit,edible", {});
   json j = i;
   cout << "json Item: " << j.dump(4) << endl;
