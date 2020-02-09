@@ -3,13 +3,14 @@
 #include <memory>
 #include <optional>
 
+#include "dialogue_tree.hh"
 #include "json.hh"
 
 using nlohmann::json;
 
 namespace models {
 struct Pattern {
-  std::string value;
+  Str value;
 };
 
 // Item JSON functions
@@ -35,15 +36,14 @@ void from_json(const json& j, Node& item);
 
 class Item {
  public:
-  std::string name;
-  std::optional<std::string> description;
-  std::optional<std::string> attributes;
-  std::optional<std::string> components;
+  Str name;
+  Opt<Str> description;
+  Opt<Str> attributes;
+  Opt<Str> components;
 
   Item() {}
-  Item(std::string name_, std::optional<std::string> description_,
-       std::optional<std::string> attributes_,
-       std::optional<std::string> components_)
+  Item(Str name_, Opt<Str> description_, Opt<Str> attributes_,
+       Opt<Str> components_)
       : name(move(name_)),
         description(move(description_)),
         attributes(move(attributes_)),
@@ -58,26 +58,22 @@ class Item {
 
 class Location {
  public:
-  std::string name;
-  std::optional<std::string> description;
-  std::optional<std::string> neighbors;
-  std::optional<std::string> characters;
+  Str name;
+  Opt<Str> description;
+  Opt<Str> neighbors;
+  Opt<Str> characters;
 
   Location() {}
-  Location(std::string name_, std::optional<std::string> description_,
-           std::optional<std::string> neighbors_,
-           std::optional<std::string> characters_,
-           std::optional<std::string> items_)
+  Location(Str name_, Opt<Str> description_, Opt<Str> neighbors_,
+           Opt<Str> characters_, Opt<Str> items_)
       : name(move(name_)),
         description(move(description_)),
         neighbors(move(neighbors)),
         characters(move(characters_)),
         m_items(move(items_)) {}
 
-  std::optional<std::string> getItems() { return this->m_items; }
-  void setItems(std::optional<std::string> items) {
-    this->m_items = move(items);
-  }
+  Opt<Str> getItems() { return this->m_items; }
+  void setItems(Opt<Str> items) { this->m_items = move(items); }
   void dialogues();
   void items();
 
@@ -89,7 +85,7 @@ class Location {
   }
 
  private:
-  std::optional<std::string> m_items;
+  Opt<Str> m_items;
 
   friend void to_json(json& j, const Location& item);
   friend void from_json(const json& j, Location& item);
@@ -97,11 +93,11 @@ class Location {
 
 class Character {
  public:
-  std::string name;
-  std::optional<std::string> components;
+  Str name;
+  Opt<Str> components;
 
   Character() {}
-  Character(std::string name_, std::optional<std::string> components_)
+  Character(Str name_, Opt<Str> components_)
       : name(move(name_)), components(move(components_)) {}
 
   friend std::ostream& operator<<(std::ostream& out,
@@ -117,14 +113,14 @@ class Character {
 class Dialogue {
  public:
   int id;
-  std::string characters;
-  std::optional<std::string> flags;
-  std::string location;
+  Str characters;
+  Opt<Str> flags;
+  Str location;
   int priority;
 
   Dialogue() {}
-  Dialogue(int id_, std::string characters_, std::optional<std::string> flags_,
-           std::string location_, int priority_, std::string dialogue_)
+  Dialogue(int id_, Str characters_, Opt<Str> flags_, Str location_,
+           int priority_, Str dialogue_)
       : id(id_),
         characters(move(characters_)),
         flags(move(flags_)),
@@ -132,8 +128,8 @@ class Dialogue {
         priority(priority_),
         m_dialogue(move(dialogue_)) {}
 
-  std::string getDialogue() { return this->m_dialogue; }
-  void setDialogue(std::string dialogue) { this->m_dialogue = move(dialogue); }
+  Str getDialogue() { return this->m_dialogue; }
+  void setDialogue(Str dialogue) { this->m_dialogue = move(dialogue); }
   void dialogue();
 
   friend std::ostream& operator<<(std::ostream& out,
@@ -144,7 +140,7 @@ class Dialogue {
   }
 
  private:
-  std::string m_dialogue;
+  Str m_dialogue;
 
   friend void to_json(json& j, const Dialogue& item);
   friend void from_json(const json& j, Dialogue& item);
@@ -154,10 +150,10 @@ class Node {
  public:
   int id;
   Node() {}
-  Node(int id_, std::string dialogue_) : id(id_), m_dialogue(move(dialogue_)) {}
+  Node(int id_, Str dialogue_) : id(id_), m_dialogue(move(dialogue_)) {}
 
-  std::string getDialogue() { return this->m_dialogue; }
-  void setDialogue(std::string dialogue) { this->m_dialogue = move(dialogue); }
+  Str getDialogue() { return this->m_dialogue; }
+  void setDialogue(Str dialogue) { this->m_dialogue = move(dialogue); }
   void dialogue();
 
   friend std::ostream& operator<<(std::ostream& out, models::Node const& node) {
@@ -167,7 +163,7 @@ class Node {
   }
 
  private:
-  std::string m_dialogue;
+  Str m_dialogue;
 
   friend void to_json(json& j, const Node& item);
   friend void from_json(const json& j, Node& item);

@@ -7,10 +7,8 @@ Querier::Querier(const std::filesystem::path &path) {
   if (!std::filesystem::exists(path)) this->m_storage->sync_schema();
 }
 
-std::vector<models::Item> Querier::query_items(
-    std::optional<std::string> name,
-    std::optional<std::vector<std::string>> attributes,
-    std::optional<std::vector<std::string>> components) {
+Vec<models::Item> Querier::query_items(Opt<Str> name, Opt<Vec<Str>> attributes,
+                                       Opt<Vec<Str>> components) {
   if (!name && !attributes && !components)
     return this->m_storage->get_all<models::Item>();
 
@@ -19,7 +17,7 @@ std::vector<models::Item> Querier::query_items(
         where(like(&models::Item::name, "%" + name.value() + "%")));
   }
 
-  std::vector<models::Item> items;
+  Vec<models::Item> items;
   this->m_storage->begin_transaction();
 
   if (attributes) {
@@ -47,7 +45,7 @@ std::vector<models::Item> Querier::query_items(
   return items;
 }
 
-inline models::Item Querier::get_item(std::string name) {
+inline models::Item Querier::get_item(Str name) {
   return this->m_storage->get<models::Item>(name);
 }
 
@@ -55,7 +53,7 @@ inline void Querier::insert_item(models::Item item) {
   this->m_storage->replace(item);
 }
 
-auto Querier::insert_items(std::vector<models::Item> items) {
+auto Querier::insert_items(Vec<models::Item> items) {
   return this->m_storage->transaction([&] {
     for (const auto &item : items) {
       this->m_storage->replace(item);
@@ -64,7 +62,7 @@ auto Querier::insert_items(std::vector<models::Item> items) {
   });
 }
 
-inline void Querier::remove_item(std::string name) {
+inline void Querier::remove_item(Str name) {
   this->m_storage->remove<models::Item>(name);
 }
 
@@ -72,7 +70,7 @@ inline void Querier::update_item(models::Item updated_item) {
   this->m_storage->update(updated_item);
 }
 
-inline models::Location Querier::get_location(std::string name) {
+inline models::Location Querier::get_location(Str name) {
   return this->m_storage->get<models::Location>(name);
 }
 
@@ -80,7 +78,7 @@ inline void Querier::insert_location(models::Location location) {
   this->m_storage->replace(location);
 }
 
-auto Querier::insert_locations(std::vector<models::Location> locations) {
+auto Querier::insert_locations(Vec<models::Location> locations) {
   return this->m_storage->transaction([&] {
     for (const auto &location : locations) {
       this->m_storage->replace(location);
@@ -89,7 +87,7 @@ auto Querier::insert_locations(std::vector<models::Location> locations) {
   });
 }
 
-inline void Querier::remove_location(std::string name) {
+inline void Querier::remove_location(Str name) {
   this->m_storage->remove<models::Location>(name);
 }
 
@@ -97,7 +95,7 @@ inline void Querier::update_location(models::Location updated_location) {
   this->m_storage->update(updated_location);
 }
 
-inline models::Character Querier::get_character(std::string name) {
+inline models::Character Querier::get_character(Str name) {
   return this->m_storage->get<models::Character>(name);
 }
 
@@ -105,7 +103,7 @@ inline void Querier::insert_character(models::Character character) {
   this->m_storage->insert(character);
 }
 
-auto Querier::insert_characters(std::vector<models::Character> characters) {
+auto Querier::insert_characters(Vec<models::Character> characters) {
   return this->m_storage->transaction([&] {
     for (const auto &character : characters) {
       this->m_storage->replace(character);
@@ -114,7 +112,7 @@ auto Querier::insert_characters(std::vector<models::Character> characters) {
   });
 }
 
-inline void Querier::remove_character(std::string name) {
+inline void Querier::remove_character(Str name) {
   this->m_storage->remove<models::Character>(name);
 }
 
@@ -122,7 +120,7 @@ inline void Querier::update_character(models::Character updated_character) {
   this->m_storage->update(updated_character);
 }
 
-inline models::Dialogue Querier::get_dialogue(std::string name) {
+inline models::Dialogue Querier::get_dialogue(Str name) {
   return this->m_storage->get<models::Dialogue>(name);
 }
 
@@ -130,7 +128,7 @@ inline void Querier::insert_dialogue(models::Dialogue dialogue) {
   this->m_storage->insert(dialogue);
 }
 
-auto Querier::insert_dialogues(std::vector<models::Dialogue> dialogues) {
+auto Querier::insert_dialogues(Vec<models::Dialogue> dialogues) {
   return this->m_storage->transaction([&] {
     for (const auto &dialogue : dialogues) {
       this->m_storage->insert(dialogue);
@@ -139,7 +137,7 @@ auto Querier::insert_dialogues(std::vector<models::Dialogue> dialogues) {
   });
 }
 
-inline void Querier::remove_dialogue(std::string name) {
+inline void Querier::remove_dialogue(Str name) {
   this->m_storage->remove<models::Dialogue>(name);
 }
 
@@ -147,7 +145,7 @@ inline void Querier::update_dialogue(models::Dialogue updated_dialogue) {
   this->m_storage->update(updated_dialogue);
 }
 
-inline models::Node Querier::get_node(std::string name) {
+inline models::Node Querier::get_node(Str name) {
   return this->m_storage->get<models::Node>(name);
 }
 
@@ -155,7 +153,7 @@ inline void Querier::insert_node(models::Node node) {
   this->m_storage->insert(node);
 }
 
-auto Querier::insert_nodes(std::vector<models::Node> nodes) {
+auto Querier::insert_nodes(Vec<models::Node> nodes) {
   return this->m_storage->transaction([&] {
     for (const auto &node : nodes) {
       this->m_storage->insert(node);
@@ -164,7 +162,7 @@ auto Querier::insert_nodes(std::vector<models::Node> nodes) {
   });
 }
 
-inline void Querier::remove_node(std::string name) {
+inline void Querier::remove_node(Str name) {
   this->m_storage->remove<models::Node>(name);
 }
 
@@ -176,11 +174,11 @@ inline void Querier::update_node(models::Node updated_node) {
 #include <fstream>
 
 struct File {
-  std::optional<std::vector<models::Item>> items;
-  std::optional<std::vector<models::Location>> locations;
-  std::optional<std::vector<models::Character>> characters;
-  std::optional<std::vector<models::Dialogue>> dialogues;
-  std::optional<std::vector<models::Node>> nodes;
+  Opt<Vec<models::Item>> items;
+  Opt<Vec<models::Location>> locations;
+  Opt<Vec<models::Character>> characters;
+  Opt<Vec<models::Dialogue>> dialogues;
+  Opt<Vec<models::Node>> nodes;
 };
 
 void to_json(json &j, const File &file) {

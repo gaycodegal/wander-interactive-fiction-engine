@@ -1,13 +1,15 @@
 #include <string>
 
+#include "types.hh"
+
 struct Word {
-  std::string word;
-  std::string origin;
+  Str word;
+  Str origin;
 };
 
 struct Derivation {
-  std::string left_symbol;
-  std::string right_symbol;
+  Str left_symbol;
+  Str right_symbol;
   size_t left_index;
   size_t right_index;
 };
