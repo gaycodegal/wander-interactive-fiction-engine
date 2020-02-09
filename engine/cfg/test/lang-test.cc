@@ -9,10 +9,10 @@
 namespace fs = std::filesystem;
 namespace {
 
-std::string read_file(fs::path path) {
+Str read_file(fs::path path) {
   std::ifstream file{path};
   const auto size = std::filesystem::file_size(path);
-  std::string result(size, ' ');
+  Str result(size, ' ');
   file.read(result.data(), size);
   return result;
 }
@@ -23,7 +23,7 @@ TEST(Lang, ParseSentence_Exists) {
   lang.init_rules(rules);
   auto words = read_file("engine/cfg/test-lang-words.txt");
   lang.init_words(words);
-  std::string sentence = "eat a clean apple";
+  Str sentence = "eat a clean apple";
   EXPECT_EQ(-1, lang.parse_sentence(sentence));
 }
 

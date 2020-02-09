@@ -4,23 +4,21 @@
 #include <iterator>
 #include <locale>
 #include <sstream>
-#include <string>
-#include <vector>
+
+#include "types.hh"
 
 namespace util {
-static inline std::vector<std::string> split_whitespace(
-    const std::string& white_string) {
+static inline Vec<Str> split_whitespace(const Str& white_string) {
   std::istringstream stream(white_string);
-  std::vector<std::string> result(std::istream_iterator<std::string>{stream},
-                                  std::istream_iterator<std::string>());
+  Vec<Str> result(std::istream_iterator<Str>{stream},
+                  std::istream_iterator<Str>());
   return result;
 }
 
-static inline std::vector<std::string> split(const std::string& whole_string,
-                                             char sep) {
+static inline Vec<Str> split(const Str& whole_string, char sep) {
   std::istringstream stream(whole_string);
-  std::vector<std::string> result;
-  std::string temp;
+  Vec<Str> result;
+  Str temp;
   while (std::getline(stream, temp, sep)) {
     result.push_back(temp);
   }
@@ -30,7 +28,7 @@ static inline std::vector<std::string> split(const std::string& whole_string,
 /**
    trim from the left of the string
  */
-static inline std::string& ltrim(std::string& s) {
+static inline Str& ltrim(Str& s) {
   s.erase(s.begin(), std::find_if(s.begin(), s.end(),
                                   [](int c) { return !std::isspace(c); }));
   return s;
@@ -39,7 +37,7 @@ static inline std::string& ltrim(std::string& s) {
 /**
    trim from the right of the string
  */
-static inline std::string& rtrim(std::string& s) {
+static inline Str& rtrim(Str& s) {
   s.erase(
       std::find_if(s.rbegin(), s.rend(), [](int c) { return !std::isspace(c); })
           .base(),
@@ -50,7 +48,7 @@ static inline std::string& rtrim(std::string& s) {
 /**
    standard trim
  */
-static inline std::string& trim(std::string& s) {
+static inline Str& trim(Str& s) {
   ltrim(s);
   return rtrim(s);
 }

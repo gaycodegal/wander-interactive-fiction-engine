@@ -11,6 +11,7 @@ cc_library(
     ]),
     copts = COPTS,
 		deps = [
+      "//engine/util",
       "//third_party/json",
     ],
     linkopts = LINKOPTS,

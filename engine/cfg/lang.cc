@@ -5,48 +5,42 @@
 using namespace cfg;
 using std::cerr;
 using std::cout;
-using std::string;
 using std::unordered_map;
-using std::vector;
 
 static inline void cyk_add_pairs_to_matrix(
-    unordered_map<string, vector<string>> pairs,
-    vector<unordered_map<string, CYKIntermediate>>& matrix,
-    unordered_map<string, CYKIntermediate>& left,
-    unordered_map<string, CYKIntermediate>& right, size_t l_ind, size_t r_ind,
+    unordered_map<Str, Vec<Str>> pairs,
+    Vec<unordered_map<Str, CYKIntermediate>>& matrix,
+    unordered_map<Str, CYKIntermediate>& left,
+    unordered_map<Str, CYKIntermediate>& right, size_t l_ind, size_t r_ind,
     size_t insert_ind);
 
 static inline size_t index2(size_t dimX, size_t dimY, size_t x, size_t y);
 
-static inline bool is_first_char_lower(const string& s) {
+static inline bool is_first_char_lower(const Str& s) {
   return s.size() >= 1 && std::islower(s[0]);
 }
 
-static inline bool is_first_char_upper(const string& s) {
+static inline bool is_first_char_upper(const Str& s) {
   return s.size() >= 1 && std::isupper(s[0]);
 }
 
-string Lang::next_gen_name(const string& rule_type) {
-  return std::to_string(++gen);
-}
+Str Lang::next_gen_name(const Str& rule_type) { return std::to_string(++gen); }
 
-static void rule_parsing_error(const char* message, const string& rule_type,
-                               const string& value) {
+static void rule_parsing_error(const char* message, const Str& rule_type,
+                               const Str& value) {
   cerr << "[Ignored] Bad rule " << rule_type << ": " << value
        << "\nReason: " << message << "" << std::endl;
 }
 
-static string key_of_pair(const string& k1, const string& k2) {
-  return k1 + "::" + k2;
-}
+static Str key_of_pair(const Str& k1, const Str& k2) { return k1 + "::" + k2; }
 
 /**
  * Parses and initializes up the Lang's rules.
  */
-void Lang::init_rules(const string& rules) {
+void Lang::init_rules(const Str& rules) {
   auto split_rules = util::split(rules, '\n');
-  split_rules = util::filter<string>(split_rules,
-                                     [](const auto& s) { return !s.empty(); });
+  split_rules =
+      util::filter<Str>(split_rules, [](const auto& s) { return !s.empty(); });
   for (const auto& rule : split_rules) {
     const auto parts = util::split(rule, ':');
     if (parts.size() != 2) {
@@ -63,7 +57,7 @@ void Lang::init_rules(const string& rules) {
   return;
 }
 
-void Lang::parse_rule_value(const string& rule_type, const string& value) {
+void Lang::parse_rule_value(const Str& rule_type, const Str& value) {
   const auto names = util::split_whitespace(value);
   auto len_names = names.size();
   if (len_names == 0) {
@@ -97,8 +91,7 @@ void Lang::parse_rule_value(const string& rule_type, const string& value) {
   return;
 }
 
-void Lang::new_n_pair_rule(const string& rule_type,
-                           const vector<string>& vals) {
+void Lang::new_n_pair_rule(const Str& rule_type, const Vec<Str>& vals) {
   // check all non-terminal symbols
   for (const auto& sym : vals) {
     if (!is_first_char_upper(sym)) {
@@ -128,7 +121,7 @@ void Lang::new_n_pair_rule(const string& rule_type,
   new_pair_rule(rule_type, first, second);
 }
 
-void Lang::new_terminal_rule(const string& rule_type, const string& terminal) {
+void Lang::new_terminal_rule(const Str& rule_type, const Str& terminal) {
   if (auto match = terminals.find(terminal); match != terminals.end()) {
     auto& val = match->second;
     val.push_back(rule_type);
@@ -137,8 +130,7 @@ void Lang::new_terminal_rule(const string& rule_type, const string& terminal) {
   terminals.insert({terminal, {rule_type}});
 }
 
-void Lang::new_pair_rule(const string& rule_type, const string& k1,
-                         const string& k2) {
+void Lang::new_pair_rule(const Str& rule_type, const Str& k1, const Str& k2) {
   auto key = key_of_pair(k1, k2);
   if (auto match = pairs.find(key); match != pairs.end()) {
     auto& val = match->second;
@@ -148,11 +140,11 @@ void Lang::new_pair_rule(const string& rule_type, const string& k1,
   pairs.insert({key, {rule_type}});
 }
 
-void Lang::init_words(const string& definitions) {
+void Lang::init_words(const Str& definitions) {
   auto split_words = util::split(definitions, '\n');
-  util::map_in_place<string>(split_words, util::trim);
-  split_words = util::filter<string>(split_words,
-                                     [](const auto& s) { return !s.empty(); });
+  util::map_in_place<Str>(split_words, util::trim);
+  split_words =
+      util::filter<Str>(split_words, [](const auto& s) { return !s.empty(); });
   for (const auto& word : split_words) {
     const auto pair = util::split_whitespace(word);
     if (pair.size() == 2) {
@@ -166,18 +158,17 @@ void Lang::init_words(const string& definitions) {
   }
 }
 
-int Lang::parse_sentence(const string& sentence) {
+int Lang::parse_sentence(const Str& sentence) {
   const auto origins = util::split_whitespace(sentence);
-  const auto temp_words =
-      util::map<string, string>(origins, [&](const auto& origin) {
-        if (const auto match = words.find(origin); match != this->words.end()) {
-          return match->second;
-        } else {
-          return string("");
-        }
-      });
-  const auto words = util::filter<string>(
-      temp_words, [](const auto& s) { return !s.empty(); });
+  const auto temp_words = util::map<Str, Str>(origins, [&](const auto& origin) {
+    if (const auto match = words.find(origin); match != this->words.end()) {
+      return match->second;
+    } else {
+      return Str("");
+    }
+  });
+  const auto words =
+      util::filter<Str>(temp_words, [](const auto& s) { return !s.empty(); });
   const auto n = words.size();
 
   // Check for and report unknown words
@@ -191,9 +182,9 @@ int Lang::parse_sentence(const string& sentence) {
     return 0;
   }
 
-  vector<unordered_map<string, CYKIntermediate>> matrix{n * n};
+  Vec<unordered_map<Str, CYKIntermediate>> matrix{n * n};
   std::generate(matrix.begin(), matrix.end(),
-                []() { return unordered_map<string, CYKIntermediate>(); });
+                []() { return unordered_map<Str, CYKIntermediate>(); });
 
   // Initialize matrix with the sentence
   size_t s = 0;
@@ -245,12 +236,11 @@ int Lang::parse_sentence(const string& sentence) {
   return 0;
 }
 
-void cyk_add_pairs_to_matrix(
-    unordered_map<string, vector<string>> pairs,
-    vector<unordered_map<string, CYKIntermediate>>& matrix,
-    unordered_map<string, CYKIntermediate>& left,
-    unordered_map<string, CYKIntermediate>& right, size_t l_ind, size_t r_ind,
-    size_t insert_ind) {
+void cyk_add_pairs_to_matrix(unordered_map<Str, Vec<Str>> pairs,
+                             Vec<unordered_map<Str, CYKIntermediate>>& matrix,
+                             unordered_map<Str, CYKIntermediate>& left,
+                             unordered_map<Str, CYKIntermediate>& right,
+                             size_t l_ind, size_t r_ind, size_t insert_ind) {
   for (const auto& l_val : left) {
     for (const auto& r_val : right) {
       const auto pair = key_of_pair(l_val.first, r_val.first);

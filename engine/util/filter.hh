@@ -2,28 +2,26 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
-#include <vector>
+
+#include "types.hh"
 
 namespace util {
 template <typename T>
-std::vector<T> filter(const std::vector<T>& vec,
-                      std::function<bool(const T&)> predicate) {
-  std::vector<T> result;
+Vec<T> filter(const Vec<T>& vec, std::function<bool(const T&)> predicate) {
+  Vec<T> result;
   std::copy_if(vec.begin(), vec.end(), std::back_inserter(result), predicate);
   return result;
 }
 
 template <typename P, typename Q>
-std::vector<Q> map(const std::vector<P>& vec,
-                   std::function<Q(const P&)> transformation) {
-  std::vector<Q> result(vec.size());
+Vec<Q> map(const Vec<P>& vec, std::function<Q(const P&)> transformation) {
+  Vec<Q> result(vec.size());
   std::transform(vec.begin(), vec.end(), result.begin(), transformation);
   return result;
 }
 
 template <typename P>
-std::vector<P>& map_in_place(std::vector<P>& vec,
-                             std::function<void(P&)> transformation) {
+Vec<P>& map_in_place(Vec<P>& vec, std::function<void(P&)> transformation) {
   for (auto& item : vec) {
     transformation(item);
   }

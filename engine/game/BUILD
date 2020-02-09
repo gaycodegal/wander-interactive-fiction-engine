@@ -6,12 +6,6 @@ DEPS = [
 	"//engine/sdl",
 ]
 
-
-DEPS_DEBUG = [
-	"//engine/querier:debug",
-	"//engine/sdl:debug",
-]
-
 cc_binary(
 	name = "game",
 	srcs = [
