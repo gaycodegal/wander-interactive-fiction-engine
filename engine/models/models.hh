@@ -49,7 +49,7 @@ class Item {
         attributes(move(attributes_)),
         components(move(components_)) {}
 
-  friend std::ostream& operator<<(std::ostream &out, models::Item const& item) {
+  friend std::ostream& operator<<(std::ostream& out, models::Item const& item) {
     json j = item;
     out << j.dump(4);
     return out;
@@ -81,7 +81,8 @@ class Location {
   void dialogues();
   void items();
 
-  friend std::ostream& operator<<(std::ostream &out, models::Location const& location) {
+  friend std::ostream& operator<<(std::ostream& out,
+                                  models::Location const& location) {
     json j = location;
     out << j.dump(4);
     return out;
@@ -103,7 +104,8 @@ class Character {
   Character(std::string name_, std::optional<std::string> components_)
       : name(move(name_)), components(move(components_)) {}
 
-  friend std::ostream& operator<<(std::ostream &out, models::Character const& character) {
+  friend std::ostream& operator<<(std::ostream& out,
+                                  models::Character const& character) {
     json j = character;
     out << j.dump(4);
     return out;
@@ -134,7 +136,8 @@ class Dialogue {
   void setDialogue(std::string dialogue) { this->m_dialogue = move(dialogue); }
   void dialogue();
 
-  friend std::ostream& operator<<(std::ostream &out, models::Dialogue const& dialogue) {
+  friend std::ostream& operator<<(std::ostream& out,
+                                  models::Dialogue const& dialogue) {
     json j = dialogue;
     out << j.dump(4);
     return out;
@@ -157,7 +160,7 @@ class Node {
   void setDialogue(std::string dialogue) { this->m_dialogue = move(dialogue); }
   void dialogue();
 
-  friend std::ostream& operator<<(std::ostream &out, models::Node const& node) {
+  friend std::ostream& operator<<(std::ostream& out, models::Node const& node) {
     json j = node;
     out << j.dump(4);
     return out;
