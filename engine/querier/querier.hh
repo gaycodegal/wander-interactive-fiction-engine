@@ -1,8 +1,6 @@
 #pragma once
 
 #include <filesystem>
-#include <optional>
-#include <vector>
 
 #include "models.hh"
 #include "sqlite_orm.hh"
