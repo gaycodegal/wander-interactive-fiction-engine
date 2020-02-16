@@ -1,9 +1,8 @@
 #include <iostream>
 #include <memory>
-#include <vector>
 
-#include "engine/querier/querier.hh"
 #include "engine/sdl/sdl_include.hh"
+#include "querier.hh"
 
 using namespace std;
 

@@ -1,12 +1,6 @@
 #pragma once
 
-#include <memory>
-#include <optional>
-
 #include "dialogue_tree.hh"
-#include "json.hh"
-
-using nlohmann::json;
 
 namespace models {
 struct Pattern {
@@ -130,7 +124,7 @@ class Dialogue {
 
   Str getDialogue() { return this->m_dialogue; }
   void setDialogue(Str dialogue) { this->m_dialogue = move(dialogue); }
-  void dialogue();
+  inline Story dialogue();
 
   friend std::ostream& operator<<(std::ostream& out,
                                   models::Dialogue const& dialogue) {
@@ -154,7 +148,7 @@ class Node {
 
   Str getDialogue() { return this->m_dialogue; }
   void setDialogue(Str dialogue) { this->m_dialogue = move(dialogue); }
-  void dialogue();
+  inline Story dialogue();
 
   friend std::ostream& operator<<(std::ostream& out, models::Node const& node) {
     json j = node;

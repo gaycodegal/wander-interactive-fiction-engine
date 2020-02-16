@@ -1,15 +1,5 @@
 #include "models.hh"
 
-void models::Location::dialogues() { return; }
-
-void models::Location::items() { return; }
-
-void models::Character::dialogues() { return; }
-
-void models::Dialogue::dialogue() { return; }
-
-void models::Node::dialogue() { return; }
-
 void models::to_json(json& j, const Item& item) {
   j = json{
       {"name", item.name},
@@ -84,4 +74,20 @@ void models::to_json(json& j, const Node& node) {
 void models::from_json(const json& j, Node& node) {
   j.at("id").get_to(node.id);
   j.at("dialogue").get_to(node.m_dialogue);
+}
+
+void models::Location::dialogues() { return; }
+
+void models::Location::items() { return; }
+
+void models::Character::dialogues() { return; }
+
+inline Story models::Dialogue::dialogue() {
+  auto j = json::parse(this->m_dialogue);
+  return j.get<Story>();
+}
+
+inline Story models::Node::dialogue() {
+  auto j = json::parse(this->m_dialogue);
+  return j.get<Story>();
 }
