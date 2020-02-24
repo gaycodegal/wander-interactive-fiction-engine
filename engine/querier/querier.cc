@@ -6,7 +6,7 @@ Querier::Querier(const std::filesystem::path &path) {
   this->m_storage = std::make_unique<Storage>(initStorage(path));
   if (!std::filesystem::exists(path)) this->m_storage->sync_schema();
 }
-#include <iostream>
+
 Vec<models::Item> Querier::query_items(Opt<Str> name, Opt<Vec<Str>> attributes,
                                        Opt<Vec<Str>> components) {
   if (!name && !attributes && !components)
@@ -14,34 +14,65 @@ Vec<models::Item> Querier::query_items(Opt<Str> name, Opt<Vec<Str>> attributes,
 
   if (name) {
     return this->m_storage->get_all<models::Item>(
-        where(like(&models::Item::name, "%" + name.value() + "%")));
+        where(like(&models::Item::name, conc(conc("%", name.value()), "%"))));
   }
 
   Vec<models::Item> items;
   this->m_storage->begin_transaction();
 
-  if (attributes) {
+  if (attributes && attributes.value().size() > 0 && components &&
+      components.value().size() > 0) {
     for (const auto &attr : attributes.value()) {
-      models::Pattern p = {attr};
+      models::PatternOne p = {attr};
       this->m_storage->insert(p);
-      std::cout << attr << std::endl;
     }
-  }
 
-  return this->m_storage->get_all<models::Item>(where(
-      in(&models::Item::name,
-         select(&models::Item::name,
-                where(like(&models::Item::attributes,
-                           conc(conc("%", &models::Pattern::value), "%"))),
-                group_by(&models::Item::name),
-                having(is_equal(count(&models::Pattern::value),
-                                select(count<models::Pattern>())))))));
-
-  /* if (components) {
     for (const auto &comp : components.value()) {
-      std::cout << comp << std::endl;
+      models::PatternTwo p = {comp};
+      this->m_storage->insert(p);
     }
-  } */
+
+    items = this->m_storage->get_all<models::Item>(where(in(
+        &models::Item::name,
+        select(&models::Item::name,
+               where(like(&models::Item::attributes,
+                          conc(conc("%", &models::PatternOne::value), "%")) and
+                     like(&models::Item::components,
+                          conc(conc("%", &models::PatternTwo::value), "%"))),
+               group_by(&models::Item::name),
+               having(is_equal(count(&models::PatternOne::value),
+                               select(count<models::PatternOne>())) and
+                      is_equal(count(&models::PatternTwo::value),
+                               select(count<models::PatternTwo>())))))));
+  } else if (attributes && attributes.value().size() > 0) {
+    for (const auto &attr : attributes.value()) {
+      models::PatternOne p = {attr};
+      this->m_storage->insert(p);
+    }
+
+    items = this->m_storage->get_all<models::Item>(where(
+        in(&models::Item::name,
+           select(&models::Item::name,
+                  where(like(&models::Item::attributes,
+                             conc(conc("%", &models::PatternOne::value), "%"))),
+                  group_by(&models::Item::name),
+                  having(is_equal(count(&models::PatternOne::value),
+                                  select(count<models::PatternOne>())))))));
+  } else {
+    for (const auto &comp : components.value()) {
+      models::PatternOne p = {comp};
+      this->m_storage->insert(p);
+    }
+
+    items = this->m_storage->get_all<models::Item>(where(
+        in(&models::Item::name,
+           select(&models::Item::name,
+                  where(like(&models::Item::attributes,
+                             conc(conc("%", &models::PatternOne::value), "%"))),
+                  group_by(&models::Item::name),
+                  having(is_equal(count(&models::PatternOne::value),
+                                  select(count<models::PatternOne>())))))));
+  }
 
   this->m_storage->rollback();
 

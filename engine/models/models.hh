@@ -3,7 +3,10 @@
 #include "dialogue_tree.hh"
 
 namespace models {
-struct Pattern {
+struct PatternOne {
+  Str value;
+};
+struct PatternTwo {
   Str value;
 };
 
