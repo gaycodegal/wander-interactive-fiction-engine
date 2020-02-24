@@ -13,7 +13,7 @@ struct sdl_deleter {
 };
 
 int main() {
-  // vector<string> attrs = {"test", "monkey", "more", "words", "for", "test"};
+  vector<string> attrs = {"green", "fairy"};
   initStorage("");
   models::Item i("apple", "A delicious red apple.", "red,fruit,edible", {});
   json j = i;
@@ -21,11 +21,13 @@ int main() {
   auto item = j.get<models::Item>();
   cout << "json back to Item class: " << item << endl;
 
-  std::unique_ptr<Querier> q = std::make_unique<Querier>(":memory:");
-  // auto i2 = q->get_item(item.name);
+  std::unique_ptr<Querier> q = std::make_unique<Querier>("/tmp/test.db");
+  // auto i2 = q->get_item("apple");
+  // cout << "retrieved: " << i2 << endl;
 
   // q->dump_from_file("/tmp/test_dump_json.json");
-  auto items = q->query_items({}, {}, {});
+  auto items = q->query_items({}, attrs, {});
+  cout << "size of: " << items.size() << endl;
   for (const auto& item : items) {
     cout << "item: " << item.name << endl;
   }

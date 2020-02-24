@@ -6,7 +6,7 @@ Querier::Querier(const std::filesystem::path &path) {
   this->m_storage = std::make_unique<Storage>(initStorage(path));
   if (!std::filesystem::exists(path)) this->m_storage->sync_schema();
 }
-
+#include <iostream>
 Vec<models::Item> Querier::query_items(Opt<Str> name, Opt<Vec<Str>> attributes,
                                        Opt<Vec<Str>> components) {
   if (!name && !attributes && !components)
@@ -24,15 +24,18 @@ Vec<models::Item> Querier::query_items(Opt<Str> name, Opt<Vec<Str>> attributes,
     for (const auto &attr : attributes.value()) {
       models::Pattern p = {attr};
       this->m_storage->insert(p);
-      // std::cout << attr << std::endl;
+      std::cout << attr << std::endl;
     }
   }
 
-  /* return this->m_storage->get_all<models::Item>(
-                where(in(&models::Item::name, select(
-                        &models::Item::name,
-     where(like(&models::Item::attributes, &models::Pattern::value)))))
-        ); */
+  return this->m_storage->get_all<models::Item>(where(
+      in(&models::Item::name,
+         select(&models::Item::name,
+                where(like(&models::Item::attributes,
+                           conc(conc("%", &models::Pattern::value), "%"))),
+                group_by(&models::Item::name),
+                having(is_equal(count(&models::Pattern::value),
+                                select(count<models::Pattern>())))))));
 
   /* if (components) {
     for (const auto &comp : components.value()) {
