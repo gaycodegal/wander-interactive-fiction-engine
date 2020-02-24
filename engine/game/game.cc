@@ -13,7 +13,8 @@ struct sdl_deleter {
 };
 
 int main() {
-  vector<string> attrs = {"green", "fairy"};
+  vector<string> attrs = {"green"};
+  vector<string> comps = {"heals"};
   initStorage("");
   models::Item i("apple", "A delicious red apple.", "red,fruit,edible", {});
   json j = i;
@@ -26,7 +27,7 @@ int main() {
   // cout << "retrieved: " << i2 << endl;
 
   // q->dump_from_file("/tmp/test_dump_json.json");
-  auto items = q->query_items({}, attrs, {});
+  auto items = q->query_items({}, attrs, comps);
   cout << "size of: " << items.size() << endl;
   for (const auto& item : items) {
     cout << "item: " << item.name << endl;

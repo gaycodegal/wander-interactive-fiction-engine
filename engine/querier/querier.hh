@@ -9,8 +9,12 @@ static inline auto initStorage(const Str& path) {
   return sqlite_orm::make_storage(
       path,
       sqlite_orm::make_table(
-          "patterns",
-          sqlite_orm::make_column("pattern", &models::Pattern::value)),
+          "patterns_one",
+          sqlite_orm::make_column("pattern", &models::PatternOne::value)),
+
+      sqlite_orm::make_table(
+          "patterns_two",
+          sqlite_orm::make_column("pattern", &models::PatternTwo::value)),
 
       sqlite_orm::make_index("item_names", &models::Item::name),
       sqlite_orm::make_table(
