@@ -11,7 +11,7 @@ cc_binary(
 	srcs = [
 		"game.cc",
 	],
-	copts = COPTS,
+	copts = COPTS + ["-DTESTING"],
 	deps = DEPS,
 	linkopts = LINKOPTS,
 )
