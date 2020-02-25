@@ -2,6 +2,8 @@
 
 using namespace sqlite_orm;
 
+Str basic_str = "";
+
 Querier::Querier(const std::filesystem::path &path) {
   this->m_storage = std::make_unique<Storage>(initStorage(path));
   if (!std::filesystem::exists(path)) this->m_storage->sync_schema();
@@ -12,67 +14,45 @@ Vec<models::Item> Querier::query_items(Opt<Str> name, Opt<Vec<Str>> attributes,
   if (!name && !attributes && !components)
     return this->m_storage->get_all<models::Item>();
 
-  if (name) {
-    return this->m_storage->get_all<models::Item>(
-        where(like(&models::Item::name, conc(conc("%", name.value()), "%"))));
-  }
+  auto name_pattern = name ? conc(conc("%", name.value()), "%")
+                           : conc(conc("%", basic_str), "%");
 
   Vec<models::Item> items;
   this->m_storage->begin_transaction();
 
-  if (attributes && attributes.value().size() > 0 && components &&
-      components.value().size() > 0) {
+  if (attributes && attributes.value().size() > 0) {
     for (const auto &attr : attributes.value()) {
       models::PatternOne p = {attr};
       this->m_storage->insert(p);
     }
+  } else {
+    models::PatternOne p = {""};
+    this->m_storage->insert(p);
+  }
+  auto attribute_pattern = conc(conc("%", &models::PatternOne::value), "%");
 
+  if (components && components.value().size() > 0) {
     for (const auto &comp : components.value()) {
       models::PatternTwo p = {comp};
       this->m_storage->insert(p);
     }
-
-    items = this->m_storage->get_all<models::Item>(where(in(
-        &models::Item::name,
-        select(&models::Item::name,
-               where(like(&models::Item::attributes,
-                          conc(conc("%", &models::PatternOne::value), "%")) and
-                     like(&models::Item::components,
-                          conc(conc("%", &models::PatternTwo::value), "%"))),
-               group_by(&models::Item::name),
-               having(is_equal(count(&models::PatternOne::value),
-                               select(count<models::PatternOne>())) and
-                      is_equal(count(&models::PatternTwo::value),
-                               select(count<models::PatternTwo>())))))));
-  } else if (attributes && attributes.value().size() > 0) {
-    for (const auto &attr : attributes.value()) {
-      models::PatternOne p = {attr};
-      this->m_storage->insert(p);
-    }
-
-    items = this->m_storage->get_all<models::Item>(where(
-        in(&models::Item::name,
-           select(&models::Item::name,
-                  where(like(&models::Item::attributes,
-                             conc(conc("%", &models::PatternOne::value), "%"))),
-                  group_by(&models::Item::name),
-                  having(is_equal(count(&models::PatternOne::value),
-                                  select(count<models::PatternOne>())))))));
   } else {
-    for (const auto &comp : components.value()) {
-      models::PatternOne p = {comp};
-      this->m_storage->insert(p);
-    }
-
-    items = this->m_storage->get_all<models::Item>(where(
-        in(&models::Item::name,
-           select(&models::Item::name,
-                  where(like(&models::Item::attributes,
-                             conc(conc("%", &models::PatternOne::value), "%"))),
-                  group_by(&models::Item::name),
-                  having(is_equal(count(&models::PatternOne::value),
-                                  select(count<models::PatternOne>())))))));
+    models::PatternTwo p = {""};
+    this->m_storage->insert(p);
   }
+  auto component_pattern = conc(conc("%", &models::PatternTwo::value), "%");
+
+  items = this->m_storage->get_all<models::Item>(where(
+      in(&models::Item::name,
+         select(&models::Item::name,
+                where(like(&models::Item::name, name_pattern) and
+                      like(&models::Item::attributes, attribute_pattern) and
+                      like(&models::Item::components, component_pattern)),
+                group_by(&models::Item::name),
+                having(is_equal(count(&models::PatternOne::value),
+                                select(count<models::PatternOne>())) and
+                       is_equal(count(&models::PatternTwo::value),
+                                select(count<models::PatternTwo>())))))));
 
   this->m_storage->rollback();
 
