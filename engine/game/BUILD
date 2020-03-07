@@ -4,6 +4,8 @@ load("//bzl:vars.bzl", "COPTS", "LINKOPTS")
 DEPS = [
 	"//engine/querier",
 	"//engine/sdl",
+	"//third_party/entt",
+	"//third_party/sol"
 ]
 
 cc_binary(
