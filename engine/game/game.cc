@@ -2,6 +2,9 @@
 #include <memory>
 
 #include "engine/sdl/sdl_include.hh"
+#include "entt.hh"
+#define SOL_ALL_SAFETIES_ON 1
+#include "sol.hpp"
 #include "querier.hh"
 
 using namespace std;
