@@ -4,8 +4,8 @@
 #include "engine/sdl/sdl_include.hh"
 #include "entt.hh"
 #define SOL_ALL_SAFETIES_ON 1
-#include "sol.hpp"
 #include "querier.hh"
+#include "sol.hpp"
 
 using namespace std;
 
@@ -18,7 +18,6 @@ struct sdl_deleter {
 int main() {
   vector<string> attrs = {"green"};
   vector<string> comps = {"heals"};
-  initStorage("");
   models::Item i("apple", "A delicious red apple.", "red,fruit,edible", {});
   json j = i;
   cout << "json Item: " << j.dump(4) << endl;

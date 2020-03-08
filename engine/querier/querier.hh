@@ -85,27 +85,37 @@ class Querier {
   inline void remove_item(Str name);
   inline void update_item(models::Item updated_item);
 
+  Vec<models::Location> query_locations(Opt<Str> name, Opt<Vec<Str>> items,
+                                        Opt<Vec<Str>> characters);
   inline models::Location get_location(Str name);
   inline void insert_location(models::Location location);
   auto insert_locations(Vec<models::Location> locations);
   inline void remove_location(Str name);
   inline void update_location(models::Location updated_location);
-  Vec<models::Dialogue> get_location_dialogues(models::Location location);
+  inline Vec<models::Dialogue> get_location_dialogues(
+      models::Location location);
   Vec<models::Item> get_location_items(models::Location location);
 
+  Vec<models::Character> query_characters(Opt<Str> name,
+                                          Opt<Vec<Str>> components);
   inline models::Character get_character(Str name);
   inline void insert_character(models::Character character);
   auto insert_characters(Vec<models::Character> characters);
   inline void remove_character(Str name);
   inline void update_character(models::Character updated_character);
-  Vec<models::Dialogue> get_character_dialogues(models::Character character);
+  inline Vec<models::Dialogue> get_character_dialogues(
+      models::Character character);
 
+  Vec<models::Dialogue> query_dialogues(Opt<Str> text, Opt<Vec<Str>> characters,
+                                        Opt<Vec<Str>> flags,
+                                        Opt<Vec<Str>> locations);
   inline models::Dialogue get_dialogue(Str name);
   inline void insert_dialogue(models::Dialogue dialogue);
   auto insert_dialogues(Vec<models::Dialogue> dialogues);
   inline void remove_dialogue(Str name);
   inline void update_dialogue(models::Dialogue updated_dialogue);
 
+  Vec<models::Node> query_dialogues(Opt<Str> text);
   inline models::Node get_node(Str name);
   inline void insert_node(models::Node node);
   auto insert_nodes(Vec<models::Node> nodes);

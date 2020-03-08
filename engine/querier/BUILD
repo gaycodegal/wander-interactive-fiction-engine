@@ -20,9 +20,20 @@ cc_library(
     includes = [""],
 )
 
-filegroup(
-    name = "db_test_data",
+cc_test(
+    name = "test",
+    size = "small",
     srcs = glob([
-        "*.json",
+        "test/*.cc",
     ]),
+    deps = [
+        ":querier",
+        "@googletest//:gtest_main",
+    ],
+    data = [
+        "test_dump_json.json",
+    ],
+    copts = COPTS,
+    linkopts = LINKOPTS,
+    linkstatic = 0,
 )
