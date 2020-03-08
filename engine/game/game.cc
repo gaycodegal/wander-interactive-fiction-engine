@@ -25,6 +25,7 @@ int main() {
   cout << "json back to Item class: " << item << endl;
 
   std::unique_ptr<Querier> q = std::make_unique<Querier>("/tmp/test.db");
+  q->insert_item(item);
   // auto i2 = q->get_item("apple");
   // cout << "retrieved: " << i2 << endl;
 
@@ -48,7 +49,7 @@ int main() {
     return 1;
   }
 
-  SDL_Delay(3000);
+  SDL_Delay(300);
 
   SDL_Quit();
 

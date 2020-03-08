@@ -1,169 +1,169 @@
 {
-    "items": [
-	{
-	    "name": "apple_json",
-	    "description": "a shiny red apple that looks oh so appealing",
-	    "attributes": "red,shiny,poisoned",
-	    "components": "{ \"damages\": true }"
-	},
-	{
-	    "name": "Test_Item",
-            "description": "Test item for testing.",
-            "attributes": "test,debug,?",
-            "components": "{'test': 'test'}"
-	},
-	{
-	    "name": "fairy",
-	    "description": "A sparkling fairy",
-	    "attributes": "blue,shiny,sentient",
-	    "components": "{ \"heals\": true, \"interactable\": true }"
-	},
-	{
-	    "name": "Blob",
-            "description": "A gelatinous green blob, it looks happy.",
-            "attributes": "green,gelatinous,poisoned,fairy,sentient",
-            "components": "{ \"damages\": true, \"interactable\": true }"
-	},
-	{
-	    "name": "green_apple",
-            "description": "A disgusting looking green apple.",
-            "attributes": "green",
-            "components": "{ \"heals\": true, \"interactable\": true }"
-	}
-    ],
-    "characters": [
-	{
-	    "name": "dad_json",
-	    "components": "{ \"interactable\": true }"
-	},
-	{
-	    "name": "Test_Character",
-	    "components": "{ \"interactable\": true }"
-	},
-	{
-	    "name": "Mystery Ghost",
-	    "components": "{ \"interactable\": true, \"killable\": true }"
-	},
-	{
-	    "name": "Grandpa",
-	    "components": "{ \"interactable\": true, \"dies\": true }"
-	}
-    ],
-    "dialogues": [
-	{
-	    "id": 0,
-	    "priority": 1,
-	    "characters": "dad",
-	    "location": "kitchen_json",
-	    "dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"Hope you are excited for dinner.\"}],\"choices\":[{\"what\":\"What is it?\",\"next\":0},{\"what\":\"Smells delicious.\",\"next\":1}],\"visited\":false}",
-	    "flags": null
-	},
-	{
-	    "id": 1,
-	    "priority": 1,
-	    "characters": "mom,sister",
-	    "location": "living room",
-	    "flags": "grounded",
-	    "dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"What the fuck do you think you were doing?\"},{\"who\":\"mom\",\"what\":\"You are are grounded!\"}],\"choices\":[{\"what\":\"Fuck you guys.\",\"next\":2},{\"what\":\"I was trying to help her.\",\"next\":3}],\"visited\":false}"
-	},
-	{
-	    "id": 2,
-	    "priority": 1,
-	    "characters": "fairy",
-	    "location": "bedroom",
-	    "flags": "gay,grounded",
-	    "dialogue": "{\"story\":[{\"who\":\"fairy\",\"what\":\"I kissed a boy and I liked it.\"}],\"choices\":null,\"visited\":false}"
-	},
-	{
-	    "id": 3,
-	    "priority": 1,
-	    "characters": "fairy",
-	    "flags": "fairy,poisoned",
-	    "location": "bedroom",
-	    "dialogue": "{\"story\":[{\"who\":\"fairy\",\"what\":\"I wanna die thanks.\"}, {\"player\": \"Me too thanks.\"}],\"choices\":null,\"visited\":false}"
-	},
-	{
-	    "id": 4,
-	    "priority": 1,
-	    "characters": "cat",
-	    "location": "bedroom",
-	    "dialogue": "{\"story\":[{\"who\":\"cat\",\"what\":\"Meoooow.\"}, {\"player\": \"Cute kitty.\"}],\"choices\":null,\"visited\":false}",
-	    "flags": null
-	},
-	{
-	    "id": 100,
-	    "priority": 0,
-	    "characters": "dad,mom,sister",
-	    "location": "kitchen",
-	    "flags": "apple_acquired,brother_dead",
-	    "dialogue": "{\"story\":[],\"choices\": [{\"what\":\"What's for dinner y'all?\",\"next\":4},{\"what\":\"How can I help set up?\",\"next\":5}],\"visited\":false}"
-	}
-    ],
-    "nodes": [
-	{
-	    "id": 0,
-	    "dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"It's steak and ash potatoes.\"}],\"choices\":null,\"visited\":false}"
-	},
-	{
-	    "id": 1,
-	    "dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"You better believe it.\"}],\"choices\":null,\"visited\":false}"
-	},
-	{
-	    "id": 2,
-	    "dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"Oh my god.\"}, {\"who\":\"mom\",\"what\":\"Have you lost your mind?.\"}, {\"who\":\"player\",\"what\":\"I'll kill you all.\"}],\"choices\":null,\"visited\":false}"
-	},
-	{
-	    "id": 3,
-	    "dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"Next time warn me, you could have killed me.\"}, {\"who\":\"mom\",\"what\":\"You are still grounded?.\"}, {\"who\":\"player\",\"what\":\"I'm sorry.\"}],\"choices\":null,\"visited\":false}"
-	},
-	{
-	    "id": 4,
-	    "dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"Don't you have eyes and a nose?.\"}],\"choices\":null,\"visited\":false}"
-	},
-	{
-	    "id": 5,
-	    "dialogue": "{\"story\":[{\"who\":\"mom\",\"what\":\"Can you set up the silverware?\"}],\"choices\":null,\"visited\":false}"
-	},
-	{
-	    "id": 100,
-	    "dialogue": "{\"story\":[{\"what\":\"Mama milk?\",\"who\": \"dad\"},{\"what\":\"Really dad?\",\"who\": \"sister\"}],\"choices\": null,\"visited\":false}"
-	}
-    ],
-    "locations": [
-	{
-	    "name": "kitchen_json",
-	    "description": "A modern kitchen with all the appliaces and a grand wooden table. On top of the table there is a fruit bowl with a appealing red apple.",
-	    "items": "apple_json",
-	    "neighbors": "{ \"south\": \"hallway\", \"north\": \"backyard\" }",
-	    "characters": "dad"
-	},
-	{
-	    "name": "Test_Location",
-	    "description": "Test location for testing.",
-	    "items": "Test_Item",
-	    "neighbors": "{ \"south\": \"Test_South\", \"north\": \"Test_North\" }",
-	    "characters": "Test_Character"
-	},
-	{
-	    "name": "living room",
-	    "description": "A room with a couch and a tv",
-	    "items": "fairy,Blob",
-	    "neighbors": "{ \"east\": \"hallway\" }",
-	    "characters": "mother,sister"
-	},
-	{
-	    "name": "hallway",
-	    "description": "A long corridor of many rooms.",
-	    "items": "fairy",
-	    "neighbors": "{ \"west\": \"living room\", \"north\": \"kitchen\", \"south\": \"entry hall\" }",
-	    "characters": null
-	},
-	{
-	    "name": "your bedroom",
-	    "description": "A cozy room that hides many secrets.",
-	    "items": "Blob",
-	    "neighbors": "{ \"north\": \"upstairs hallway\" }",
-	    "characters": "Bird"
-	}
-    ]
+	"items": [
+		{
+			"name": "apple_json",
+			"description": "a shiny red apple that looks oh so appealing",
+			"attributes": "red,shiny,poisoned",
+			"components": "{ \"damages\": true }"
+		},
+		{
+			"name": "Test_Item",
+			"description": "Test item for testing.",
+			"attributes": "test,debug,?",
+			"components": "{'test': 'test'}"
+		},
+		{
+			"name": "fairy",
+			"description": "A sparkling fairy",
+			"attributes": "blue,shiny,sentient",
+			"components": "{ \"heals\": true, \"interactable\": true }"
+		},
+		{
+			"name": "Blob",
+			"description": "A gelatinous green blob, it looks happy.",
+			"attributes": "green,gelatinous,poisoned,fairy,sentient",
+			"components": "{ \"damages\": true, \"interactable\": true }"
+		},
+		{
+			"name": "green_apple",
+			"description": "A disgusting looking green apple.",
+			"attributes": "green",
+			"components": "{ \"heals\": true, \"interactable\": true }"
+		}
+	],
+	"characters": [
+		{
+			"name": "dad_json",
+			"components": "{ \"interactable\": true }"
+		},
+		{
+			"name": "Test_Character",
+			"components": "{ \"interactable\": true }"
+		},
+		{
+			"name": "Mystery Ghost",
+			"components": "{ \"interactable\": true, \"killable\": true }"
+		},
+		{
+			"name": "Grandpa",
+			"components": "{ \"interactable\": true, \"dies\": true }"
+		}
+	],
+	"dialogues": [
+		{
+			"id": 0,
+			"priority": 1,
+			"characters": "dad",
+			"location": "kitchen_json",
+			"dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"Hope you are excited for dinner.\"}],\"choices\":[{\"what\":\"What is it?\",\"next\":0},{\"what\":\"Smells delicious.\",\"next\":1}],\"visited\":false}",
+			"flags": null
+		},
+		{
+			"id": 1,
+			"priority": 1,
+			"characters": "mom,sister",
+			"location": "living room",
+			"flags": "grounded",
+			"dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"What the fuck do you think you were doing?\"},{\"who\":\"mom\",\"what\":\"You are are grounded!\"}],\"choices\":[{\"what\":\"Fuck you guys.\",\"next\":2},{\"what\":\"I was trying to help her.\",\"next\":3}],\"visited\":false}"
+		},
+		{
+			"id": 2,
+			"priority": 1,
+			"characters": "fairy",
+			"location": "bedroom",
+			"flags": "gay,grounded",
+			"dialogue": "{\"story\":[{\"who\":\"fairy\",\"what\":\"I kissed a boy and I liked it.\"}],\"choices\":null,\"visited\":false}"
+		},
+		{
+			"id": 3,
+			"priority": 1,
+			"characters": "fairy",
+			"flags": "fairy,poisoned",
+			"location": "bedroom",
+			"dialogue": "{\"story\":[{\"who\":\"fairy\",\"what\":\"I wanna die thanks.\"}, {\"player\": \"Me too thanks.\"}],\"choices\":null,\"visited\":false}"
+		},
+		{
+			"id": 4,
+			"priority": 1,
+			"characters": "cat",
+			"location": "bedroom",
+			"dialogue": "{\"story\":[{\"who\":\"cat\",\"what\":\"Meoooow.\"}, {\"player\": \"Cute kitty.\"}],\"choices\":null,\"visited\":false}",
+			"flags": null
+		},
+		{
+			"id": 100,
+			"priority": 0,
+			"characters": "dad,mom,sister",
+			"location": "kitchen",
+			"flags": "apple_acquired,brother_dead",
+			"dialogue": "{\"story\":[],\"choices\": [{\"what\":\"What's for dinner y'all?\",\"next\":4},{\"what\":\"How can I help set up?\",\"next\":5}],\"visited\":false}"
+		}
+	],
+	"nodes": [
+		{
+			"id": 0,
+			"dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"It's steak and ash potatoes.\"}],\"choices\":null,\"visited\":false}"
+		},
+		{
+			"id": 1,
+			"dialogue": "{\"story\":[{\"who\":\"dad\",\"what\":\"You better believe it.\"}],\"choices\":null,\"visited\":false}"
+		},
+		{
+			"id": 2,
+			"dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"Oh my god.\"}, {\"who\":\"mom\",\"what\":\"Have you lost your mind?.\"}, {\"who\":\"player\",\"what\":\"I'll kill you all.\"}],\"choices\":null,\"visited\":false}"
+		},
+		{
+			"id": 3,
+			"dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"Next time warn me, you could have killed me.\"}, {\"who\":\"mom\",\"what\":\"You are still grounded?.\"}, {\"who\":\"player\",\"what\":\"I'm sorry.\"}],\"choices\":null,\"visited\":false}"
+		},
+		{
+			"id": 4,
+			"dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"Don't you have eyes and a nose?.\"}],\"choices\":null,\"visited\":false}"
+		},
+		{
+			"id": 5,
+			"dialogue": "{\"story\":[{\"who\":\"mom\",\"what\":\"Can you set up the silverware?\"}],\"choices\":null,\"visited\":false}"
+		},
+		{
+			"id": 100,
+			"dialogue": "{\"story\":[{\"what\":\"Mama milk?\",\"who\": \"dad\"},{\"what\":\"Really dad?\",\"who\": \"sister\"}],\"choices\": null,\"visited\":false}"
+		}
+	],
+	"locations": [
+		{
+			"name": "kitchen_json",
+			"description": "A modern kitchen with all the appliaces and a grand wooden table. On top of the table there is a fruit bowl with a appealing red apple.",
+			"items": "apple_json",
+			"neighbors": "{ \"south\": \"hallway\", \"north\": \"backyard\" }",
+			"characters": "dad"
+		},
+		{
+			"name": "Test_Location",
+			"description": "Test location for testing.",
+			"items": "Test_Item",
+			"neighbors": "{ \"south\": \"Test_South\", \"north\": \"Test_North\" }",
+			"characters": "Test_Character"
+		},
+		{
+			"name": "living room",
+			"description": "A room with a couch and a tv",
+			"items": "fairy,Blob",
+			"neighbors": "{ \"east\": \"hallway\" }",
+			"characters": "mother,sister"
+		},
+		{
+			"name": "hallway",
+			"description": "A long corridor of many rooms.",
+			"items": "fairy",
+			"neighbors": "{ \"west\": \"living room\", \"north\": \"kitchen\", \"south\": \"entry hall\" }",
+			"characters": null
+		},
+		{
+			"name": "your bedroom",
+			"description": "A cozy room that hides many secrets.",
+			"items": "Blob",
+			"neighbors": "{ \"north\": \"upstairs hallway\" }",
+			"characters": "Bird"
+		}
+	]
 }
