@@ -76,12 +76,6 @@ void models::from_json(const json& j, Node& node) {
   j.at("dialogue").get_to(node.m_dialogue);
 }
 
-void models::Location::dialogues() { return; }
-
-void models::Location::items() { return; }
-
-void models::Character::dialogues() { return; }
-
 inline Story models::Dialogue::dialogue() {
   auto j = json::parse(this->m_dialogue);
   return j.get<Story>();

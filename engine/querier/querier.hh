@@ -90,12 +90,15 @@ class Querier {
   auto insert_locations(Vec<models::Location> locations);
   inline void remove_location(Str name);
   inline void update_location(models::Location updated_location);
+  Vec<models::Dialogue> get_location_dialogues(models::Location location);
+  Vec<models::Item> get_location_items(models::Location location);
 
   inline models::Character get_character(Str name);
   inline void insert_character(models::Character character);
   auto insert_characters(Vec<models::Character> characters);
   inline void remove_character(Str name);
   inline void update_character(models::Character updated_character);
+  Vec<models::Dialogue> get_character_dialogues(models::Character character);
 
   inline models::Dialogue get_dialogue(Str name);
   inline void insert_dialogue(models::Dialogue dialogue);

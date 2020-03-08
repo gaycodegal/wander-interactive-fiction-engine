@@ -71,8 +71,6 @@ class Location {
 
   Opt<Str> getItems() { return this->m_items; }
   void setItems(Opt<Str> items) { this->m_items = move(items); }
-  void dialogues();
-  void items();
 
   friend std::ostream& operator<<(std::ostream& out,
                                   models::Location const& location) {
@@ -103,8 +101,6 @@ class Character {
     out << j.dump(4);
     return out;
   }
-
-  void dialogues();
 };
 
 class Dialogue {
