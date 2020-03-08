@@ -25,7 +25,7 @@ int main() {
   cout << "json back to Item class: " << item << endl;
 
   std::unique_ptr<Querier> q = std::make_unique<Querier>("/tmp/test.db");
-  q->insert_item(item);
+  q->insert_item(i);
   // auto i2 = q->get_item("apple");
   // cout << "retrieved: " << i2 << endl;
 

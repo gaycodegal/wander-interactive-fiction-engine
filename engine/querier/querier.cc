@@ -61,11 +61,11 @@ Vec<models::Item> Querier::query_items(Opt<Str> name, Opt<Vec<Str>> attributes,
   return items;
 }
 
-inline models::Item Querier::get_item(Str name) {
+models::Item Querier::get_item(Str name) {
   return this->m_storage->get<models::Item>(name);
 }
 
-inline void Querier::insert_item(models::Item item) {
+void Querier::insert_item(models::Item item) {
   this->m_storage->replace(item);
 }
 
@@ -78,11 +78,11 @@ auto Querier::insert_items(Vec<models::Item> items) {
   });
 }
 
-inline void Querier::remove_item(Str name) {
+void Querier::remove_item(Str name) {
   this->m_storage->remove<models::Item>(name);
 }
 
-inline void Querier::update_item(models::Item updated_item) {
+void Querier::update_item(models::Item updated_item) {
   this->m_storage->update(updated_item);
 }
 
