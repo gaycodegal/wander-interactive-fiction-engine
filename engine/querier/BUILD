@@ -12,6 +12,7 @@ cc_library(
     copts = COPTS + ["-DTESTING"],
 		deps = [
       "//engine/models",
+      "//engine/util",
       "//third_party/json",
       "//third_party/sqlite_orm"
     ],

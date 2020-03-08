@@ -1,5 +1,7 @@
 #include "querier.hh"
 
+#include "util.hh"
+
 using namespace sqlite_orm;
 
 Str basic_str = "";
@@ -182,6 +184,29 @@ inline void Querier::remove_node(Str name) {
 
 inline void Querier::update_node(models::Node updated_node) {
   this->m_storage->update(updated_node);
+}
+
+Vec<models::Dialogue> Querier::get_location_dialogues(models::Location location) {
+  return this->m_storage->get_all<models::Dialogue>(
+    where(like(&models::Dialogue::location, location.name))
+  );
+}
+
+Vec<models::Item> Querier::get_location_items(models::Location location) {
+  auto items_split = util::split(location.getItems().value(), ',');
+  Vec<models::Item> items;
+
+  for (const auto& item_str : items_split) {
+    items.push_back(this->m_storage->get<models::Item>(item_str));
+  }
+  
+  return items;
+}
+
+Vec<models::Dialogue> Querier::get_character_dialogues(models::Character character) {
+  return this->m_storage->get_all<models::Dialogue>(
+    where(like(&models::Dialogue::location, character.name))
+  );
 }
 
 #ifdef TESTING
