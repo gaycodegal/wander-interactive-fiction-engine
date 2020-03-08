@@ -51,6 +51,15 @@ class Item {
     out << j.dump(4);
     return out;
   }
+
+  friend bool operator==(const Item& lhs, const Item& rhs) {
+    return ( lhs.name ==rhs.name && 
+    lhs.description.value() == rhs.description.value() &&
+    lhs.attributes.value() == rhs.attributes.value() &&
+    lhs.components.value() == rhs.components.value() );
+  }
+
+  friend bool operator!=(const Item& lhs, const Item& rhs) { return !(lhs == rhs); }
 };
 
 class Location {

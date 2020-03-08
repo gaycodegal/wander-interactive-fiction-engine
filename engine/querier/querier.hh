@@ -73,17 +73,13 @@ class Querier {
  public:
   Querier(const std::filesystem::path& path);
 
-#ifdef TESTING
-  void dump_from_file(const std::filesystem::path& path);
-#endif
-
   Vec<models::Item> query_items(Opt<Str> name, Opt<Vec<Str>> attributes,
                                 Opt<Vec<Str>> components);
-  inline models::Item get_item(Str name);
-  inline void insert_item(models::Item item);
+  models::Item get_item(Str name);
+  void insert_item(models::Item item);
   auto insert_items(Vec<models::Item> items);
-  inline void remove_item(Str name);
-  inline void update_item(models::Item updated_item);
+  void remove_item(Str name);
+  void update_item(models::Item updated_item);
 
   Vec<models::Location> query_locations(Opt<Str> name, Opt<Vec<Str>> items,
                                         Opt<Vec<Str>> characters);
@@ -122,6 +118,9 @@ class Querier {
   inline void remove_node(Str name);
   inline void update_node(models::Node updated_node);
 
+#ifdef TESTING
+  void dump_from_file(const std::filesystem::path& path);
+#endif
  private:
   std::unique_ptr<Storage> m_storage;
 };
