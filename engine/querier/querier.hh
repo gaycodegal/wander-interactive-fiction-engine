@@ -89,40 +89,73 @@ class Querier {
 
   Vec<models::Location> query_locations(Opt<Str> name, Opt<Vec<Str>> items,
                                         Opt<Vec<Str>> characters);
-  inline models::Location get_location(Str name);
-  inline void insert_location(models::Location location);
+  inline models::Location get_location(Str name) {
+    return this->m_storage->get<models::Location>(name);
+  }
+  inline void insert_location(models::Location location) {
+    this->m_storage->replace(location);
+  }
   auto insert_locations(Vec<models::Location> locations);
-  inline void remove_location(Str name);
-  inline void update_location(models::Location updated_location);
+  inline void remove_location(Str name) {
+    this->m_storage->remove<models::Location>(name);
+  }
+  inline void update_location(models::Location updated_location) {
+    this->m_storage->update(updated_location);
+  }
   inline Vec<models::Dialogue> get_location_dialogues(
-      models::Location location);
+      models::Location location) {
+    return this->m_storage->get_all<models::Dialogue>(sqlite_orm::where(
+        sqlite_orm::like(&models::Dialogue::location, location.name)));
+  }
   Vec<models::Item> get_location_items(models::Location location);
 
   Vec<models::Character> query_characters(Opt<Str> name,
                                           Opt<Vec<Str>> components);
-  inline models::Character get_character(Str name);
-  inline void insert_character(models::Character character);
+  inline models::Character get_character(Str name) {
+    return this->m_storage->get<models::Character>(name);
+  }
+  inline void insert_character(models::Character character) {
+    this->m_storage->insert(character);
+  }
   auto insert_characters(Vec<models::Character> characters);
-  inline void remove_character(Str name);
-  inline void update_character(models::Character updated_character);
+  inline void remove_character(Str name) {
+    this->m_storage->remove<models::Character>(name);
+  }
+  inline void update_character(models::Character updated_character) {
+    this->m_storage->update(updated_character);
+  }
   inline Vec<models::Dialogue> get_character_dialogues(
       models::Character character);
 
   Vec<models::Dialogue> query_dialogues(Opt<Str> text, Opt<Vec<Str>> characters,
                                         Opt<Vec<Str>> flags,
                                         Opt<Vec<Str>> locations);
-  inline models::Dialogue get_dialogue(Str name);
-  inline void insert_dialogue(models::Dialogue dialogue);
+  inline models::Dialogue get_dialogue(Str name) {
+    return this->m_storage->get<models::Dialogue>(name);
+  }
+  inline void insert_dialogue(models::Dialogue dialogue) {
+    this->m_storage->insert(dialogue);
+  }
   auto insert_dialogues(Vec<models::Dialogue> dialogues);
-  inline void remove_dialogue(Str name);
-  inline void update_dialogue(models::Dialogue updated_dialogue);
+  inline void remove_dialogue(Str name) {
+    this->m_storage->remove<models::Dialogue>(name);
+  }
+  inline void update_dialogue(models::Dialogue updated_dialogue) {
+    this->m_storage->update(updated_dialogue);
+  }
 
   Vec<models::Node> query_dialogues(Opt<Str> text);
-  inline models::Node get_node(Str name);
-  inline void insert_node(models::Node node);
+  inline models::Node get_node(Str name) {
+    return this->m_storage->get<models::Node>(name);
+  }
+  inline void insert_node(models::Node node) { this->m_storage->insert(node); }
   auto insert_nodes(Vec<models::Node> nodes);
-  inline void remove_node(Str name);
-  inline void update_node(models::Node updated_node);
+  inline void remove_node(Str name) {
+    this->m_storage->remove<models::Node>(name);
+  }
+  inline void update_node(models::Node updated_node) {
+    this->m_storage->update(updated_node);
+  }
 
 #ifdef TESTING
   void dump_from_file(const std::filesystem::path& path);
