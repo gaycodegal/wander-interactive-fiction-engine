@@ -33,7 +33,7 @@ cc_test(
     data = [
         "test_dump_json.json",
     ],
-    copts = COPTS,
+    copts = COPTS + ["-DTESTING"],
     linkopts = LINKOPTS,
     linkstatic = 0,
 )
