@@ -70,14 +70,6 @@ auto Querier::insert_items(Vec<models::Item> items) {
   });
 }
 
-inline models::Location Querier::get_location(Str name) {
-  return this->m_storage->get<models::Location>(name);
-}
-
-inline void Querier::insert_location(models::Location location) {
-  this->m_storage->replace(location);
-}
-
 auto Querier::insert_locations(Vec<models::Location> locations) {
   return this->m_storage->transaction([&] {
     for (const auto &location : locations) {
@@ -85,20 +77,6 @@ auto Querier::insert_locations(Vec<models::Location> locations) {
     }
     return true;
   });
-}
-
-inline void Querier::remove_location(Str name) {
-  this->m_storage->remove<models::Location>(name);
-}
-
-inline void Querier::update_location(models::Location updated_location) {
-  this->m_storage->update(updated_location);
-}
-
-inline Vec<models::Dialogue> Querier::get_location_dialogues(
-    models::Location location) {
-  return this->m_storage->get_all<models::Dialogue>(
-      where(like(&models::Dialogue::location, location.name)));
 }
 
 Vec<models::Item> Querier::get_location_items(models::Location location) {
@@ -112,14 +90,6 @@ Vec<models::Item> Querier::get_location_items(models::Location location) {
   return items;
 }
 
-inline models::Character Querier::get_character(Str name) {
-  return this->m_storage->get<models::Character>(name);
-}
-
-inline void Querier::insert_character(models::Character character) {
-  this->m_storage->insert(character);
-}
-
 auto Querier::insert_characters(Vec<models::Character> characters) {
   return this->m_storage->transaction([&] {
     for (const auto &character : characters) {
@@ -129,26 +99,10 @@ auto Querier::insert_characters(Vec<models::Character> characters) {
   });
 }
 
-inline void Querier::remove_character(Str name) {
-  this->m_storage->remove<models::Character>(name);
-}
-
-inline void Querier::update_character(models::Character updated_character) {
-  this->m_storage->update(updated_character);
-}
-
 inline Vec<models::Dialogue> Querier::get_character_dialogues(
     models::Character character) {
   return this->m_storage->get_all<models::Dialogue>(
       where(like(&models::Dialogue::location, character.name)));
-}
-
-inline models::Dialogue Querier::get_dialogue(Str name) {
-  return this->m_storage->get<models::Dialogue>(name);
-}
-
-inline void Querier::insert_dialogue(models::Dialogue dialogue) {
-  this->m_storage->insert(dialogue);
 }
 
 auto Querier::insert_dialogues(Vec<models::Dialogue> dialogues) {
@@ -160,22 +114,6 @@ auto Querier::insert_dialogues(Vec<models::Dialogue> dialogues) {
   });
 }
 
-inline void Querier::remove_dialogue(Str name) {
-  this->m_storage->remove<models::Dialogue>(name);
-}
-
-inline void Querier::update_dialogue(models::Dialogue updated_dialogue) {
-  this->m_storage->update(updated_dialogue);
-}
-
-inline models::Node Querier::get_node(Str name) {
-  return this->m_storage->get<models::Node>(name);
-}
-
-inline void Querier::insert_node(models::Node node) {
-  this->m_storage->insert(node);
-}
-
 auto Querier::insert_nodes(Vec<models::Node> nodes) {
   return this->m_storage->transaction([&] {
     for (const auto &node : nodes) {
@@ -183,14 +121,6 @@ auto Querier::insert_nodes(Vec<models::Node> nodes) {
     }
     return true;
   });
-}
-
-inline void Querier::remove_node(Str name) {
-  this->m_storage->remove<models::Node>(name);
-}
-
-inline void Querier::update_node(models::Node updated_node) {
-  this->m_storage->update(updated_node);
 }
 
 #ifdef TESTING
