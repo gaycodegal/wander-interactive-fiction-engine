@@ -53,13 +53,15 @@ class Item {
   }
 
   friend bool operator==(const Item& lhs, const Item& rhs) {
-    return ( lhs.name ==rhs.name && 
-    lhs.description.value() == rhs.description.value() &&
-    lhs.attributes.value() == rhs.attributes.value() &&
-    lhs.components.value() == rhs.components.value() );
+    return (lhs.name == rhs.name &&
+            lhs.description.value() == rhs.description.value() &&
+            lhs.attributes.value() == rhs.attributes.value() &&
+            lhs.components.value() == rhs.components.value());
   }
 
-  friend bool operator!=(const Item& lhs, const Item& rhs) { return !(lhs == rhs); }
+  friend bool operator!=(const Item& lhs, const Item& rhs) {
+    return !(lhs == rhs);
+  }
 };
 
 class Location {

@@ -61,14 +61,6 @@ Vec<models::Item> Querier::query_items(Opt<Str> name, Opt<Vec<Str>> attributes,
   return items;
 }
 
-models::Item Querier::get_item(Str name) {
-  return this->m_storage->get<models::Item>(name);
-}
-
-void Querier::insert_item(models::Item item) {
-  this->m_storage->replace(item);
-}
-
 auto Querier::insert_items(Vec<models::Item> items) {
   return this->m_storage->transaction([&] {
     for (const auto &item : items) {
@@ -76,14 +68,6 @@ auto Querier::insert_items(Vec<models::Item> items) {
     }
     return true;
   });
-}
-
-void Querier::remove_item(Str name) {
-  this->m_storage->remove<models::Item>(name);
-}
-
-void Querier::update_item(models::Item updated_item) {
-  this->m_storage->update(updated_item);
 }
 
 inline models::Location Querier::get_location(Str name) {

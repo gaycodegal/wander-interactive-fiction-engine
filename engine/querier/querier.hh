@@ -75,11 +75,17 @@ class Querier {
 
   Vec<models::Item> query_items(Opt<Str> name, Opt<Vec<Str>> attributes,
                                 Opt<Vec<Str>> components);
-  models::Item get_item(Str name);
-  void insert_item(models::Item item);
+  inline models::Item get_item(Str name) {
+    return this->m_storage->get<models::Item>(name);
+  }
+  inline void insert_item(models::Item item) { this->m_storage->replace(item); }
   auto insert_items(Vec<models::Item> items);
-  void remove_item(Str name);
-  void update_item(models::Item updated_item);
+  inline void remove_item(Str name) {
+    this->m_storage->remove<models::Item>(name);
+  }
+  inline void update_item(models::Item updated_item) {
+    this->m_storage->update(updated_item);
+  }
 
   Vec<models::Location> query_locations(Opt<Str> name, Opt<Vec<Str>> items,
                                         Opt<Vec<Str>> characters);
