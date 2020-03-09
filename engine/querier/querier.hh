@@ -79,7 +79,7 @@ class Querier {
     return this->m_storage->get<models::Item>(name);
   }
   inline void insert_item(models::Item item) { this->m_storage->replace(item); }
-  auto insert_items(Vec<models::Item> items);
+  void insert_items(Vec<models::Item> items);
   inline void remove_item(Str name) {
     this->m_storage->remove<models::Item>(name);
   }
