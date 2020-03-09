@@ -61,8 +61,8 @@ Vec<models::Item> Querier::query_items(Opt<Str> name, Opt<Vec<Str>> attributes,
   return items;
 }
 
-auto Querier::insert_items(Vec<models::Item> items) {
-  return this->m_storage->transaction([&] {
+void Querier::insert_items(Vec<models::Item> items) {
+  this->m_storage->transaction([&] {
     for (const auto &item : items) {
       this->m_storage->replace(item);
     }

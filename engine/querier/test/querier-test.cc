@@ -5,12 +5,12 @@
 #include "gtest/gtest.h"
 
 namespace {
-/* models::Item common_item() {
+models::Item common_item() {
   return models::Item("Test_Item", "Test item for testing.", "test,debug,?",
                       "{'test': 'test'}");
 }
 
-models::Location common_location() {
+/*models::Location common_location() {
   return models::Location(
       "Test_Location", "Test location for testing.",
       "{ \"south\": \"Test_South\", \"north\": \"Test_North\" }",
@@ -51,13 +51,38 @@ TEST(Querier, get_all_items) {
 }
 
 TEST(Querier, insert_item) {
-  auto querier = create_test_db("test_insert_item.db");
+  auto querier = create_test_db("test_insert_get_item.db");
   auto item = models::Item("Test_Item_Insert", "Test item for insert testing.",
                            "test,debug,insert", "{'test': 'test'}");
 
   querier->insert_item(item);
   auto got_item = querier->get_item("Test_Item_Insert");
   EXPECT_EQ(item, got_item);
+}
+
+TEST(Querier, insert_items) {
+  auto querier = create_test_db("test_insert_items.db");
+  Vec<models::Item> items;
+
+  items.push_back(models::Item("Test_Item_Insert_1",
+                               "Test item for insert testing.",
+                               "test,debug,insert", "{'test': 'test'}"));
+  items.push_back(models::Item("Test_Item_Insert_2",
+                               "Test item for insert testing.",
+                               "test,debug,insert", "{'test': 'test'}"));
+
+  querier->insert_items(items);
+  auto got_items = querier->query_items("Test_Item_Insert", {}, {});
+  EXPECT_EQ(items.size(), got_items.size());
+  EXPECT_EQ(items[0], got_items[0]);
+  EXPECT_EQ(items[1], got_items[1]);
+}
+
+TEST(Querier, insert_existing_item) {
+  auto querier = create_test_db("test_insert_existing_item.db");
+
+  querier->insert_item(common_item());
+  // EXPECT_EQ(item, got_item);
 }
 
 }  // namespace
