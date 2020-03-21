@@ -10,9 +10,8 @@ void FreeSurface(SDL_Surface *surface) { delete surface; }
 
 class Graphics {
  public:
-  static Graphics *Instance(Str title);
   static void Release();
-	using DestroyGraphics = decltype(&Graphics::Release);
+	static std::unique_ptr<Graphics, decltype(&Release)> Instance(Str title);
   static bool Initialized();
 
   void ClearBackBuffer();
@@ -36,7 +35,7 @@ class Graphics {
   
 	bool Init();
 
-  static std::unique_ptr<Graphics, DestroyGraphics> sInstance;
+  static std::unique_ptr<Graphics, decltype(&Release)> sInstance;
   static bool sInitialized;
 
   int32_t M_WIDTH{600};
@@ -46,4 +45,6 @@ class Graphics {
   std::unique_ptr<SDL_Surface, decltype(&FreeSurface)> m_surface;
   std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_renderer;
 };
+
+using DestroyGraphics = decltype(&Graphics::Release);
 }  // namespace canvas
