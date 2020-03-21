@@ -11,7 +11,7 @@ void FreeSurface(SDL_Surface *surface) { delete surface; }
 class Graphics {
  public:
   static void Release();
-  static std::unique_ptr<Graphics, decltype(&Release)> Instance(Str title);
+  Graphics *Instance(Str title);
   static bool Initialized();
 
   void ClearBackBuffer();
@@ -27,19 +27,16 @@ class Graphics {
                                                  SDL_Color color);
 
  private:
-  Graphics(Str title)
-      : m_window(nullptr, SDL_DestroyWindow),
-        m_surface(nullptr, FreeSurface),
-        m_renderer(nullptr, SDL_DestroyRenderer) {}
+  Graphics(Str title);
   ~Graphics();
 
-  bool Init();
+  bool Init(Str title);
 
-  static std::unique_ptr<Graphics, decltype(&Release)> sInstance;
-  static bool sInitialized;
+  static Graphics *m_instance;
+  static bool m_initialized;
 
-  int32_t M_WIDTH{600};
-  int32_t M_HEIGHT{400};
+  int32_t m_width{600};
+  int32_t m_height{400};
 
   std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> m_window;
   std::unique_ptr<SDL_Surface, decltype(&FreeSurface)> m_surface;
