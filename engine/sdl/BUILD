@@ -9,14 +9,5 @@ cc_library(
     copts = COPTS,
 		deps = DEPS,
     linkopts = LINKOPTS,
-)
-
-cc_library(
-    name = "debug",
-    hdrs = glob([
-        "*.hh",
-    ]),
-    copts = COPTS + [ "-g" ],
-		deps = DEPS,
-    linkopts = LINKOPTS,
+    includes = [""],
 )
