@@ -53,10 +53,9 @@ class Item {
   }
 
   friend bool operator==(const Item& lhs, const Item& rhs) {
-    return (lhs.name == rhs.name &&
-            lhs.description.value() == rhs.description.value() &&
-            lhs.attributes.value() == rhs.attributes.value() &&
-            lhs.components.value() == rhs.components.value());
+    return (lhs.name == rhs.name && lhs.description == rhs.description &&
+            lhs.attributes == rhs.attributes &&
+            lhs.components == rhs.components);
   }
 
   friend bool operator!=(const Item& lhs, const Item& rhs) {
@@ -76,7 +75,7 @@ class Location {
            Opt<Str> characters_, Opt<Str> items_)
       : name(move(name_)),
         description(move(description_)),
-        neighbors(move(neighbors)),
+        neighbors(move(neighbors_)),
         characters(move(characters_)),
         m_items(move(items_)) {}
 
@@ -88,6 +87,16 @@ class Location {
     json j = location;
     out << j.dump(4);
     return out;
+  }
+
+  friend bool operator==(const Location& lhs, const Location& rhs) {
+    return (lhs.name == rhs.name && lhs.description == rhs.description &&
+            lhs.neighbors == rhs.neighbors &&
+            lhs.characters == rhs.characters && lhs.m_items == rhs.m_items);
+  }
+
+  friend bool operator!=(const Location& lhs, const Location& rhs) {
+    return !(lhs == rhs);
   }
 
  private:
@@ -111,6 +120,14 @@ class Character {
     json j = character;
     out << j.dump(4);
     return out;
+  }
+
+  friend bool operator==(const Character& lhs, const Character& rhs) {
+    return (lhs.name == rhs.name && lhs.components == rhs.components);
+  }
+
+  friend bool operator!=(const Character& lhs, const Character& rhs) {
+    return !(lhs == rhs);
   }
 };
 
@@ -143,6 +160,16 @@ class Dialogue {
     return out;
   }
 
+  friend bool operator==(const Dialogue& lhs, const Dialogue& rhs) {
+    return (lhs.id == rhs.id && lhs.characters == rhs.characters &&
+            lhs.flags == rhs.flags && lhs.location == rhs.location &&
+            lhs.priority == rhs.priority && lhs.m_dialogue == rhs.m_dialogue);
+  }
+
+  friend bool operator!=(const Dialogue& lhs, const Dialogue& rhs) {
+    return !(lhs == rhs);
+  }
+
  private:
   Str m_dialogue;
 
@@ -164,6 +191,14 @@ class Node {
     json j = node;
     out << j.dump(4);
     return out;
+  }
+
+  friend bool operator==(const Node& lhs, const Node& rhs) {
+    return (lhs.id == rhs.id && lhs.m_dialogue == rhs.m_dialogue);
+  }
+
+  friend bool operator!=(const Node& lhs, const Node& rhs) {
+    return !(lhs == rhs);
   }
 
  private:

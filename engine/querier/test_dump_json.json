@@ -51,7 +51,7 @@
 	],
 	"dialogues": [
 		{
-			"id": 0,
+			"id": -1,
 			"priority": 1,
 			"characters": "dad",
 			"location": "kitchen_json",
@@ -59,7 +59,7 @@
 			"flags": null
 		},
 		{
-			"id": 1,
+			"id": -1,
 			"priority": 1,
 			"characters": "mom,sister",
 			"location": "living room",
@@ -67,7 +67,7 @@
 			"dialogue": "{\"story\":[{\"who\":\"sister\",\"what\":\"What the fuck do you think you were doing?\"},{\"who\":\"mom\",\"what\":\"You are are grounded!\"}],\"choices\":[{\"what\":\"Fuck you guys.\",\"next\":2},{\"what\":\"I was trying to help her.\",\"next\":3}],\"visited\":false}"
 		},
 		{
-			"id": 2,
+			"id": -1,
 			"priority": 1,
 			"characters": "fairy",
 			"location": "bedroom",
@@ -75,7 +75,7 @@
 			"dialogue": "{\"story\":[{\"who\":\"fairy\",\"what\":\"I kissed a boy and I liked it.\"}],\"choices\":null,\"visited\":false}"
 		},
 		{
-			"id": 3,
+			"id": -1,
 			"priority": 1,
 			"characters": "fairy",
 			"flags": "fairy,poisoned",
@@ -83,7 +83,7 @@
 			"dialogue": "{\"story\":[{\"who\":\"fairy\",\"what\":\"I wanna die thanks.\"}, {\"player\": \"Me too thanks.\"}],\"choices\":null,\"visited\":false}"
 		},
 		{
-			"id": 4,
+			"id": -1,
 			"priority": 1,
 			"characters": "cat",
 			"location": "bedroom",
@@ -91,7 +91,7 @@
 			"flags": null
 		},
 		{
-			"id": 100,
+			"id": -1,
 			"priority": 0,
 			"characters": "dad,mom,sister",
 			"location": "kitchen",
