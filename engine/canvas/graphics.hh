@@ -11,7 +11,7 @@ void FreeSurface(SDL_Surface *surface) { delete surface; }
 class Graphics {
  public:
   static void Release();
-	static std::unique_ptr<Graphics, decltype(&Release)> Instance(Str title);
+  static std::unique_ptr<Graphics, decltype(&Release)> Instance(Str title);
   static bool Initialized();
 
   void ClearBackBuffer();
@@ -31,9 +31,9 @@ class Graphics {
       : m_window(nullptr, SDL_DestroyWindow),
         m_surface(nullptr, FreeSurface),
         m_renderer(nullptr, SDL_DestroyRenderer) {}
-	~Graphics();
-  
-	bool Init();
+  ~Graphics();
+
+  bool Init();
 
   static std::unique_ptr<Graphics, decltype(&Release)> sInstance;
   static bool sInitialized;
