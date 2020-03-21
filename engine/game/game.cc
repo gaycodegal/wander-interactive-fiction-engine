@@ -25,9 +25,14 @@ int main() {
   cout << "json back to Item class: " << item << endl;
 
   std::unique_ptr<Querier> q = std::make_unique<Querier>("/tmp/test.db");
-  q->insert_item(i);
-  // auto i2 = q->get_item("apple");
-  // cout << "retrieved: " << i2 << endl;
+  // q->insert_item(i);
+  try {
+    q->insert_item(i);
+    // auto i2 = q->get_item("should_not_exist");
+  } catch (const std::system_error& e) {
+    cout << "code: " << e.code() << endl;
+    cout << "retrieved: " << e.what() << endl;
+  }
 
   // q->dump_from_file("/tmp/test_dump_json.json");
   auto items = q->query_items({}, attrs, comps);

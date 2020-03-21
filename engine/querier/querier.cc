@@ -64,15 +64,35 @@ Vec<models::Item> Querier::query_items(Opt<Str> name, Opt<Vec<Str>> attributes,
 void Querier::insert_items(Vec<models::Item> items) {
   this->m_storage->transaction([&] {
     for (const auto &item : items) {
+      if (this->m_storage->get_pointer<models::Item>(item.name)) {
+        throw std::system_error(
+            std::error_code(SQLITE_CONSTRAINT_UNIQUE,
+                            sqlite_orm::get_sqlite_error_category()),
+            "UNIQUE constraint failed: item.name");
+      }
       this->m_storage->replace(item);
     }
     return true;
   });
 }
 
+Vec<models::Location> Querier::query_locations(Opt<Str> name,
+                                               Opt<Vec<Str>> items,
+                                               Opt<Vec<Str>> characters) {
+  auto locations = this->m_storage->get_all<models::Location>();
+
+  return locations;
+}
+
 auto Querier::insert_locations(Vec<models::Location> locations) {
   return this->m_storage->transaction([&] {
     for (const auto &location : locations) {
+      if (this->m_storage->get_pointer<models::Location>(location.name)) {
+        throw std::system_error(
+            std::error_code(SQLITE_CONSTRAINT_UNIQUE,
+                            sqlite_orm::get_sqlite_error_category()),
+            "UNIQUE constraint failed: location.name");
+      }
       this->m_storage->replace(location);
     }
     return true;
@@ -90,9 +110,22 @@ Vec<models::Item> Querier::get_location_items(models::Location location) {
   return items;
 }
 
+Vec<models::Character> Querier::query_characters(Opt<Str> name,
+                                                 Opt<Vec<Str>> components) {
+  auto characters = this->m_storage->get_all<models::Character>();
+
+  return characters;
+}
+
 auto Querier::insert_characters(Vec<models::Character> characters) {
   return this->m_storage->transaction([&] {
     for (const auto &character : characters) {
+      if (this->m_storage->get_pointer<models::Character>(character.name)) {
+        throw std::system_error(
+            std::error_code(SQLITE_CONSTRAINT_UNIQUE,
+                            sqlite_orm::get_sqlite_error_category()),
+            "UNIQUE constraint failed: character.name");
+      }
       this->m_storage->replace(character);
     }
     return true;
@@ -105,6 +138,15 @@ inline Vec<models::Dialogue> Querier::get_character_dialogues(
       where(like(&models::Dialogue::location, character.name)));
 }
 
+Vec<models::Dialogue> Querier::query_dialogues(Opt<Str> text,
+                                               Opt<Vec<Str>> characters,
+                                               Opt<Vec<Str>> flags,
+                                               Opt<Vec<Str>> locations) {
+  auto dialogues = this->m_storage->get_all<models::Dialogue>();
+
+  return dialogues;
+}
+
 auto Querier::insert_dialogues(Vec<models::Dialogue> dialogues) {
   return this->m_storage->transaction([&] {
     for (const auto &dialogue : dialogues) {
@@ -112,6 +154,12 @@ auto Querier::insert_dialogues(Vec<models::Dialogue> dialogues) {
     }
     return true;
   });
+}
+
+Vec<models::Node> Querier::query_nodes(Opt<Str> text) {
+  auto nodes = this->m_storage->get_all<models::Node>();
+
+  return nodes;
 }
 
 auto Querier::insert_nodes(Vec<models::Node> nodes) {

@@ -1,9 +1,14 @@
 #pragma once
 
 #include <filesystem>
+#include <stdexcept>
 
 #include "models.hh"
 #include "sqlite_orm.hh"
+
+enum class QuerierErrc {
+  EntryAlreadyExists = 1 << 1,
+};
 
 static inline auto initStorage(const Str& path) {
   return sqlite_orm::make_storage(
@@ -78,7 +83,15 @@ class Querier {
   inline models::Item get_item(Str name) {
     return this->m_storage->get<models::Item>(name);
   }
-  inline void insert_item(models::Item item) { this->m_storage->replace(item); }
+  inline void insert_item(models::Item item) {
+    if (this->m_storage->get_pointer<models::Item>(item.name)) {
+      throw std::system_error(
+          std::error_code(SQLITE_CONSTRAINT_UNIQUE,
+                          sqlite_orm::get_sqlite_error_category()),
+          "UNIQUE constraint failed: item.name");
+    }
+    this->m_storage->replace(item);
+  }
   void insert_items(Vec<models::Item> items);
   inline void remove_item(Str name) {
     this->m_storage->remove<models::Item>(name);
@@ -93,6 +106,12 @@ class Querier {
     return this->m_storage->get<models::Location>(name);
   }
   inline void insert_location(models::Location location) {
+    if (this->m_storage->get_pointer<models::Location>(location.name)) {
+      throw std::system_error(
+          std::error_code(SQLITE_CONSTRAINT_UNIQUE,
+                          sqlite_orm::get_sqlite_error_category()),
+          "UNIQUE constraint failed: location.name");
+    }
     this->m_storage->replace(location);
   }
   auto insert_locations(Vec<models::Location> locations);
@@ -115,7 +134,13 @@ class Querier {
     return this->m_storage->get<models::Character>(name);
   }
   inline void insert_character(models::Character character) {
-    this->m_storage->insert(character);
+    if (this->m_storage->get_pointer<models::Character>(character.name)) {
+      throw std::system_error(
+          std::error_code(SQLITE_CONSTRAINT_UNIQUE,
+                          sqlite_orm::get_sqlite_error_category()),
+          "UNIQUE constraint failed: character.name");
+    }
+    this->m_storage->replace(character);
   }
   auto insert_characters(Vec<models::Character> characters);
   inline void remove_character(Str name) {
@@ -130,29 +155,29 @@ class Querier {
   Vec<models::Dialogue> query_dialogues(Opt<Str> text, Opt<Vec<Str>> characters,
                                         Opt<Vec<Str>> flags,
                                         Opt<Vec<Str>> locations);
-  inline models::Dialogue get_dialogue(Str name) {
-    return this->m_storage->get<models::Dialogue>(name);
+  inline models::Dialogue get_dialogue(int id) {
+    return this->m_storage->get<models::Dialogue>(id);
   }
-  inline void insert_dialogue(models::Dialogue dialogue) {
-    this->m_storage->insert(dialogue);
+  inline int insert_dialogue(models::Dialogue dialogue) {
+    return this->m_storage->insert(dialogue);
   }
   auto insert_dialogues(Vec<models::Dialogue> dialogues);
-  inline void remove_dialogue(Str name) {
-    this->m_storage->remove<models::Dialogue>(name);
+  inline void remove_dialogue(int id) {
+    this->m_storage->remove<models::Dialogue>(id);
   }
   inline void update_dialogue(models::Dialogue updated_dialogue) {
     this->m_storage->update(updated_dialogue);
   }
 
-  Vec<models::Node> query_dialogues(Opt<Str> text);
-  inline models::Node get_node(Str name) {
-    return this->m_storage->get<models::Node>(name);
+  Vec<models::Node> query_nodes(Opt<Str> text);
+  inline models::Node get_node(int id) {
+    return this->m_storage->get<models::Node>(id);
   }
-  inline void insert_node(models::Node node) { this->m_storage->insert(node); }
+  inline int insert_node(models::Node node) {
+    return this->m_storage->insert(node);
+  }
   auto insert_nodes(Vec<models::Node> nodes);
-  inline void remove_node(Str name) {
-    this->m_storage->remove<models::Node>(name);
-  }
+  inline void remove_node(int id) { this->m_storage->remove<models::Node>(id); }
   inline void update_node(models::Node updated_node) {
     this->m_storage->update(updated_node);
   }
