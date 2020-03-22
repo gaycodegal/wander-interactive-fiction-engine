@@ -2,29 +2,47 @@
 
 #include <memory>
 
-#include "sdl_include.hh"
-#include "types.hh"
+#include "sdl_deleter.hh"
 
 namespace canvas {
-void FreeSurface(SDL_Surface *surface) { delete surface; }
 
 class Graphics {
  public:
-  static void Release();
-  Graphics *Instance(Str title);
-  static bool Initialized();
+  static inline void Release() {
+    delete m_instance;
+    m_instance = nullptr;
 
-  void ClearBackBuffer();
-  void DrawTexture(std::unique_ptr<SDL_Texture> tex,
-                   std::unique_ptr<SDL_Rect> clip = nullptr,
-                   std::unique_ptr<SDL_Rect> rend = nullptr, float angle = 0.0f,
-                   SDL_RendererFlip flip = SDL_FLIP_NONE);
-  void Render();
+    m_initialized = false;
+  }
 
-  std::unique_ptr<SDL_Texture> LoadTexture(std::string path);
-  std::unique_ptr<SDL_Texture> CreateTextTexture(std::unique_ptr<TTF_Font> font,
-                                                 std::string text,
-                                                 SDL_Color color);
+  static inline Graphics *Instance(Str title) {
+    if (!m_instance) {
+      m_instance = new Graphics(title);
+    }
+
+    return m_instance;
+  }
+
+  static inline bool Initialized() { return m_initialized; }
+
+  inline void ClearBackBuffer() { SDL_RenderClear(this->m_renderer.get()); }
+  inline void DrawTexture(std::unique_ptr<SDL_Texture, sdl_deleter> text,
+                          std::unique_ptr<SDL_Rect> clip = nullptr,
+                          std::unique_ptr<SDL_Rect> rend = nullptr,
+                          float angle = 0.0f,
+                          SDL_RendererFlip flip = SDL_FLIP_NONE) {
+    SDL_RenderCopyEx(this->m_renderer.get(), text.get(), clip.get(), rend.get(),
+                     angle, nullptr, flip);
+  }
+  inline void Render() { SDL_RenderPresent(this->m_renderer.get()); }
+  inline void Resize(int32_t width, int32_t height) {
+    this->m_width = width;
+    this->m_height = height;
+  }
+
+  std::unique_ptr<SDL_Texture, sdl_deleter> LoadTexture(std::string path);
+  std::unique_ptr<SDL_Texture, sdl_deleter> CreateTextTexture(
+      std::unique_ptr<TTF_Font> font, std::string text, SDL_Color color);
 
  private:
   Graphics(Str title);
@@ -38,10 +56,9 @@ class Graphics {
   int32_t m_width{600};
   int32_t m_height{400};
 
-  std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> m_window;
-  std::unique_ptr<SDL_Surface, decltype(&FreeSurface)> m_surface;
-  std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_renderer;
+  std::unique_ptr<SDL_Window, sdl_deleter> m_window;
+  std::unique_ptr<SDL_Surface, sdl_deleter> m_surface;
+  std::unique_ptr<SDL_Renderer, sdl_deleter> m_renderer;
 };
 
-using DestroyGraphics = decltype(&Graphics::Release);
 }  // namespace canvas

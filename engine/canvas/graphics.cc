@@ -3,29 +3,51 @@
 canvas::Graphics *canvas::Graphics::m_instance = nullptr;
 bool canvas::Graphics::m_initialized = false;
 
-canvas::Graphics *canvas::Graphics::Instance(Str title) {
-  if (!m_instance) {
-    m_instance = new Graphics(title);
+std::unique_ptr<SDL_Texture, canvas::sdl_deleter> canvas::Graphics::LoadTexture(
+    std::string path) {
+  std::unique_ptr<SDL_Texture, canvas::sdl_deleter> texture;
+
+  SDL_Surface *surface = IMG_Load(path.c_str());
+  if (!surface) {
+    printf("Image Load Error: Path(%s) - Error(%s)\n", path.c_str(),
+           IMG_GetError());
+    return texture;
   }
 
-  return m_instance;
+  texture.reset(SDL_CreateTextureFromSurface(this->m_renderer.get(), surface));
+  if (!texture) {
+    printf("Create Texture Error:%s\n", SDL_GetError());
+    return texture;
+  }
+
+  SDL_FreeSurface(surface);
+
+  return texture;
 }
 
-void canvas::Graphics::Release() {
-  delete m_instance;
-  m_instance = nullptr;
+std::unique_ptr<SDL_Texture, canvas::sdl_deleter>
+canvas::Graphics::CreateTextTexture(std::unique_ptr<TTF_Font> font,
+                                    std::string text, SDL_Color color) {
+  std::unique_ptr<SDL_Texture, canvas::sdl_deleter> texture;
 
-  m_initialized = false;
+  SDL_Surface *surface = TTF_RenderText_Solid(font.get(), text.c_str(), color);
+  if (!surface) {
+    printf("Text Render Error: %s\n", TTF_GetError());
+    return texture;
+  }
+
+  texture.reset(SDL_CreateTextureFromSurface(this->m_renderer.get(), surface));
+  if (!texture) {
+    printf("Create Texture Error:%s\n", SDL_GetError());
+    return texture;
+  }
+
+  SDL_FreeSurface(surface);
+
+  return texture;
 }
 
-bool canvas::Graphics::Initialized() { return m_initialized; }
-
-canvas::Graphics::Graphics(Str title)
-    : m_window(nullptr, SDL_DestroyWindow),
-      m_surface(nullptr, FreeSurface),
-      m_renderer(nullptr, SDL_DestroyRenderer) {
-  m_initialized = Init(title);
-}
+canvas::Graphics::Graphics(Str title) { m_initialized = Init(title); }
 
 canvas::Graphics::~Graphics() {
   TTF_Quit();
@@ -39,18 +61,18 @@ bool canvas::Graphics::Init(Str title) {
     return false;
   }
 
-  this->m_window.reset(SDL_CreateWindow("ah", SDL_WINDOWPOS_CENTERED,
-                                         SDL_WINDOWPOS_CENTERED, this->m_width,
-                                         this->m_height, SDL_WINDOW_SHOWN));
+  this->m_window.reset(SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED,
+                                        SDL_WINDOWPOS_CENTERED, this->m_width,
+                                        this->m_height, SDL_WINDOW_SHOWN));
 
   if (!this->m_window) {
     printf("Window Creation Error: %s\n", SDL_GetError());
     return false;
   }
 
-  this->m_renderer.reset(SDL_CreateRenderer(this->m_window.get(), -1, SDL_RENDERER_ACCELERATED));
-  if(!this->m_renderer) {
-
+  this->m_renderer.reset(
+      SDL_CreateRenderer(this->m_window.get(), -1, SDL_RENDERER_ACCELERATED));
+  if (!this->m_renderer) {
     printf("Renderer Creation Error: %s\n", SDL_GetError());
     return false;
   }
@@ -58,14 +80,12 @@ bool canvas::Graphics::Init(Str title) {
   SDL_SetRenderDrawColor(this->m_renderer.get(), 0xff, 0xff, 0xff, 0xff);
 
   int flags = IMG_INIT_PNG;
-  if(!(IMG_Init(flags) & flags)) {
-
+  if (!(IMG_Init(flags) & flags)) {
     printf("Renderer Init Error: %s\n", IMG_GetError());
     return false;
   }
 
-  if(TTF_Init() == -1) {
-
+  if (TTF_Init() == -1) {
     printf("TTF Init Error: %s\n", TTF_GetError());
     return false;
   }
@@ -74,17 +94,3 @@ bool canvas::Graphics::Init(Str title) {
 
   return true;
 }
-
-void canvas::Graphics::ClearBackBuffer() {
-  SDL_RenderClear(this->m_renderer.get());
-}
-
-void canvas::Graphics::DrawTexture(std::unique_ptr<SDL_Texture> text,
-                                   std::unique_ptr<SDL_Rect> clip,
-                                   std::unique_ptr<SDL_Rect> rend, float angle,
-                                   SDL_RendererFlip flip) {
-  SDL_RenderCopyEx(this->m_renderer.get(), text.get(), clip.get(), rend.get(),
-                   angle, nullptr, flip);
-}
-
-void canvas::Graphics::Render() { SDL_RenderPresent(this->m_renderer.get()); }
