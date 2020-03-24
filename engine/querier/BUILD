@@ -9,7 +9,7 @@ cc_library(
     hdrs = glob([
         "*.hh"
     ]),
-    copts = COPTS + ["-DTESTING"],
+    copts = COPTS + ["-fpermissive", "-DTESTING"],
 		deps = [
       "//engine/models",
       "//engine/util",
@@ -33,7 +33,7 @@ cc_test(
     data = [
         "test_dump_json.json",
     ],
-    copts = COPTS + ["-DTESTING"],
+    copts = COPTS + ["-fpermissive", "-DTESTING"],
     linkopts = LINKOPTS,
     linkstatic = 0,
 )
