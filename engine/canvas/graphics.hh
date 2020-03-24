@@ -8,19 +8,18 @@ namespace canvas {
 
 class Graphics {
  public:
+  ~Graphics();
+	
   static inline void Release() {
-    delete m_instance;
-    m_instance = nullptr;
-
     m_initialized = false;
   }
 
-  static inline Graphics *Instance(Str title) {
+  static inline Graphics &Instance(Str title) {
     if (!m_instance) {
-      m_instance = new Graphics(title);
+      m_instance.reset(new Graphics(title));
     }
 
-    return m_instance;
+    return *m_instance.get();
   }
 
   static inline bool Initialized() { return m_initialized; }
@@ -42,15 +41,14 @@ class Graphics {
 
   std::unique_ptr<SDL_Texture, sdl_deleter> LoadTexture(std::string path);
   std::unique_ptr<SDL_Texture, sdl_deleter> CreateTextTexture(
-      std::unique_ptr<TTF_Font> font, std::string text, SDL_Color color);
+      std::unique_ptr<TTF_Font, sdl_deleter> font, std::string text, SDL_Color color);
 
  private:
   Graphics(Str title);
-  ~Graphics();
 
   bool Init(Str title);
 
-  static Graphics *m_instance;
+  static std::unique_ptr<Graphics> m_instance;
   static bool m_initialized;
 
   int32_t m_width{600};
