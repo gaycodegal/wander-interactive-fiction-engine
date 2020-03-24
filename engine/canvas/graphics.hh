@@ -9,14 +9,10 @@ namespace canvas {
 class Graphics {
  public:
   ~Graphics();
-	
-  static inline void Release() {
-    m_initialized = false;
-  }
 
-  static inline Graphics &Instance(Str title) {
+  static inline Graphics& Instance() {
     if (!m_instance) {
-      m_instance.reset(new Graphics(title));
+      m_instance.reset(new Graphics());
     }
 
     return *m_instance.get();
@@ -39,14 +35,15 @@ class Graphics {
     this->m_height = height;
   }
 
-  std::unique_ptr<SDL_Texture, sdl_deleter> LoadTexture(std::string path);
-  std::unique_ptr<SDL_Texture, sdl_deleter> CreateTextTexture(
-      std::unique_ptr<TTF_Font, sdl_deleter> font, std::string text, SDL_Color color);
+  std::unique_ptr<SDL_Texture, sdl_deleter> LoadTexture(Str path);
+  std::unique_ptr<SDL_Texture, sdl_deleter> CreateTextTexture(TTF_Font* font,
+                                                              Str text,
+                                                              SDL_Color color);
 
  private:
-  Graphics(Str title);
+  Graphics();
 
-  bool Init(Str title);
+  bool Init();
 
   static std::unique_ptr<Graphics> m_instance;
   static bool m_initialized;
