@@ -25,6 +25,8 @@ class AudioManager {
   void inline PlaySFX(Str filename, int loops = 0, int channel = 0) {
     Mix_PlayChannel(channel, &this->m_AssetMgr->GetSFX(filename), loops);
   }
+	void inline PauseSFX(int channel = 0) { if (Mix_Playing(channel)) Mix_Pause(channel); }
+  void inline ResumeSFX(int channel = 0) { if (Mix_Paused(channel)) Mix_Resume(channel); }
 
  private:
   static std::unique_ptr<AudioManager> m_instance;
