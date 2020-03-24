@@ -1,6 +1,6 @@
 #include "graphics.hh"
 
-canvas::Graphics *canvas::Graphics::m_instance = nullptr;
+std::unique_ptr<canvas::Graphics> canvas::Graphics::m_instance = nullptr;
 bool canvas::Graphics::m_initialized = false;
 
 std::unique_ptr<SDL_Texture, canvas::sdl_deleter> canvas::Graphics::LoadTexture(
@@ -26,7 +26,7 @@ std::unique_ptr<SDL_Texture, canvas::sdl_deleter> canvas::Graphics::LoadTexture(
 }
 
 std::unique_ptr<SDL_Texture, canvas::sdl_deleter>
-canvas::Graphics::CreateTextTexture(std::unique_ptr<TTF_Font> font,
+canvas::Graphics::CreateTextTexture(std::unique_ptr<TTF_Font, canvas::sdl_deleter> font,
                                     std::string text, SDL_Color color) {
   std::unique_ptr<SDL_Texture, canvas::sdl_deleter> texture;
 
@@ -50,6 +50,7 @@ canvas::Graphics::CreateTextTexture(std::unique_ptr<TTF_Font> font,
 canvas::Graphics::Graphics(Str title) { m_initialized = Init(title); }
 
 canvas::Graphics::~Graphics() {
+  Release();
   TTF_Quit();
   IMG_Quit();
   SDL_Quit();

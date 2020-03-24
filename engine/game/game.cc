@@ -9,7 +9,7 @@ using namespace std;
 
 int main() {
   cout << "hello world!" << endl;
-  canvas::Graphics *g = canvas::Graphics::Instance("Game");
-  g->Render();
+  canvas::Graphics &g = canvas::Graphics::Instance("Game");
+  g.Render();
   return 0;
 }
