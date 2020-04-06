@@ -1,4 +1,5 @@
 #include "lang.hh"
+#include "ast_val.hh"
 
 #include "cyk_intermediate.cc"
 
@@ -14,10 +15,17 @@ static inline void cyk_add_pairs_to_matrix(
     unordered_map<Str, CYKIntermediate>& right, size_t l_ind, size_t r_ind,
     size_t insert_ind);
 
+AST::AST* derive_answer(const Vec<unordered_map<Str, CYKIntermediate>>& matrix,
+                        const CYKIntermediate& answer);
 static inline size_t index2(size_t dimX, size_t dimY, size_t x, size_t y);
 
 static inline bool is_first_char_lower(const Str& s) {
   return s.size() >= 1 && std::islower(s[0]);
+}
+
+// N-Pair intermediate checker
+static inline bool is_intermediate_rule_symbol(const Str& s) {
+  return s.size() >= 1 && s[0] == '_';
 }
 
 static inline bool is_first_char_upper(const Str& s) {
@@ -227,11 +235,11 @@ int Lang::parse_sentence(const Str& sentence) {
   const auto& answer_table = matrix[index2(n, n, n - 1, 0)];
   if (const auto answer = answer_table.find("S");
       answer != answer_table.end()) {
-    return -1;
-    /*const auto ast = derive_answer(&matrix, answer);
-    if (ast) {
-      return ast;
-      }*/
+    AST::AST* ast = derive_answer(matrix, answer->second);
+    if (ast != NULL) {
+      delete ast;
+      return -1;
+    }
   }
   return 0;
 }
@@ -254,6 +262,56 @@ void cyk_add_pairs_to_matrix(unordered_map<Str, Vec<Str>> pairs,
       }
     }
   }
+}
+
+AST::AST* derive_answer(const Vec<unordered_map<Str, CYKIntermediate>>& matrix,
+                        const CYKIntermediate& answer) {
+  if (answer.type == CYKIntermediate::Type::WORD) {
+    const AST::Word ret{answer.value.word.word, answer.value.word.origin};
+    return new AST::AST(ret);
+  } else if (answer.type == CYKIntermediate::Type::DERIVATION) {
+    const auto& derivation = answer.value.derivation;
+    const auto& m_left = matrix[derivation.left_index];
+    const auto& m_right = matrix[derivation.right_index];
+    const auto pair_l_val = m_left.find(derivation.left_symbol);
+    const auto pair_r_val = m_right.find(derivation.right_symbol);
+    if (pair_l_val == m_left.end() || pair_r_val == m_right.end()) {
+      return NULL;
+    }
+
+    const auto& l_val = pair_l_val->second;
+    const auto& r_val = pair_r_val->second;
+    auto* lDerivation = derive_answer(matrix, l_val);
+    if (lDerivation == NULL) {
+      return NULL;
+    }
+
+    auto* rDerivation = derive_answer(matrix, r_val);
+    if (rDerivation == NULL) {
+      return NULL;
+    }
+
+    AST::Tagged rTagged{derivation.right_symbol, rDerivation};
+    const auto rAnswer = new AST::AST(rTagged);
+
+    // Handle N-Pair
+    if (is_intermediate_rule_symbol(derivation.left_symbol) &&
+        lDerivation->type == AST::AST::Type::RULE) {
+      Vec<AST::AST*> ans = lDerivation->deleteAndClaimRule();
+      ans.push_back(rAnswer);
+      return new AST::AST(ans);
+    }
+
+    // Normal 2-Pair rule
+    AST::Tagged lTagged{derivation.left_symbol, lDerivation};
+    const auto lAnswer = new AST::AST(lTagged);
+    Vec<AST::AST*> ans;
+    ans.push_back(lAnswer);
+    ans.push_back(rAnswer);
+    return new AST::AST(ans);
+  }
+
+  return NULL;
 }
 
 static inline size_t index2(size_t dimX, size_t dimY, size_t x, size_t y) {
