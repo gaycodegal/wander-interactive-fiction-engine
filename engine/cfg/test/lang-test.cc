@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 #include <string>
 
 #include "gtest/gtest.h"
@@ -24,7 +25,25 @@ TEST(Lang, ParseSentence_Exists) {
   auto words = read_file("engine/cfg/test-lang-words.txt");
   lang.init_words(words);
   Str sentence = "eat a clean apple";
-  EXPECT_EQ(-1, lang.parse_sentence(sentence));
+  const auto* ast = lang.parse_sentence(sentence);
+  std::ostringstream ss;
+  ss << *ast;
+  delete ast;
+  EXPECT_EQ(
+      "\n"
+      "(RULE\n"
+      "(TAGGED Verb, (WORD verb, eat))\n"
+      "(TAGGED NounClause, \n"
+      "(RULE\n"
+      "(TAGGED Count, (WORD indefiniteArticle, a))\n"
+      "(TAGGED ANoun, \n"
+      "(RULE\n"
+      "(TAGGED Adjective, (WORD adjective, clean))\n"
+      "(TAGGED Noun, (WORD noun, apple))\n"
+      "))\n"
+      "))\n"
+      ")",
+      ss.str());
 }
 
 TEST(Lang, InitsRules) {
