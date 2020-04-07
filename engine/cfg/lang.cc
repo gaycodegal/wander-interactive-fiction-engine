@@ -1,5 +1,4 @@
 #include "lang.hh"
-#include "ast_val.hh"
 
 #include "cyk_intermediate.cc"
 
@@ -166,7 +165,7 @@ void Lang::init_words(const Str& definitions) {
   }
 }
 
-int Lang::parse_sentence(const Str& sentence) {
+AST::AST* Lang::parse_sentence(const Str& sentence) {
   const auto origins = util::split_whitespace(sentence);
   const auto temp_words = util::map<Str, Str>(origins, [&](const auto& origin) {
     if (const auto match = words.find(origin); match != this->words.end()) {
@@ -187,7 +186,7 @@ int Lang::parse_sentence(const Str& sentence) {
         cerr << "Not a word: '" << invalid << "'" << std::endl;
       }
     }
-    return 0;
+    return NULL;
   }
 
   Vec<unordered_map<Str, CYKIntermediate>> matrix{n * n};
@@ -211,7 +210,7 @@ int Lang::parse_sentence(const Str& sentence) {
       }
     } else {
       cerr << "Unusable word " << word << std::endl;
-      return 0;
+      return NULL;
     }
     ++s;
   }
@@ -236,12 +235,9 @@ int Lang::parse_sentence(const Str& sentence) {
   if (const auto answer = answer_table.find("S");
       answer != answer_table.end()) {
     AST::AST* ast = derive_answer(matrix, answer->second);
-    if (ast != NULL) {
-      delete ast;
-      return -1;
-    }
+    return ast;
   }
-  return 0;
+  return NULL;
 }
 
 void cyk_add_pairs_to_matrix(unordered_map<Str, Vec<Str>> pairs,

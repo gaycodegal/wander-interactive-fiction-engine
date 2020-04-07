@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "ast_val.hh"
 #include "util.hh"
 
 namespace cfg {
@@ -23,7 +24,7 @@ class Lang {
   Str next_gen_name(const Str& rule_type);
 
  public:
-  int parse_sentence(const Str& sentence);
+  AST::AST* parse_sentence(const Str& sentence);
   void init_rules(const Str& rules);
   void init_words(const Str& words);
 };
