@@ -79,5 +79,9 @@ function QualitySentence:eval(scene)
 end
 
 function qualifies(item, quality)
-   return thing.adjectives[quality.adjective]
+   if quality.component then
+      return item.components[quality.component]
+   else
+      return item.adjectives[quality.adjective]
+   end
 end
