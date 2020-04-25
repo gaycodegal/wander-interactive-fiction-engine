@@ -1,14 +1,6 @@
 #include "graphics.hh"
 
-canvas::Graphics::~Graphics() { this->Release(); }
-
-void canvas::Graphics::Release() {
-  m_initialized = false;
-
-  TTF_Quit();
-  IMG_Quit();
-  SDL_Quit();
-}
+canvas::Graphics::~Graphics() {}
 
 std::unique_ptr<SDL_Texture, canvas::sdl_deleter> canvas::Graphics::LoadTexture(
     std::string path) {
