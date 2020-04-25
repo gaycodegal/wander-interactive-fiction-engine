@@ -1,8 +1,5 @@
 #include "asset_manager.hh"
 
-std::unique_ptr<canvas::AssetManager> canvas::AssetManager::m_instance =
-    nullptr;
-
 SDL_Texture& canvas::AssetManager::GetTexture(Str filename) {
   Str fullPath = SDL_GetBasePath();
   fullPath.append("Assets/" + filename);

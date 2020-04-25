@@ -2,22 +2,16 @@
 
 #include <memory>
 
+#include "magic_static.hh"
 #include "sdl_deleter.hh"
 
 namespace canvas {
 
-class Graphics {
+class Graphics final : public MagicStatic<Graphics> {
  public:
-  ~Graphics();
+  friend class MagicStatic<Graphics>;
 
-  static inline Graphics& Instance() {
-    if (!m_instance) {
-      m_instance.reset(new Graphics());
-    }
-
-    return *m_instance.get();
-  }
-
+  static void Release();
   static inline bool Initialized() { return m_initialized; }
 
   inline void ClearBackBuffer() { SDL_RenderClear(this->m_renderer.get()); }
@@ -42,11 +36,11 @@ class Graphics {
 
  private:
   Graphics();
+  ~Graphics();
 
   bool Init();
 
-  static std::unique_ptr<Graphics> m_instance;
-  static bool m_initialized;
+  static inline bool m_initialized = false;
 
   int32_t m_width{600};
   int32_t m_height{400};

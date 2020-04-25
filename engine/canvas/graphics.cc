@@ -1,9 +1,10 @@
 #include "graphics.hh"
 
-std::unique_ptr<canvas::Graphics> canvas::Graphics::m_instance = nullptr;
-bool canvas::Graphics::m_initialized = false;
-
 canvas::Graphics::~Graphics() {
+  this->Release();
+}
+
+void canvas::Graphics::Release() {
   m_initialized = false;
 
   TTF_Quit();
@@ -55,7 +56,7 @@ canvas::Graphics::CreateTextTexture(TTF_Font *font, std::string text,
   return texture;
 }
 
-canvas::Graphics::Graphics() { m_initialized = Init(); }
+canvas::Graphics::Graphics() { this->m_initialized = Init(); }
 
 bool canvas::Graphics::Init() {
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
@@ -63,9 +64,9 @@ bool canvas::Graphics::Init() {
     return false;
   }
 
-  this->m_window.reset(SDL_CreateWindow("tehexd", SDL_WINDOWPOS_CENTERED,
-                                        SDL_WINDOWPOS_CENTERED, this->m_width,
-                                        this->m_height, SDL_WINDOW_SHOWN));
+  this->m_window.reset(
+      SDL_CreateWindow("tehexd", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                       this->m_width, this->m_height, SDL_WINDOW_SHOWN));
 
   if (!this->m_window) {
     printf("Window Creation Error: %s\n", SDL_GetError());
