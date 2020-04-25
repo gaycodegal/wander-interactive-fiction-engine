@@ -9,8 +9,6 @@ namespace canvas {
 
 class Graphics final : public MagicStatic<Graphics> {
  public:
-  friend class MagicStatic<Graphics>;
-  
   static inline bool Initialized() { return m_initialized; }
 
   inline void ClearBackBuffer() { SDL_RenderClear(this->m_renderer.get()); }
@@ -34,6 +32,8 @@ class Graphics final : public MagicStatic<Graphics> {
                                                               SDL_Color color);
 
  private:
+  friend class MagicStatic<Graphics>;
+  
   Graphics();
   ~Graphics();
 
