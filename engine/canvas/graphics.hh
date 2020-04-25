@@ -10,8 +10,7 @@ namespace canvas {
 class Graphics final : public MagicStatic<Graphics> {
  public:
   friend class MagicStatic<Graphics>;
-
-  static void Release();
+  
   static inline bool Initialized() { return m_initialized; }
 
   inline void ClearBackBuffer() { SDL_RenderClear(this->m_renderer.get()); }
