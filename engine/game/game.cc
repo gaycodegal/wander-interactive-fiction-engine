@@ -1,9 +1,8 @@
 #include <iostream>
-#include <memory>
 
-#include "singleton.hh"
 #include "audio_manager.hh"
 #include "input_manager.hh"
+#include "singleton.hh"
 #define SOL_ALL_SAFETIES_ON 1
 
 using namespace std;
@@ -11,20 +10,10 @@ using namespace std;
 struct MyContext;
 
 int main() {
-  cout << "hello world!" << endl;
   bool test = true;
   SDL_Event mEvents;
   canvas::Graphics& g = canvas::Graphics::Instance();
   canvas::InputManager& im = canvas::InputManager::Instance();
-
-  printf("copyable? %s\n",
-         std::is_copy_constructible<canvas::InputManager>::value == true
-             ? "true"
-             : "false");
-  printf("moveable? %s\n",
-         std::is_move_constructible<canvas::InputManager>::value == true
-             ? "true"
-             : "false");
 
   while (test) {
     while (SDL_PollEvent(&mEvents) != 0) {

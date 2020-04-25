@@ -8,7 +8,7 @@ DEPS = [
 cc_binary(
 	name = "game",
 	srcs = [
-		"game.cc",
+		"game.cc"
 	],
 	copts = COPTS,
 	deps = DEPS,

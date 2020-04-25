@@ -33,7 +33,7 @@ class Graphics final : public MagicStatic<Graphics> {
 
  private:
   friend class MagicStatic<Graphics>;
-  
+
   Graphics();
   ~Graphics();
 

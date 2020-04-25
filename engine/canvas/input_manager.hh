@@ -8,7 +8,7 @@
 
 namespace canvas {
 class InputManager final : public MagicStatic<InputManager> {
-public:
+ public:
   enum MOUSE_BUTTON { left = 0, right, middle, back, forward };
 
   inline bool KeyDown(SDL_Scancode scanCode) {
@@ -47,7 +47,7 @@ public:
 
   InputManager();
   ~InputManager() {}
-  
+
   std::unique_ptr<Uint8[]> m_PrevKeyboardState;
   const Uint8* m_KeyboardState;
   int m_KeyLength;
@@ -57,8 +57,6 @@ public:
 
   int m_MouseXPos;
   int m_MouseYPos;
-
-  
 };
 
 }  // namespace canvas

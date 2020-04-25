@@ -28,10 +28,10 @@ class AudioManager final : public MagicStatic<AudioManager> {
 
  private:
   friend class MagicStatic<AudioManager>;
-  
+
   AudioManager();
   ~AudioManager() {}
-  
+
   AssetManager* m_AssetMgr;
 };
 

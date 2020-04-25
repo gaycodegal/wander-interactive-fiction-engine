@@ -18,7 +18,7 @@ class AssetManager final : public MagicStatic<AssetManager> {
 
   AssetManager() {}
   ~AssetManager() {}
-  
+
   std::unordered_map<Str, std::unique_ptr<SDL_Texture, sdl_deleter>> m_textures;
   std::unordered_map<Str, std::unique_ptr<SDL_Texture, sdl_deleter>> m_texts;
   std::unordered_map<Str, std::unique_ptr<TTF_Font, sdl_deleter>> m_fonts;
