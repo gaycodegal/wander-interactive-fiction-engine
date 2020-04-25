@@ -10,10 +10,20 @@ using namespace std;
 int main() {
   cout << "hello world!" << endl;
   bool test = true;
+  SDL_Event mEvents;
   canvas::Graphics& g = canvas::Graphics::Instance();
   canvas::InputManager& im = canvas::InputManager::Instance();
 
   while (test) {
+
+    while(SDL_PollEvent(&mEvents) != 0) {
+
+      if(mEvents.type == SDL_QUIT) {
+        test = false;
+      }
+    }
+
+    
     im.Update();
 
     if (im.KeyReleased(SDL_SCANCODE_W)) {
@@ -31,10 +41,7 @@ int main() {
     }
 
     im.UpdatePrevInput();
-
-    auto mPos = im.MousePos();
-    printf("x: %f, y: %f\n", std::get<0>(mPos), std::get<1>(mPos));
-
+    
     g.ClearBackBuffer();
     g.Render();
   }
