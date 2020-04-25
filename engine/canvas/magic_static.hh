@@ -1,15 +1,22 @@
 #pragma once
 
-template <class T>
+template <typename T>
 class MagicStatic {
- public:
+public:
+  
   static T& Instance() {
     static T instance;
     return instance;
   }
 
  private:
+  friend T;
+  
   // Delete the copy and move constructors
-  MagicStatic& operator=(const MagicStatic&) = delete;  // no self-assignments
-  MagicStatic& operator=(MagicStatic&&) = delete;       // no move assignment
+  MagicStatic() = default;
+  ~MagicStatic() = default;
+  MagicStatic(const MagicStatic&) = delete;
+  MagicStatic(const MagicStatic&&) = delete;
+  MagicStatic& operator=(const MagicStatic&) = delete;
+  MagicStatic& operator=(MagicStatic&&) = delete;
 };
