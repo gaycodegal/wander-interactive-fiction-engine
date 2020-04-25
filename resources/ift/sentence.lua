@@ -54,7 +54,7 @@ function QualitySentence.new(verb, subject, preposition, quality)
    return self
 end
 
-function QualitySentence.eval(scene)
+function QualitySentence:eval(scene)
    local matches
    -- get subject
    local subject = Mask.fromSubject(self.subject, scene)
