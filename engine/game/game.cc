@@ -52,5 +52,7 @@ int main() {
     g.Render();
   }
 
+  g.Release();
+
   return 0;
 }
