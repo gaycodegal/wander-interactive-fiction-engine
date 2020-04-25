@@ -1,12 +1,13 @@
 #include "input_manager.hh"
-
-std::unique_ptr<canvas::InputManager> canvas::InputManager::m_instance =
-    nullptr;
+canvas::InputManager& canvas::InputManager::Instance() {
+  static InputManager im;
+  return im;
+}
 
 canvas::InputManager::InputManager() {
   this->m_KeyboardState = SDL_GetKeyboardState(&this->m_KeyLength);
-  this->m_PrevKeyboardState = new Uint8[this->m_KeyLength];
-  memcpy(this->m_PrevKeyboardState, this->m_KeyboardState, this->m_KeyLength);
+  this->m_PrevKeyboardState = std::make_unique<Uint8[]>(this->m_KeyLength);
+  memcpy(this->m_PrevKeyboardState.get(), this->m_KeyboardState, this->m_KeyLength);
 }
 
 bool canvas::InputManager::MouseButtonDown(MOUSE_BUTTON button) {
