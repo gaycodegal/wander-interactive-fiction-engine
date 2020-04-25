@@ -14,16 +14,22 @@ int main() {
   canvas::Graphics& g = canvas::Graphics::Instance();
   canvas::InputManager& im = canvas::InputManager::Instance();
 
+  printf("copyable? %s\n",
+         std::is_copy_constructible<canvas::InputManager>::value == true
+             ? "true"
+             : "false");
+  printf("moveable? %s\n",
+         std::is_move_constructible<canvas::InputManager>::value == true
+             ? "true"
+             : "false");
+
   while (test) {
-
-    while(SDL_PollEvent(&mEvents) != 0) {
-
-      if(mEvents.type == SDL_QUIT) {
+    while (SDL_PollEvent(&mEvents) != 0) {
+      if (mEvents.type == SDL_QUIT) {
         test = false;
       }
     }
 
-    
     im.Update();
 
     if (im.KeyReleased(SDL_SCANCODE_W)) {
@@ -41,7 +47,7 @@ int main() {
     }
 
     im.UpdatePrevInput();
-    
+
     g.ClearBackBuffer();
     g.Render();
   }
