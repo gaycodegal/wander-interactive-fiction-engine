@@ -4,17 +4,9 @@
 
 namespace canvas {
 
-class AudioManager {
+class AudioManager final : public MagicStatic<AudioManager> {
  public:
-  ~AudioManager() {}
-
-  static AudioManager& Instance() {
-    if (!m_instance) {
-      m_instance.reset(new AudioManager());
-    }
-
-    return *m_instance.get();
-  }
+  friend class MagicStatic<AudioManager>;
 
   void inline PlayMusic(Str filename, int loops = -1) {
     Mix_PlayMusic(&this->m_AssetMgr->GetMusic(filename), loops);
@@ -37,11 +29,10 @@ class AudioManager {
   }
 
  private:
-  static std::unique_ptr<AudioManager> m_instance;
-
   AssetManager* m_AssetMgr;
 
   AudioManager();
+  ~AudioManager() {}
 };
 
 }  // namespace canvas

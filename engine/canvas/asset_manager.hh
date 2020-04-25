@@ -5,17 +5,9 @@
 #include "graphics.hh"
 
 namespace canvas {
-class AssetManager {
+class AssetManager final : public MagicStatic<AssetManager> {
  public:
-  ~AssetManager() {}
-
-  static inline AssetManager& Instance() {
-    if (!m_instance) {
-      m_instance.reset(new AssetManager());
-    }
-
-    return *m_instance.get();
-  }
+  friend class MagicStatic<AssetManager>;
 
   SDL_Texture& GetTexture(Str filename);
   SDL_Texture& GetText(Str text, Str filename, int size, SDL_Color color);
@@ -24,8 +16,6 @@ class AssetManager {
   Mix_Chunk& GetSFX(Str filename);
 
  private:
-  static std::unique_ptr<AssetManager> m_instance;
-
   std::unordered_map<Str, std::unique_ptr<SDL_Texture, sdl_deleter>> m_textures;
   std::unordered_map<Str, std::unique_ptr<SDL_Texture, sdl_deleter>> m_texts;
   std::unordered_map<Str, std::unique_ptr<TTF_Font, sdl_deleter>> m_fonts;
@@ -33,6 +23,7 @@ class AssetManager {
   std::unordered_map<Str, std::unique_ptr<Mix_Chunk, sdl_deleter>> m_SFX;
 
   AssetManager() {}
+  ~AssetManager() {}
 
   TTF_Font& GetFont(Str filename, int size);
 };
