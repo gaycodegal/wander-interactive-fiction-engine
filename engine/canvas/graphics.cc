@@ -1,8 +1,6 @@
 #include "graphics.hh"
 
-canvas::Graphics::~Graphics() {
-  this->Release();
-}
+canvas::Graphics::~Graphics() { this->Release(); }
 
 void canvas::Graphics::Release() {
   m_initialized = false;
@@ -64,7 +62,7 @@ bool canvas::Graphics::Init() {
     return false;
   }
 
-  this->m_window.reset(
+  this->m_window = std::unique_ptr<SDL_Window, canvas::sdl_deleter>(
       SDL_CreateWindow("tehexd", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                        this->m_width, this->m_height, SDL_WINDOW_SHOWN));
 
@@ -73,7 +71,7 @@ bool canvas::Graphics::Init() {
     return false;
   }
 
-  this->m_renderer.reset(
+  this->m_renderer = std::unique_ptr<SDL_Renderer, canvas::sdl_deleter>(
       SDL_CreateRenderer(this->m_window.get(), -1, SDL_RENDERER_ACCELERATED));
   if (!this->m_renderer) {
     printf("Renderer Creation Error: %s\n", SDL_GetError());
@@ -93,7 +91,8 @@ bool canvas::Graphics::Init() {
     return false;
   }
 
-  this->m_surface.reset(SDL_GetWindowSurface(this->m_window.get()));
+  this->m_surface = std::unique_ptr<SDL_Surface, canvas::sdl_deleter>(
+      SDL_GetWindowSurface(this->m_window.get()));
 
   return true;
 }
