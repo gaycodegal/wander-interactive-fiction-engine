@@ -6,8 +6,6 @@ namespace canvas {
 
 class AudioManager final : public MagicStatic<AudioManager> {
  public:
-  friend class MagicStatic<AudioManager>;
-
   void inline PlayMusic(Str filename, int loops = -1) {
     Mix_PlayMusic(&this->m_AssetMgr->GetMusic(filename), loops);
   }
@@ -29,10 +27,12 @@ class AudioManager final : public MagicStatic<AudioManager> {
   }
 
  private:
-  AssetManager* m_AssetMgr;
+  friend class MagicStatic<AudioManager>;
 
   AudioManager();
   ~AudioManager() {}
+
+  AssetManager* m_AssetMgr;
 };
 
 }  // namespace canvas
