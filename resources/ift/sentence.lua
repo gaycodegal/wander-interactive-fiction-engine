@@ -1,13 +1,15 @@
 require("util/util")
 require("util/set")
+require("ift/mask")
 
 Item = Class()
 
-function Item.new(noun, adjectives, children, parent)
+function Item.new(noun, adjectives, components, children, parent)
    local self = {
       parent = parent,
       noun = noun,
-      adjectives = Set.new():addAll(adjectives),
+      adjectives = adjectives and Set.new():addAll(adjectives) or Set.new(),
+      components = components and Set.new():addAll(components) or Set.new(),
       children = children,
    }
    setmetatable(self, Item)
@@ -68,14 +70,18 @@ function QualitySentence:eval(scene)
       matches = subject
    end
    -- whether all items must satisfy condition
-   local distinct = subject.distinct
+   local distinct = self.subject.distinct
    local countMatch = 0
    for i, v in ipairs(matches:addToList({})) do
       if qualifies(v, self.quality) then
 	 countMatch = countMatch + 1
       end
    end
-   return (distinct and (countMatch == matches:count())) or (countMatch > 0)
+   if distinct then
+      return countMatch == matches:count()
+   else
+      return countMatch > 0
+   end
 end
 
 function qualifies(item, quality)
