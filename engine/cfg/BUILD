@@ -1,6 +1,13 @@
 package(default_visibility = ["//visibility:public"])
 load("//bzl:vars.bzl", "COPTS", "LINKOPTS")
 
+exports_files(
+  [
+      "test-lang-rules.txt",
+      "test-lang-words.txt",
+  ],
+)
+
 cc_library(
     name = "cfg",
     srcs = glob([
