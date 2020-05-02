@@ -23,6 +23,11 @@ cc_binary(
     deps = [
         ":lua",
     ],
+    data = [
+        "test.lua",
+        "//engine/cfg:test-lang-rules.txt",
+        "//engine/cfg:test-lang-words.txt",
+    ],
 )
 """
 cc_test(
