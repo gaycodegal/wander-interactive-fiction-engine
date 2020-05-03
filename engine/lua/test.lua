@@ -12,10 +12,11 @@ lang = Lang.new()
 lang:init_rules(rules)
 lang:init_words(words)
 print(lang)
-sentence = "is the apple clean"
-ast = lang:parse_sentence(sentence)
+sentence = "eat a clean apple"
+ast = lang:parse_sentence(sentence, {"S"})
 assert(ast, "invalid sentence")
-print(ast)
+print("sentence parse-type:", ast.end_state_name)
+print(ast.ast)
 
 print(AST.WORD)
-print(ast.value.rule[1].value.tagged.ast.value.word.origin)
+print(ast.ast.value.rule[1].value.tagged.ast.value.word.origin)

@@ -25,6 +25,10 @@ void expose_to_lua(sol::state& lua) {
   lua["AST"]["TAGGED"] = AST::AST::Type::TAGGED;
   lua["AST"]["RULE"] = AST::AST::Type::RULE;
 
+  lua.new_usertype<cfg::parsed_sentence>("parsed_sentence", "end_state_name",
+                                         &cfg::parsed_sentence::end_state_name,
+                                         "ast", &cfg::parsed_sentence::ast);
+
   lua.new_usertype<cfg::Lang>("Lang", "init_rules", &cfg::Lang::init_rules,
                               "init_words", &cfg::Lang::init_words,
                               "parse_sentence", &cfg::Lang::parse_sentence);

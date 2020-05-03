@@ -165,7 +165,8 @@ void Lang::init_words(const Str& definitions) {
   }
 }
 
-AST::AST* Lang::parse_sentence(const Str& sentence) {
+parsed_sentence* Lang::parse_sentence(const Str& sentence,
+                                      const Vec<Str> end_states) {
   const auto origins = util::split_whitespace(sentence);
   const auto temp_words = util::map<Str, Str>(origins, [&](const auto& origin) {
     if (const auto match = words.find(origin); match != this->words.end()) {
@@ -232,11 +233,16 @@ AST::AST* Lang::parse_sentence(const Str& sentence) {
 
   // Derive a sentence AST
   const auto& answer_table = matrix[index2(n, n, n - 1, 0)];
-  if (const auto answer = answer_table.find("S");
-      answer != answer_table.end()) {
-    AST::AST* ast = derive_answer(matrix, answer->second);
-    return ast;
+
+  for (const auto& end_state : end_states) {
+    if (const auto answer = answer_table.find(end_state);
+        answer != answer_table.end()) {
+      AST::AST* ast = derive_answer(matrix, answer->second);
+
+      return new parsed_sentence{end_state, ast};
+    }
   }
+
   return NULL;
 }
 
