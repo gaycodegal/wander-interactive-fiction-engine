@@ -25,10 +25,11 @@ TEST(Lang, ParseSentence_Exists) {
   auto words = read_file("engine/cfg/test-lang-words.txt");
   lang.init_words(words);
   Str sentence = "eat a clean apple";
-  const auto* ast = lang.parse_sentence(sentence);
+  const auto* parsed = lang.parse_sentence(sentence, {"S"});
+  const auto* ast = parsed->ast;
   std::ostringstream ss;
   ss << *ast;
-  delete ast;
+  delete parsed;
   EXPECT_EQ(
       "\n"
       "(RULE\n"
