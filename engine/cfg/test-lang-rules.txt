@@ -1,4 +1,5 @@
-S: Verb NounClause | Verb NounClause PrepClause | QuestionVerb NounClause Type | QuestionVerb NounClause PrepClause Type
+ActionSentence: Verb NounClause | Verb NounClause PrepClause
+QuestionSentence: QuestionVerb NounClause Type | QuestionVerb NounClause PrepClause Type
 NounClause: Count ANoun | Adjective Noun | noun
 PrepClause: Prep NounClause
 ANoun: Adjective Noun | noun
