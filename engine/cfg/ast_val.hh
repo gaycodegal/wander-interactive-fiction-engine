@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "types.hh"
@@ -82,6 +83,12 @@ struct AST {
     type = Type::WORD;
     delete this;
     return rule;
+  }
+
+  Str toString() {
+    std::ostringstream ss;
+    ss << *this;
+    return ss.str();
   }
 
   friend std::ostream& operator<<(std::ostream& os, const AST& self);
