@@ -9,6 +9,11 @@
 #include "util.hh"
 
 namespace cfg {
+struct parsed_sentence {
+  Str end_state_name;
+  AST::AST* ast;
+};
+
 class Lang {
  private:
   std::unordered_map<Str, Vec<Str>> terminals;
@@ -24,7 +29,8 @@ class Lang {
   Str next_gen_name(const Str& rule_type);
 
  public:
-  AST::AST* parse_sentence(const Str& sentence);
+  parsed_sentence* parse_sentence(const Str& sentence,
+                                  const Vec<Str> end_state_names);
   void init_rules(const Str& rules);
   void init_words(const Str& words);
 };
