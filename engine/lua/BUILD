@@ -3,9 +3,9 @@ load("//bzl:vars.bzl", "COPTS", "LINKOPTS")
 
 cc_library(
     name = "lua",
-    srcs = glob([
-        "*.cc",
-    ]),
+    srcs = [
+        "expose.cc",
+    ],
     hdrs = glob([
         "*.hh",
     ]),
@@ -20,32 +20,24 @@ cc_library(
 
 cc_binary(
     name="lua-main",
+    srcs = [
+        "expose_main.cc",
+    ],
     deps = [
         ":lua",
     ],
-    data = [
-        "test.lua",
-        "//engine/cfg:test-lang-rules.txt",
-        "//engine/cfg:test-lang-words.txt",
-    ],
-)
-"""
-cc_test(
-    name = "test",
-    size = "small",
-    srcs = glob([
-        "test/*.cc",
-    ]),
-    deps = [
-        ":cfg",
-        "@googletest//:gtest_main",
-    ],
-    data = [
-        "test-lang-rules.txt",
-        "test-lang-words.txt",
-    ],
     copts = COPTS,
     linkopts = LINKOPTS,
-    linkstatic = 0,
 )
-"""
+
+# for use only by humans because files it writes will actually show
+# up in the source tree
+sh_binary(
+    name="lua-sh",
+    srcs = [
+        "lua.sh",
+    ],
+    data = [
+        ":lua-main",
+    ],
+)
