@@ -12,6 +12,7 @@ namespace cfg {
 struct parsed_sentence {
   Str end_state_name;
   AST::AST* ast;
+  ~parsed_sentence() { delete ast; }
 };
 
 class Lang {
